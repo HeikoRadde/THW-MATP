@@ -36,6 +36,7 @@ public class WindowMain {
     private JButton btn_inventar_edit;
     private JButton btn_vorschrift_edit;
     private JButton btn_pruefung_edit;
+    private JButton btn_license;
 
     public WindowMain(CtrlInventar ctrl_inventar, CtrlPruefer ctrl_pruefer, CtrlPruefungen ctrl_pruefungen, CtrlVorschrift ctrl_vorschriften) {
         this.ctrl_inventar = ctrl_inventar;
@@ -55,6 +56,7 @@ public class WindowMain {
         this.btn_vorschrift_add.addActionListener(this::btn_add_action_performed);
         this.btn_vorschrift_remove.addActionListener(this::btn_remove_action_performed);
         this.inp_pruefung_kennzeichen.addActionListener(this::inp_pruefung_kennzeichen_action_performed);
+        this.btn_license.addActionListener(this::btn_licence_action_performed);
         this.tbl_inventar.setAutoCreateRowSorter(true);
         this.tbl_pruefer.setAutoCreateRowSorter(true);
         this.tbl_pruefungen.setAutoCreateRowSorter(true);
@@ -311,6 +313,20 @@ public class WindowMain {
                 this.tbl_pruefungen.setModel(this.ctrl_pruefungen.get_data(this.inp_pruefung_kennzeichen.getText()));
             }
             resize_table_column_width(this.tbl_pruefungen);
+        }
+        else {
+            System.err.println("Handle function called from wrong GUI object!");
+            new Throwable().printStackTrace();
+        }
+    }
+
+    public void btn_licence_action_performed(ActionEvent e) {
+        if (e.getSource() == this.btn_license) {
+            WindowLicense win = new WindowLicense();
+            win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            win.pack();
+            win.setLocationRelativeTo(get_root_panel());
+            win.setVisible(true);
         }
         else {
             System.err.println("Handle function called from wrong GUI object!");

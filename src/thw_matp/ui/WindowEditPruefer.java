@@ -36,6 +36,13 @@ public class WindowEditPruefer extends JFrame {
     public void btn_ok_action_performed(ActionEvent e) {
         if (e.getSource() == this.btn_ok) {
             BufferedImage signature = this.panel_signature.get_signature();
+            {
+                JDialog dialog = new JDialog();
+                dialog.setUndecorated(true);
+                JLabel label = new JLabel( new ImageIcon(signature) );
+                JOptionPane.showMessageDialog(null, label, "ImageDialog",
+                        JOptionPane.PLAIN_MESSAGE, null);
+            }
             if(!this.m_ctrl_pruefer.update(this.m_pruefer.id, this.txt_name.getText(), this.txt_vorname.getText(), signature)) {
                 JOptionPane.showMessageDialog(get_root_panel(),
                         "Fehler Editieren der Daten zum Prüfer " + this.txt_name.getText(),
