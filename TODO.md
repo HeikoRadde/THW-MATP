@@ -16,7 +16,7 @@
     - Modify Vorschrift / Sachnummer
 - Handle errors
     - On insertion: Entry already known
-- Save to CSV
+- Save to CSV (not required)
     - original format
     - own proper format
         - Separate files per table
