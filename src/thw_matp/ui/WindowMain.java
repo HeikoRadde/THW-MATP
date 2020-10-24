@@ -268,6 +268,12 @@ public class WindowMain {
         if (e.getSource() == this.btn_inventar_edit) {
             Item i = null;
             int selected_row = this.tbl_inventar.getSelectedRow();
+            if(selected_row < 0) {
+                JOptionPane.showMessageDialog(get_root_panel(),
+                        "Bitte den Eintrag auswählen, welcher editiert werden soll!",
+                        "Fehler!",
+                        JOptionPane.ERROR_MESSAGE);
+            }
             String kennzeichen = this.tbl_inventar.getModel().getValueAt(this.tbl_inventar.convertRowIndexToModel(selected_row), 0).toString();
             i = this.ctrl_inventar.get_item(kennzeichen);
             if (i != null) {
@@ -281,6 +287,12 @@ public class WindowMain {
         else if (e.getSource() == this.btn_pruefer_edit) {
             Pruefer p = null;
             int selected_row = this.tbl_pruefer.getSelectedRow();
+            if(selected_row < 0) {
+                JOptionPane.showMessageDialog(get_root_panel(),
+                        "Bitte den Eintrag auswählen, welcher editiert werden soll!",
+                        "Fehler!",
+                        JOptionPane.ERROR_MESSAGE);
+            }
             UUID id = UUID.fromString(this.tbl_pruefer.getModel().getValueAt(this.tbl_pruefer.convertRowIndexToModel(selected_row), 2).toString());
             p = this.ctrl_pruefer.find(id);
             if(p != null) {

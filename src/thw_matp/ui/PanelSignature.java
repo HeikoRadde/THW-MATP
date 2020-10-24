@@ -1,15 +1,31 @@
+/*
+ * Copyright 2014-2016 Gianluca Cacace
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Copyright 2020 Heiko Radde
+ */
+
 package thw_matp.ui;
 
-import org.apache.pdfbox.jbig2.Bitmap;
 import thw_matp.gcacace.signaturepad.utils.Bezier;
 import thw_matp.gcacace.signaturepad.utils.ControlTimedPoints;
 import thw_matp.gcacace.signaturepad.utils.SvgBuilder;
 import thw_matp.gcacace.signaturepad.utils.TimedPoint;
-import thw_matp.gcacace.signaturepad.views.SignaturePad;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -34,9 +50,8 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
 
         this.draw_panel.setBackground(Color.WHITE);
 
-        this.btn_clear.addActionListener(this::btn_clear_action_performed);
-        this.btn_load.addActionListener(this::btn_load_action_performed);
         this.draw_panel.addMouseMotionListener(this);
+        this.draw_panel.addMouseListener(this);
 
         clearView();
     }
@@ -67,48 +82,14 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
         }
     }
 
-    public void btn_clear_action_performed(ActionEvent e) {
-        if (e.getSource() == this.btn_clear) {
-            _clear_signature();
-        }
-        else {
-            System.err.println("Handle function called from wrong GUI object!");
-            new Throwable().printStackTrace();
-        }
+    public void clear_action() {
+        _clear_signature();
     }
 
-    public void btn_load_action_performed(ActionEvent e) {
-        if (e.getSource() == this.btn_load) {
-            System.out.println("TODO: implement PanelSignature::btn_load_action_performed()");
-        }
-        else {
-            System.err.println("Handle function called from wrong GUI object!");
-            new Throwable().printStackTrace();
-        }
+    public void load_action() {
+        System.out.println("TODO implement signature load functionality");
     }
 
-//    public void mouseMoved(MouseEvent e) {
-////        System.out.println("Mouse moved " + e.getX() + "|" + e.getY());
-//        if (!this.init) {
-//            Graphics g = this.draw_panel.getGraphics();
-//            if (g != null) {
-//                this.draw_panel.getGraphics().drawImage(this.m_signature, 0, 0, null);
-//                this.init = true;
-//            }
-//        }
-//    }
-//
-//    public void mouseDragged(MouseEvent e) {
-////        System.out.println("Mouse dragged " + e.getX() + "|" + e.getY());
-//        int x = e.getX() - (BRUSH_SIZE/2);
-//        int y = e.getY() - (BRUSH_SIZE/2);
-//        final Graphics2D g2d = this.m_signature.createGraphics();
-//        g2d.setPaint(Color.BLACK);
-//        g2d.fillOval(x, y, BRUSH_SIZE, BRUSH_SIZE);
-//        g2d.dispose();
-//        this.draw_panel.getGraphics().drawImage(this.m_signature, 0, 0, null);
-//    }
-//
     private void _clear_signature() {
         ensureSignature();
         final Graphics2D g2d = this.mSignature.createGraphics();
@@ -117,6 +98,7 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
         g2d.setPaint(Color.BLACK);
         g2d.dispose();
         this.draw_panel.getGraphics().drawImage(this.mSignature, 0, 0, null);
+        this.mPoints.clear();
     }
 
 
@@ -169,7 +151,7 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
 
         setIsEmpty(true);
 
-        invalidate();
+        _print_image();
     }
 
     public void clear() {
@@ -202,7 +184,7 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
         addPoint(getNewPoint(eventX, eventY));
         setIsEmpty(false);
 
-        invalidate();
+        _print_image();
     }
 
     /**
@@ -248,9 +230,8 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
         mLastTouchX = eventX;
         mLastTouchY = eventY;
         addPoint(getNewPoint(eventX, eventY));
-        if (mOnSignedListener != null) mOnSignedListener.onStartSigning();
 
-        invalidate();
+        _print_image();
     }
 
     /**
@@ -269,8 +250,9 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
         resetDirtyRect(eventX, eventY);
         addPoint(getNewPoint(eventX, eventY));
 
-        invalidate();
+        _print_image();
     }
+
 
     /**
      * Invoked when the mouse enters a component.
@@ -292,17 +274,13 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
 
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
+    private void _print_image() {
         if (mSignature != null) {
+            Graphics g = this.draw_panel.getGraphics();
             g.drawImage(mSignature, 0, 0, null);
             this.draw_panel.getGraphics().drawImage(this.mSignature, 0, 0, null);
+            g.dispose();
         }
-    }
-
-    public void setOnSignedListener(SignaturePad.OnSignedListener listener) {
-        mOnSignedListener = listener;
     }
 
     public boolean isEmpty() {
@@ -490,19 +468,12 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
 
     private void setIsEmpty(boolean newValue) {
         mIsEmpty = newValue;
-        if (mOnSignedListener != null) {
-            if (mIsEmpty) {
-                mOnSignedListener.onClear();
-            } else {
-                mOnSignedListener.onSigned();
-            }
-        }
     }
 
     private void ensureSignature() {
         if (this.mSignature == null) {
-            int w = this.draw_panel.getWidth();
-            int h = this.draw_panel.getHeight();
+            int w = this.draw_panel.getWidth()*10;
+            int h = this.draw_panel.getHeight()*10;
             if ((w == 0) || (h == 0)) {
                 w = IMG_W;
                 h = IMG_H;
@@ -539,7 +510,6 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
     private double mLastVelocity;
     private double mLastWidth;
     private Rectangle2D.Double mDirtyRect;
-    private Bitmap mBitmapSavedState;
 
     private final SvgBuilder mSvgBuilder = new SvgBuilder();
 
@@ -552,7 +522,6 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
     private double mMinWidth;
     private double mMaxWidth;
     private float mVelocityFilterWeight;
-    private SignaturePad.OnSignedListener mOnSignedListener;
     private Color mColor;
     private boolean mClearOnDoubleClick;
 

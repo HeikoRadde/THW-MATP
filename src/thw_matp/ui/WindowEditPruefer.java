@@ -14,6 +14,8 @@ public class WindowEditPruefer extends JFrame {
     private JTextField txt_vorname;
     private JButton btn_cancel;
     private JButton btn_ok;
+    private JButton btn_signature_clear;
+    private JButton btn_signature_load;
 
     public WindowEditPruefer(String title, CtrlPruefer ctrl_pruefer, Pruefer pruefer) {
         super(title);
@@ -27,6 +29,8 @@ public class WindowEditPruefer extends JFrame {
 
         this.btn_ok.addActionListener(this::btn_ok_action_performed);
         this.btn_cancel.addActionListener(this::btn_cancel_action_performed);
+        this.btn_signature_clear.addActionListener(this::btn_clear_signature_action_performed);
+        this.btn_signature_load.addActionListener(this::btn_load_signature_action_performed);
     }
 
     public JPanel get_root_panel() {
@@ -60,6 +64,26 @@ public class WindowEditPruefer extends JFrame {
     public void btn_cancel_action_performed(ActionEvent e) {
         if (e.getSource() == this.btn_cancel) {
             dispose();
+        }
+        else {
+            System.err.println("Handle function called from wrong GUI object!");
+            new Throwable().printStackTrace();
+        }
+    }
+
+    public void btn_clear_signature_action_performed(ActionEvent e) {
+        if (e.getSource() == this.btn_signature_clear) {
+            this.panel_signature.clear_action();
+        }
+        else {
+            System.err.println("Handle function called from wrong GUI object!");
+            new Throwable().printStackTrace();
+        }
+    }
+
+    public void btn_load_signature_action_performed(ActionEvent e) {
+        if (e.getSource() == this.btn_signature_load) {
+            this.panel_signature.load_action();
         }
         else {
             System.err.println("Handle function called from wrong GUI object!");
