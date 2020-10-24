@@ -16,7 +16,9 @@
             <preferred-size width="500" height="100"/>
           </grid>
         </constraints>
-        <properties/>
+        <properties>
+          <background color="-1"/>
+        </properties>
         <border type="none"/>
         <children/>
       </grid>

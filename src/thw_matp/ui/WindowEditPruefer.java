@@ -4,6 +4,7 @@ import thw_matp.ctrl.CtrlPruefer;
 import thw_matp.datatypes.Pruefer;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 
@@ -23,18 +24,29 @@ public class WindowEditPruefer extends JFrame {
         this.m_ctrl_pruefer = ctrl_pruefer;
         this.m_pruefer = pruefer;
 
-        this.txt_name.setText(pruefer.name);
-        this.txt_vorname.setText(pruefer.vorname);
-        this.panel_signature.set_signature(pruefer.unterschrift);
-
         this.btn_ok.addActionListener(this::btn_ok_action_performed);
         this.btn_cancel.addActionListener(this::btn_cancel_action_performed);
         this.btn_signature_clear.addActionListener(this::btn_clear_signature_action_performed);
         this.btn_signature_load.addActionListener(this::btn_load_signature_action_performed);
+
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                // Here, we can safely update the GUI
+                // because we'll be called from the
+                // event dispatch thread
+                update_fields();
+            }
+        });
     }
 
     public JPanel get_root_panel() {
         return this.root_panel;
+    }
+
+    public void update_fields() {
+        this.txt_name.setText(this.m_pruefer.name);
+        this.txt_vorname.setText(this.m_pruefer.vorname);
+        this.panel_signature.set_signature(this.m_pruefer.unterschrift);
     }
 
     public void btn_ok_action_performed(ActionEvent e) {

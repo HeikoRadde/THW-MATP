@@ -26,15 +26,13 @@ import thw_matp.gcacace.signaturepad.utils.TimedPoint;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PanelSignature extends JPanel implements MouseListener, MouseMotionListener {
+public class PanelSignature extends JPanel implements MouseListener, MouseMotionListener, ComponentListener {
     private JPanel root_panel;
     private JPanel draw_panel;
     private JButton btn_clear;
@@ -43,17 +41,22 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
 
     public PanelSignature() {
         super();
-        mMinWidth = DEFAULT_ATTR_PEN_MIN_WIDTH_PX;
-        mMaxWidth = DEFAULT_ATTR_PEN_MAX_WIDTH_PX;
-        mColor = DEFAULT_ATTR_PEN_COLOR;
-        mDirtyRect = new Rectangle2D.Double();
+        synchronized(this) {
+            mMinWidth = DEFAULT_ATTR_PEN_MIN_WIDTH_PX;
+            mMaxWidth = DEFAULT_ATTR_PEN_MAX_WIDTH_PX;
+            mColor = DEFAULT_ATTR_PEN_COLOR;
+            mDirtyRect = new Rectangle2D.Double();
 
-        this.draw_panel.setBackground(Color.WHITE);
+            this.draw_panel.addMouseMotionListener(this);
+            this.draw_panel.addMouseListener(this);
 
-        this.draw_panel.addMouseMotionListener(this);
-        this.draw_panel.addMouseListener(this);
+            mSvgBuilder.clear();
+            mPoints = new ArrayList<>();
+            mLastVelocity = 0;
+            mLastWidth = (mMinWidth + mMaxWidth) / 2;
 
-        clearView();
+            setIsEmpty(true);
+        }
     }
 
     public JPanel get_root_panel() {
@@ -67,23 +70,28 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
     public void set_signature(BufferedImage signature) {
         ensureSignature();
         if (signature != null) {
-            int w = this.draw_panel.getWidth();
-            int h = this.draw_panel.getHeight();
-            if ((w == 0) || (h == 0)) {
-                w = IMG_W;
-                h = IMG_H;
+//            int w = this.draw_panel.getWidth();
+//            int h = this.draw_panel.getHeight();
+//            if ((w == 0) || (h == 0)) {
+//                w = IMG_W;
+//                h = IMG_H;
+//            }
+//            final Graphics2D g2d = this.mSignature.createGraphics();
+//            g2d.setBackground(Color.WHITE);
+//            g2d.clearRect(0, 0, w, h);
+//            g2d.setPaint(Color.BLACK);
+//            g2d.drawImage(signature.getScaledInstance(w, h, Image.SCALE_SMOOTH), 0, 0, null);
+//            g2d.dispose();
+            synchronized(this) {
+                this.mSignature = new BufferedImage(signature.getColorModel(), signature.copyData(null), signature.isAlphaPremultiplied(), null);
+                setIsEmpty(false);
             }
-            final Graphics2D g2d = this.mSignature.createGraphics();
-            g2d.setBackground(Color.WHITE);
-            g2d.clearRect(0, 0, w, h);
-            g2d.setPaint(Color.BLACK);
-            g2d.drawImage(signature.getScaledInstance(w, h, Image.SCALE_SMOOTH), 0, 0, null);
-            g2d.dispose();
+            _print_image();
         }
     }
 
     public void clear_action() {
-        _clear_signature();
+
     }
 
     public void load_action() {
@@ -92,13 +100,15 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
 
     private void _clear_signature() {
         ensureSignature();
-        final Graphics2D g2d = this.mSignature.createGraphics();
-        g2d.setBackground(Color.WHITE);
-        g2d.clearRect(0, 0, draw_panel.getWidth(), draw_panel.getHeight());
-        g2d.setPaint(Color.BLACK);
-        g2d.dispose();
-        this.draw_panel.getGraphics().drawImage(this.mSignature, 0, 0, null);
-        this.mPoints.clear();
+        synchronized(this) {
+            final Graphics2D g2d = this.mSignature.createGraphics();
+            g2d.setBackground(Color.WHITE);
+            g2d.clearRect(0, 0, draw_panel.getWidth(), draw_panel.getHeight());
+            g2d.setPaint(Color.BLACK);
+            g2d.dispose();
+            this.draw_panel.getGraphics().drawImage(this.mSignature, 0, 0, null);
+            this.mPoints.clear();
+        }
     }
 
 
@@ -136,27 +146,6 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
      */
     public void setVelocityFilterWeight(float velocityFilterWeight) {
         mVelocityFilterWeight = velocityFilterWeight;
-    }
-
-    public void clearView() {
-        mSvgBuilder.clear();
-        mPoints = new ArrayList<>();
-        mLastVelocity = 0;
-        mLastWidth = (mMinWidth + mMaxWidth) / 2;
-
-        if (mSignature != null) {
-            mSignature = null;
-            ensureSignature();
-        }
-
-        setIsEmpty(true);
-
-        _print_image();
-    }
-
-    public void clear() {
-        this.clearView();
-        this.mHasEditState = true;
     }
 
     /**
@@ -261,7 +250,7 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
      */
     @Override
     public void mouseEntered(MouseEvent e) {
-
+        _print_image();
     }
 
     /**
@@ -275,11 +264,13 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
     }
 
     private void _print_image() {
-        if (mSignature != null) {
-            Graphics g = this.draw_panel.getGraphics();
-            g.drawImage(mSignature, 0, 0, null);
-            this.draw_panel.getGraphics().drawImage(this.mSignature, 0, 0, null);
-            g.dispose();
+        synchronized(this) {
+            if (mSignature != null) {
+                Graphics g = this.draw_panel.getGraphics();
+                g.drawImage(mSignature, 0, 0, null);
+                this.draw_panel.getGraphics().drawImage(this.mSignature, 0, 0, null);
+                g.dispose();
+            }
         }
     }
 
@@ -289,7 +280,7 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
 
     private void onDoubleClick() {
         if (mClearOnDoubleClick) {
-            this.clearView();
+            this.clear_action();
         }
     }
 
@@ -392,10 +383,12 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
 
             // Set the incremental stroke width and draw.
             final double strokeWidth = startWidth + ttt * widthDelta;
-            final Graphics2D g2d = this.mSignature.createGraphics();
-            g2d.setPaint(mColor);
-            g2d.fillOval((int)x, (int)y, (int)strokeWidth, (int)strokeWidth);
-            g2d.dispose();
+            synchronized(this) {
+                final Graphics2D g2d = this.mSignature.createGraphics();
+                g2d.setPaint(mColor);
+                g2d.fillOval((int)x, (int)y, (int)strokeWidth, (int)strokeWidth);
+                g2d.dispose();
+            }
             expandDirtyRect(x, y);
         }
     }
@@ -471,19 +464,61 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
     }
 
     private void ensureSignature() {
-        if (this.mSignature == null) {
-            int w = this.draw_panel.getWidth()*10;
-            int h = this.draw_panel.getHeight()*10;
-            if ((w == 0) || (h == 0)) {
-                w = IMG_W;
-                h = IMG_H;
+        synchronized(this) {
+            if (this.mSignature == null) {
+                int w = this.draw_panel.getWidth();
+                int h = this.draw_panel.getHeight();
+                if ((w == 0) || (h == 0)) {
+                    w = IMG_W;
+                    h = IMG_H;
+                }
+                this.mSignature = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+                Graphics2D g2d = this.mSignature.createGraphics();
+                g2d.setBackground(Color.WHITE);
+                g2d.setPaint(Color.BLACK);
+                g2d.dispose();
             }
-            this.mSignature = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g2d = this.mSignature.createGraphics();
-            g2d.setBackground(Color.WHITE);
-            g2d.setPaint(Color.BLACK);
-            g2d.dispose();
         }
+    }
+
+    /**
+     * Invoked when the component's size changes.
+     *
+     * @param e the event to be processed
+     */
+    @Override
+    public void componentResized(ComponentEvent e) {
+        _print_image();
+    }
+
+    /**
+     * Invoked when the component's position changes.
+     *
+     * @param e the event to be processed
+     */
+    @Override
+    public void componentMoved(ComponentEvent e) {
+
+    }
+
+    /**
+     * Invoked when the component has been made visible.
+     *
+     * @param e the event to be processed
+     */
+    @Override
+    public void componentShown(ComponentEvent e) {
+        _print_image();
+    }
+
+    /**
+     * Invoked when the component has been made invisible.
+     *
+     * @param e the event to be processed
+     */
+    @Override
+    public void componentHidden(ComponentEvent e) {
+
     }
 
     public interface OnSignedListener {
@@ -526,8 +561,8 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
     private boolean mClearOnDoubleClick;
 
     //Default attribute values
-    private final double DEFAULT_ATTR_PEN_MIN_WIDTH_PX = 3.0;
-    private final double DEFAULT_ATTR_PEN_MAX_WIDTH_PX = 7.0;
+    private final double DEFAULT_ATTR_PEN_MIN_WIDTH_PX = 2.0;
+    private final double DEFAULT_ATTR_PEN_MAX_WIDTH_PX = 5.0;
     private final Color DEFAULT_ATTR_PEN_COLOR = Color.BLACK;
     private final float DEFAULT_ATTR_VELOCITY_FILTER_WEIGHT = 0.9f;
     private final boolean DEFAULT_ATTR_CLEAR_ON_DOUBLE_CLICK = false;
