@@ -23,4 +23,8 @@ public class Pruefer {
         System.out.println(unterschrift.getWidth(null));
         System.out.println(unterschrift.getHeight(null));
     }
+
+    public String toString() {
+        return this.vorname + " " + this.name;
+    }
 }

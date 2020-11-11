@@ -8,6 +8,7 @@ import thw_matp.datatypes.Item;
 import thw_matp.datatypes.Pruefer;
 import thw_matp.datatypes.Pruefung;
 import thw_matp.datatypes.Vorschrift;
+import thw_matp.util.PrinterProtocolTestingOverview;
 import thw_matp.util.PrinterProtocolTesting;
 
 import javax.swing.*;
@@ -178,7 +179,7 @@ public class WindowPruefung extends JFrame {
             }
         }
         boolean ausgesondert = false;
-        if (rb_no.isSelected()) ausgesondert = true;
+        if (rb_yes.isSelected()) ausgesondert = true;
         this.m_current_item = this.m_ctrl_inventar.get_item(this.inp_kennzeichen.getText());
         if(m_current_item == null) {
             _error_kennzeichen(this.inp_kennzeichen.getText());
@@ -193,6 +194,7 @@ public class WindowPruefung extends JFrame {
         if (this.check_create_protocol.isSelected()) {
             try {
                 PrinterProtocolTesting.print_pruefung(Paths.get(this.txt_save_path.getText()), p, this.m_pruefer_list.get(this.sel_pruefer.getSelectedIndex()), this.m_current_item, this.m_current_vorschrift);
+                PrinterProtocolTestingOverview.add_pruefung_event(Paths.get(this.txt_save_path.getText()), p, this.m_pruefer_list.get(this.sel_pruefer.getSelectedIndex()));
             } catch (IOException e) {
                 e.printStackTrace();
             }

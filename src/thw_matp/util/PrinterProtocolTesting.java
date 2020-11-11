@@ -46,6 +46,10 @@ public class PrinterProtocolTesting {
         document.close();
     }
 
+    public static String get_log_filename(Pruefung pruefung) {
+        return pruefung.datum.toString() + "_Kennzeichen_" + pruefung.kennzeichen + "_Prüf-ID_" + pruefung.id.toString() + ".pdf";
+    }
+
     private static void doc_set_properties(PDDocument document, Pruefung pruefung, Pruefer pruefer) {
         PDDocumentInformation pdd = document.getDocumentInformation();
 
@@ -354,7 +358,7 @@ public class PrinterProtocolTesting {
     }
 
     private static String create_file_path_name(Path path, Pruefung pruefung) {
-        return Paths.get(path.toString(), pruefung.datum.toString() + "_Kennzeichen_" + pruefung.kennzeichen).toString() + "_Prüf-ID_" + pruefung.id.toString() + ".pdf";
+        return Paths.get(path.toString(), PrinterProtocolTesting.get_log_filename(pruefung)).toString();
     }
 
     private static float calc_font_height(PDType1Font font, float font_size) {
