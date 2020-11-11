@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 
-public class PrinterProtocolTestingOverview {
+public class PrinterProtocolTestingOverviewCSV {
 
     public static void add_pruefung_event(Path path, Pruefung pruefung, Pruefer pruefer) throws IOException {
         String file_path_name = create_file_path_name(path);
