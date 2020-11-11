@@ -39,7 +39,7 @@ public class PrinterProtocolTestingOverviewCSV {
         csv_printer.printRecord("Kennzeichen", "Prüfer", "Bestanden", "Ausgesondert", "Prüfprotokoll");
     }
 
-    private static String create_file_path_name(Path path) {
+    public static String create_file_path_name(Path path) {
         return Paths.get(path.toString(), LocalDate.now().toString()).toString() +  "_Prüfübersicht.csv";
     }
 }
