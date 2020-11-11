@@ -43,6 +43,7 @@ public class CtrlPruefungen {
     }
 
     public DefaultTableModel get_data(String kennzeichen) {
+        kennzeichen = kennzeichen.replace('/', '-');
         DefaultTableModel mdl = new DefaultTableModel();
         mdl.setColumnIdentifiers(new String[]{"Kennzeichen", "Datum", "Prüfer", "Bestanden", "ID", "Ausgesondert", "Bemerkungen"});
         List<Pruefung> pruefungen = null;
@@ -70,6 +71,7 @@ public class CtrlPruefungen {
     }
 
     public Pruefung add_pruefung(String kennzeichen, UUID pruefer, boolean bestanden, String bemerkungen, boolean ausgesondert) {
+        kennzeichen = kennzeichen.replace('/', '-');
         try {
             return this.db.puefung_add_event(kennzeichen, pruefer, bestanden, bemerkungen, ausgesondert);
         } catch (SQLException throwables) {
@@ -91,6 +93,7 @@ public class CtrlPruefungen {
     }
 
     public boolean remove_pruefungen(String kennzeichen) {
+        kennzeichen = kennzeichen.replace('/', '-');
         try {
             this.db.pruefungen_remove(kennzeichen);
         } catch (SQLException throwables) {
