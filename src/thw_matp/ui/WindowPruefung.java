@@ -8,7 +8,7 @@ import thw_matp.datatypes.Item;
 import thw_matp.datatypes.Pruefer;
 import thw_matp.datatypes.Pruefung;
 import thw_matp.datatypes.Vorschrift;
-import thw_matp.util.PrinterProtocol;
+import thw_matp.util.PrinterProtocolTesting;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -192,7 +192,7 @@ public class WindowPruefung extends JFrame {
         Pruefung p = this.m_ctrl_pruefungen.add_pruefung(this.inp_kennzeichen.getText(), this.m_pruefer_list.get(this.sel_pruefer.getSelectedIndex()).id, bestanden, this.txt_bemerkungen.getText(), ausgesondert);
         if (this.check_create_protocol.isSelected()) {
             try {
-                PrinterProtocol.print_pruefung(Paths.get(this.txt_save_path.getText()), p, this.m_pruefer_list.get(this.sel_pruefer.getSelectedIndex()), this.m_current_item, this.m_current_vorschrift);
+                PrinterProtocolTesting.print_pruefung(Paths.get(this.txt_save_path.getText()), p, this.m_pruefer_list.get(this.sel_pruefer.getSelectedIndex()), this.m_current_item, this.m_current_vorschrift);
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -25,7 +25,7 @@ import java.nio.file.Paths;
 import java.util.GregorianCalendar;
 
 
-public class PrinterProtocol {
+public class PrinterProtocolTesting {
 
     public static void print_pruefung(Path path, Pruefung pruefung, Pruefer pruefer, Item item, Vorschrift vorschrift) throws IOException {
         PDDocument document = new PDDocument();
@@ -64,7 +64,7 @@ public class PrinterProtocol {
         final int font_size = 35;
         float pos_y = PAGE_MAX_H-40;
         try {
-            InputStream is = PrinterProtocol.class.getClassLoader().getResourceAsStream("logo_thw_blau.png");
+            InputStream is = PrinterProtocolTesting.class.getClassLoader().getResourceAsStream("logo_thw_blau.png");
             assert is != null;
             File thw_logo_tmp = File.createTempFile("tmp", "thw_logo");
             IOUtils.copy(is, new FileOutputStream(thw_logo_tmp));
