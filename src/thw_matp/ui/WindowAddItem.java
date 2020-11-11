@@ -1,7 +1,7 @@
 package thw_matp.ui;
 
 import thw_matp.ctrl.CtrlInventar;
-import thw_matp.util.IntFilter;
+import thw_matp.util.FilterInteger;
 
 import javax.swing.*;
 import javax.swing.text.PlainDocument;
@@ -25,7 +25,7 @@ public class WindowAddItem extends JFrame {
         this.ctrl_inventar = ctrl_inventar;
 
         PlainDocument doc = (PlainDocument) this.txt_baujahr.getDocument();
-        doc.setDocumentFilter(new IntFilter());
+        doc.setDocumentFilter(new FilterInteger());
 
         this.btn_ok.addActionListener(this::btn_ok_action_performed);
         this.btn_cancel.addActionListener(this::btn_cancel_action_performed);
