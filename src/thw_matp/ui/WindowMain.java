@@ -6,12 +6,17 @@ import thw_matp.ctrl.CtrlPruefungen;
 import thw_matp.ctrl.CtrlVorschrift;
 import thw_matp.datatypes.Item;
 import thw_matp.datatypes.Pruefer;
+import thw_matp.datatypes.Pruefung;
+import thw_matp.datatypes.Vorschrift;
+import thw_matp.util.PrinterProtocolTesting;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.UUID;
 
 public class WindowMain {
@@ -37,6 +42,7 @@ public class WindowMain {
     private JButton btn_vorschrift_edit;
     private JButton btn_pruefung_edit;
     private JButton btn_license;
+    private JButton btn_pruefung_print;
 
     public WindowMain(CtrlInventar ctrl_inventar, CtrlPruefer ctrl_pruefer, CtrlPruefungen ctrl_pruefungen, CtrlVorschrift ctrl_vorschriften) {
         this.ctrl_inventar = ctrl_inventar;
@@ -53,6 +59,7 @@ public class WindowMain {
         this.btn_pruefer_remove.addActionListener(this::btn_remove_action_performed);
         this.btn_pruefer_edit.addActionListener(this::btn_edit_action_performed);
         this.btn_pruefung_remove.addActionListener(this::btn_remove_action_performed);
+        this.btn_pruefung_print.addActionListener(this::btn_pruefung_print_action_performed);
         this.btn_vorschrift_add.addActionListener(this::btn_add_action_performed);
         this.btn_vorschrift_remove.addActionListener(this::btn_remove_action_performed);
         this.inp_pruefung_kennzeichen.addActionListener(this::inp_pruefung_kennzeichen_action_performed);
@@ -325,6 +332,44 @@ public class WindowMain {
                 this.tbl_pruefungen.setModel(this.ctrl_pruefungen.get_data(this.inp_pruefung_kennzeichen.getText()));
             }
             resize_table_column_width(this.tbl_pruefungen);
+        }
+        else {
+            System.err.println("Handle function called from wrong GUI object!");
+            new Throwable().printStackTrace();
+        }
+    }
+
+    public void btn_pruefung_print_action_performed(ActionEvent e) {
+        if (e.getSource() == this.btn_pruefung_print) {
+            int[] selections = this.tbl_pruefungen.getSelectedRows();
+            JFileChooser f = new JFileChooser();
+            f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            f.setCurrentDirectory(new java.io.File("."));
+            f.setDialogTitle("Ordner auswählen");
+            f.showSaveDialog(this.root_panel);
+            Path path = java.nio.file.Paths.get(f.getSelectedFile().getAbsolutePath());
+            for (int selection : selections) {
+                UUID id = UUID.fromString(this.tbl_pruefungen.getModel().getValueAt(this.tbl_pruefungen.convertRowIndexToModel(selection), 6).toString());
+                Pruefung pruefung = this.ctrl_pruefungen.find(id);
+                if(pruefung == null)
+                {
+                    continue;
+                }
+                Pruefer pruefer;
+                if (pruefung.pruefer.equals(new UUID(0, 0))) {
+                    pruefer = new Pruefer(new UUID(0, 0), "", "");
+                }
+                else {
+                    pruefer = this.ctrl_pruefer.find(pruefung.pruefer);
+                }
+                Item item = this.ctrl_inventar.get_item(pruefung.kennzeichen);
+                Vorschrift vorschrift = this.ctrl_vorschriften.get_vorschrift(item.sachnr);
+                try {
+                    PrinterProtocolTesting.print_pruefung(path, pruefung, pruefer, item, vorschrift);
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+            }
         }
         else {
             System.err.println("Handle function called from wrong GUI object!");

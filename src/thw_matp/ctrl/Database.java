@@ -396,6 +396,34 @@ public class Database {
         pstmt.executeUpdate();
     }
 
+    public Pruefung pruefungen_find(UUID id) throws SQLException {
+        PreparedStatement pstmt = this.m_connection.prepareStatement("SELECT * FROM pruefungen WHERE id = ?");
+        pstmt.setString(1, id.toString());
+        ResultSet rs = pstmt.executeQuery();
+        rs.next();
+        String pruefer = rs.getString(5);
+        String bemerkungen = rs.getString(6);
+        boolean ausgesondert = rs.getBoolean(7);
+        if(bemerkungen == null) bemerkungen = "";
+        if(pruefer == null) { //Pruefer might be null
+            return new Pruefung(UUID.fromString(rs.getString(1)),
+                    rs.getString(2),
+                    rs.getObject(3, LocalDate.class),
+                    rs.getBoolean(4),
+                    bemerkungen,
+                    ausgesondert);
+        }
+        else {
+            return new Pruefung(UUID.fromString(rs.getString(1)),
+                    rs.getString(2),
+                    rs.getObject(3, LocalDate.class),
+                    rs.getBoolean(4),
+                    UUID.fromString(rs.getString(5)),
+                    bemerkungen,
+                    ausgesondert);
+        }
+    }
+
 
 
     //------------------------------------------------------------------------------------------------------------------------------------------------------------------

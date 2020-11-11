@@ -7,8 +7,6 @@
 
 #Functionality
 
-- Print Overview of Prüfung
-- Select (multiple) Prüfungen to be printed
 - Update statements
     - Modify Prüfung
     - Modify Prüfer

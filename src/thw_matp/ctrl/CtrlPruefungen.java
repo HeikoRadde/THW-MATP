@@ -104,6 +104,18 @@ public class CtrlPruefungen {
         return true;
     }
 
+    public Pruefung find(UUID id) {
+        try {
+            return this.db.pruefungen_find(id);
+        } catch (SQLException throwables) {
+            System.err.println("Failed to find pruefung " + id.toString() + " in table pruefungen!");
+            throwables.printStackTrace();
+            return null;
+        }
+    }
+
+
+
 
 
 
