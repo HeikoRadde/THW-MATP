@@ -63,7 +63,6 @@ public class PrinterProtocolTesting extends PrinterProtocolPDF {
 
     private static float doc_create_header(PDDocument document, PDPageContentStream content, Pruefer pruefer) {
         final String title = "Prüfprotokoll";
-        final int font_size = 35;
         float pos_y = PAGE_MAX_H-40;
         try {
             InputStream is = PrinterProtocolTesting.class.getClassLoader().getResourceAsStream("logo_thw_blau.png");

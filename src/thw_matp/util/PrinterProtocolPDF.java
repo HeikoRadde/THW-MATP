@@ -1,6 +1,7 @@
 package thw_matp.util;
 
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import thw_matp.datatypes.Pruefung;
 
@@ -24,7 +25,7 @@ public class PrinterProtocolPDF {
     }
 
     protected static float doc_add_divider_line(PDPageContentStream content, float y) {
-        final float line_size = 1.7f;
+        final float line_size = LINE_SIZE;
         try {
             content.setLineWidth(line_size);
             content.moveTo(PAGE_MARGIN_W, y);
@@ -80,8 +81,8 @@ public class PrinterProtocolPDF {
 
 
 
-    protected static final float PAGE_W = 595;
-    protected static final float PAGE_H = 842;
+    protected static final float PAGE_W = PDRectangle.A4.getWidth();
+    protected static final float PAGE_H = PDRectangle.A4.getHeight();
     protected static final float PAGE_MARGIN_W = 25;
     protected static final float PAGE_MARGIN_H = 50;
     protected static final float PAGE_MAX_W = PAGE_W - PAGE_MARGIN_W;
@@ -92,8 +93,10 @@ public class PrinterProtocolPDF {
     protected static final float TXT_SIZE_CHAPTER = 20;
     protected static final float TXT_SIZE_SECTION = 15;
     protected static final float TXT_SIZE_TEXT = 12;
+    protected static final float TXT_SIZE_SMALL = 8;
     protected static final float POS_COL_0 = PAGE_MARGIN_W;
     protected static final float POS_COL_1 = PAGE_MAX_W / 4;
     protected static final float POS_COL_2 = PAGE_MAX_W / 2;
     protected static final float POS_COL_3 = PAGE_MAX_W - (PAGE_MAX_W / 4);
+    protected static final float LINE_SIZE = 1.7f;
 }
