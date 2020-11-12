@@ -71,6 +71,10 @@ public class CtrlInventar {
                 System.err.println("Sachnr " + sachnr +  " not known!");
                 throw new IllegalArgumentException("Sachnr not known!");
             }
+            else if (e.getErrorCode() == Database.DUPLICATE_KEY_1) {
+                System.err.println("Kennzeichen " + kennzeichen +  " already existing!");
+                throw new IllegalArgumentException("Kennzeichen existing!");
+            }
             else {
                 e.printStackTrace(System.err);
                 System.err.println("SQLState: " + ((SQLException)e).getSQLState());

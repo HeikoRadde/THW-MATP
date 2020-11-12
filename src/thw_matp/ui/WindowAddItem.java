@@ -1,6 +1,7 @@
 package thw_matp.ui;
 
 import thw_matp.ctrl.CtrlInventar;
+import thw_matp.datatypes.Item;
 import thw_matp.util.FilterInteger;
 
 import javax.swing.*;
@@ -59,10 +60,38 @@ public class WindowAddItem extends JFrame {
                         //TODO: Create new Sachnummer!
                     }
                 }
+                else if (exception.getMessage().equals("Kennzeichen existing!")) {
+                    Object [] options = {"Ja", "Nein"};
+                    int reply = JOptionPane.showOptionDialog(this,
+                            "Das Kennzeichen " + kennzeichen + " existiert bereits!\nSoll der Eintrag der Sachnummer bearbeitet werden?",
+                            "Kennzeichen existiert bereits",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.ERROR_MESSAGE,
+                            null,
+                            options,
+                            options[0]);
+                    if (reply == JOptionPane.YES_OPTION) {
+                        Item i = this.ctrl_inventar.get_item(kennzeichen);
+                        if (i != null) {
+                            WindowEditItem win = new WindowEditItem("Editiere Inventar", ctrl_inventar, i);
+                            win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                            win.pack();
+                            win.setLocationRelativeTo(root_panel);
+                            win.setVisible(true);
+                        }
+                    }
+                }
                 else {
                     exception.printStackTrace();
                 }
             }
+            this.txt_kennzeichen.setText("");
+            this.txt_bezeichnung.setText("");
+            this.txt_hersteller.setText("");
+            this.txt_baujahr.setText("");
+            this.txt_einheit.setText("");
+            this.txt_ov.setText("");
+            this.txt_sachnr.setText("");
         }
         else {
             System.err.println("Handle function called from wrong GUI object!");

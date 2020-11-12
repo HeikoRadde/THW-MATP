@@ -561,4 +561,5 @@ public class Database {
 
 
     public static int ERROR_CODE_REFERENTIAL_INTEGRITY_VIOLATED_PARENT_MISSING_1 = 23506;
+    public static int DUPLICATE_KEY_1 = 23505;
 }
