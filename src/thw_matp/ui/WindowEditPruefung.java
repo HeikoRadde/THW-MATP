@@ -8,8 +8,8 @@ import thw_matp.datatypes.Item;
 import thw_matp.datatypes.Pruefer;
 import thw_matp.datatypes.Pruefung;
 import thw_matp.datatypes.Vorschrift;
-import thw_matp.util.PrinterProtocolTestingOverviewCSV;
 import thw_matp.util.PrinterProtocolTesting;
+import thw_matp.util.PrinterProtocolTestingOverviewCSV;
 import thw_matp.util.PrinterProtocolTestingOverviewPDF;
 
 import javax.swing.*;
@@ -20,68 +20,86 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
-public class WindowPruefung extends JFrame {
-
+public class WindowEditPruefung extends JFrame {
+    private JPanel root_panel;
     private JButton btn_ok;
     private JButton btn_fail;
-    private JPanel root_panel;
-    private JTextField inp_kennzeichen;
-    private JComboBox<String> sel_pruefer;
     private JButton btn_end;
+    private JTextField inp_kennzeichen;
     private JTextArea txt_bemerkungen;
     private JRadioButton rb_yes;
-    private JTextField txt_oe;
+    private JTextField txt_ov;
     private JTextField txt_einheit;
-    private JTextField txt_hersteller;
-    private JTextField txt_bezeichung;
     private JTextField txt_baujahr;
     private JTextField txt_pruefungsvorschrift;
     private JTextField txt_abschnitt;
     private JRadioButton rb_no;
+    private JComboBox sel_pruefer;
+    private JTextField txt_bezeichung;
+    private JTextField txt_hersteller;
     private JTextField txt_sachnummer;
     private JTextField txt_link;
     private JCheckBox check_create_protocol;
     private JTextField txt_save_path;
+    private JTextField txt_id;
+    private JTextField txt_tag;
+    private JTextField txt_monat;
+    private JTextField txt_jahr;
 
-    public WindowPruefung(String title, CtrlInventar ctrl_inventar, CtrlPruefer ctrl_pruefer, CtrlVorschrift ctrl_vorschrift, CtrlPruefungen ctrl_pruefungen) {
-        super(title);
+    public WindowEditPruefung(Pruefung pruefung, CtrlInventar ctrl_inventar, CtrlPruefer ctrl_pruefer, CtrlVorschrift ctrl_vorschrift, CtrlPruefungen ctrl_pruefungen) {
+        super("Prüfung editieren");
         this.setContentPane(root_panel);
 
+        this.m_ctrl_inventar = ctrl_inventar;
+        this.m_ctrl_vorschrift = ctrl_vorschrift;
+        this.m_ctrl_pruefungen = ctrl_pruefungen;
+
+        int selected_pruefer = -1;
         try {
             this.m_pruefer_list = ctrl_pruefer.get_all();
+            int i = 0;
             for (Pruefer p : this.m_pruefer_list) {
                 this.sel_pruefer.addItem(p.vorname + " " + p.name);
+                if(p.id == pruefung.pruefer) {
+                    selected_pruefer = i;
+                }
+                ++i;
             }
         } catch (SQLException | IOException throwables) {
             throwables.printStackTrace();
         }
+        this.sel_pruefer.setSelectedIndex(selected_pruefer);
+
+        this.m_current_item = ctrl_inventar.get_item(pruefung.kennzeichen);
+
+        this.txt_id.setText(pruefung.id.toString());
+        this.inp_kennzeichen.setText(pruefung.kennzeichen);
+        _fill_fields();
+        this.txt_bemerkungen.setText(pruefung.bemerkungen);
+        this.txt_tag.setText(Integer.toString(pruefung.datum.getDayOfMonth()));
+        this.txt_monat.setText(Integer.toString(pruefung.datum.getMonthValue()));
+        this.txt_jahr.setText(Integer.toString(pruefung.datum.getYear()));
 
 
         this.btn_ok.addActionListener(this::btn_ok_action_performed);
         this.btn_fail.addActionListener(this::btn_fail_action_performed);
         this.btn_end.addActionListener(this::btn_end_action_performed);
-        this.inp_kennzeichen.addActionListener(this::inp_kennzeichen_action_performed);
         this.addWindowListener(new WindowAdapter() {
             public void windowOpened(WindowEvent e) {
                 inp_kennzeichen.requestFocus();
             }
         });
-
-        this.m_ctrl_inventar = ctrl_inventar;
-        this.m_ctrl_vorschrift = ctrl_vorschrift;
-        this.m_ctrl_pruefungen = ctrl_pruefungen;
     }
 
 
     public void btn_ok_action_performed(ActionEvent e) {
         if (e.getSource() == btn_ok) {
-            if(_enter_pruefung(true)) {
-                _clear_fields();
-                this.inp_kennzeichen.setText("");
-                this.inp_kennzeichen.requestFocus();
-            }
+            if (_enter_pruefung(true)) dispose();
         }
         else {
             System.err.println("Handle function called from wrong GUI object!");
@@ -91,11 +109,7 @@ public class WindowPruefung extends JFrame {
 
     public void btn_fail_action_performed(ActionEvent e) {
         if (e.getSource() == btn_fail) {
-            if(_enter_pruefung(false)) {
-                _clear_fields();
-                this.inp_kennzeichen.setText("");
-                this.inp_kennzeichen.requestFocus();
-            }
+            if (_enter_pruefung(false)) dispose();
         }
         else {
             System.err.println("Handle function called from wrong GUI object!");
@@ -113,21 +127,8 @@ public class WindowPruefung extends JFrame {
         }
     }
 
-    public void inp_kennzeichen_action_performed(ActionEvent e) {
-        if (e.getSource() == inp_kennzeichen) {
-            System.out.println(this.inp_kennzeichen.getText());
-            _clear_fields();
-            _fill_fields();
-        }
-        else {
-            System.err.println("Handle function called from wrong GUI object!");
-            new Throwable().printStackTrace();
-        }
-    }
-
     private void _fill_fields() {
-        this.m_current_item = this.m_ctrl_inventar.get_item(this.inp_kennzeichen.getText());
-        if(m_current_item == null) {
+        if(this.m_current_item == null) {
             _error_kennzeichen(this.inp_kennzeichen.getText());
             return;
         }
@@ -137,7 +138,7 @@ public class WindowPruefung extends JFrame {
             return;
         }
 
-        this.txt_oe.setText(this.m_current_item.ov);
+        this.txt_ov.setText(this.m_current_item.ov);
         this.txt_einheit.setText(this.m_current_item.einheit);
         this.txt_bezeichung.setText(this.m_current_item.bezeichnung);
         this.txt_hersteller.setText(this.m_current_item.hersteller);
@@ -148,21 +149,6 @@ public class WindowPruefung extends JFrame {
         if(this.m_current_vorschrift.link != null) {
             this.txt_link.setText(this.m_current_vorschrift.link);
         }
-    }
-
-    private void _clear_fields() {
-        this.txt_oe.setText("");
-        this.txt_einheit.setText("");
-        this.txt_bezeichung.setText("");
-        this.txt_hersteller.setText("");
-        this.txt_sachnummer.setText("");
-        this.txt_baujahr.setText("");
-        this.txt_pruefungsvorschrift.setText("");
-        this.txt_abschnitt.setText("");
-        this.txt_link.setText("");
-
-        this.m_current_item = null;
-        this.m_current_vorschrift = null;
     }
 
     private boolean _enter_pruefung(boolean bestanden) {
@@ -191,13 +177,47 @@ public class WindowPruefung extends JFrame {
             _error_sachnummer(this.m_current_item.sachnr);
             return false;
         }
-        Integer selected_pruefer = this.sel_pruefer.getSelectedIndex();
-        if (selected_pruefer == -1) {
+        Integer day, month, year;
+        try {
+            day = Integer.parseInt(this.txt_tag.getText());
+        }
+        catch (NumberFormatException e) {
+            _error_day();
+            return false;
+        }
+        try {
+            month = Integer.parseInt(this.txt_monat.getText());
+        }
+        catch (NumberFormatException e) {
+            _error_month();
+            return false;
+        }
+        try {
+            year = Integer.parseInt(this.txt_jahr.getText());
+        }
+        catch (NumberFormatException e) {
+            _error_year();
+            return false;
+        }
+        LocalDate datum;
+        try {
+            datum = LocalDate.of(year, month, day);
+        }
+        catch (DateTimeException e) {
+            _error_date();
+            return false;
+        }
+        Integer pruefer_selected = this.sel_pruefer.getSelectedIndex();
+        if(pruefer_selected == -1) {
             _error_pruefer();
             return false;
         }
-        Pruefung p = this.m_ctrl_pruefungen.add_pruefung(this.inp_kennzeichen.getText(), this.m_pruefer_list.get(selected_pruefer).id, bestanden, this.txt_bemerkungen.getText(), ausgesondert);
-        if (this.check_create_protocol.isSelected()) {
+        if(!this.m_ctrl_pruefungen.edit_pruefung(UUID.fromString(this.txt_id.getText()), this.inp_kennzeichen.getText(), datum, this.m_pruefer_list.get(pruefer_selected).id, bestanden, this.txt_bemerkungen.getText(), ausgesondert)) {
+            _error_edit();
+            return false;
+        }
+        Pruefung p = this.m_ctrl_pruefungen.find(UUID.fromString(this.txt_id.getText()));
+        if (this.check_create_protocol.isSelected() && p != null) {
             try {
                 path = Paths.get(this.txt_save_path.getText());
                 PrinterProtocolTesting.print_pruefung(path, p, this.m_pruefer_list.get(this.sel_pruefer.getSelectedIndex()), this.m_current_item, this.m_current_vorschrift);
@@ -205,7 +225,6 @@ public class WindowPruefung extends JFrame {
                 PrinterProtocolTestingOverviewPDF.set_path(path);
             } catch (IOException e) {
                 e.printStackTrace();
-                _error_pdf();
             }
         }
         return true;
@@ -233,9 +252,37 @@ public class WindowPruefung extends JFrame {
                 JOptionPane.ERROR_MESSAGE);
     }
 
-    private void _error_pdf() {
+    private void _error_day() {
         JOptionPane.showMessageDialog(this.root_panel,
-                "Fehler beim Erstellen der PDF Datei!",
+                "Keine korrekter Tag eingegeben!",
+                "Fehler!",
+                JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void _error_month() {
+        JOptionPane.showMessageDialog(this.root_panel,
+                "Keine korrekter Monat eingegeben!",
+                "Fehler!",
+                JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void _error_year() {
+        JOptionPane.showMessageDialog(this.root_panel,
+                "Keine korrektes Jahr eingegeben!",
+                "Fehler!",
+                JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void _error_date() {
+        JOptionPane.showMessageDialog(this.root_panel,
+                "Keine korrektes Datum eingegeben!",
+                "Fehler!",
+                JOptionPane.ERROR_MESSAGE);
+    }
+
+    private  void _error_edit() {
+        JOptionPane.showMessageDialog(this.root_panel,
+                "Fehler beim Editieren des Eintrages!",
                 "Fehler!",
                 JOptionPane.ERROR_MESSAGE);
     }

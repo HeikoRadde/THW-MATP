@@ -6,6 +6,7 @@ import thw_matp.datatypes.Pruefung;
 import javax.swing.table.DefaultTableModel;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -79,6 +80,18 @@ public class CtrlPruefungen {
             throwables.printStackTrace();
             return null;
         }
+    }
+
+    public boolean edit_pruefung(UUID id, String kennzeichen, LocalDate datum, UUID pruefer, boolean bestanden, String bemerkungen, boolean ausgesondert) {
+        kennzeichen = kennzeichen.replace('/', '-');
+        try {
+            this.db.puefung_update_event(id, kennzeichen, datum, pruefer, bestanden, bemerkungen, ausgesondert);
+        } catch (SQLException throwables) {
+            System.err.println("Failed to update entry " + id.toString() + " in table pruefungen!");
+            throwables.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     public boolean remove_pruefung(UUID id) {

@@ -58,6 +58,7 @@ public class WindowMain {
         this.btn_pruefer_add.addActionListener(this::btn_add_action_performed);
         this.btn_pruefer_remove.addActionListener(this::btn_remove_action_performed);
         this.btn_pruefer_edit.addActionListener(this::btn_edit_action_performed);
+        this.btn_pruefung_edit.addActionListener(this::btn_edit_action_performed);
         this.btn_pruefung_remove.addActionListener(this::btn_remove_action_performed);
         this.btn_pruefung_print.addActionListener(this::btn_pruefung_print_action_performed);
         this.btn_vorschrift_add.addActionListener(this::btn_add_action_performed);
@@ -281,10 +282,8 @@ public class WindowMain {
             Item i = null;
             int selected_row = this.tbl_inventar.getSelectedRow();
             if(selected_row < 0) {
-                JOptionPane.showMessageDialog(get_root_panel(),
-                        "Bitte den Eintrag auswählen, welcher editiert werden soll!",
-                        "Fehler!",
-                        JOptionPane.ERROR_MESSAGE);
+                _error_edit_selection();
+                return;
             }
             String kennzeichen = this.tbl_inventar.getModel().getValueAt(this.tbl_inventar.convertRowIndexToModel(selected_row), 0).toString();
             i = this.ctrl_inventar.get_item(kennzeichen);
@@ -300,10 +299,8 @@ public class WindowMain {
             Pruefer p = null;
             int selected_row = this.tbl_pruefer.getSelectedRow();
             if(selected_row < 0) {
-                JOptionPane.showMessageDialog(get_root_panel(),
-                        "Bitte den Eintrag auswählen, welcher editiert werden soll!",
-                        "Fehler!",
-                        JOptionPane.ERROR_MESSAGE);
+                _error_edit_selection();
+                return;
             }
             UUID id = UUID.fromString(this.tbl_pruefer.getModel().getValueAt(this.tbl_pruefer.convertRowIndexToModel(selected_row), 2).toString());
             p = this.ctrl_pruefer.find(id);
@@ -316,17 +313,28 @@ public class WindowMain {
             }
         }
         else if (e.getSource() == this.btn_pruefung_edit) {
-            System.out.println("btn_edit_action_performed() TODO: Implement Edit Prüfung");
-            //TODO: Implement Edit Prüfung
+            Pruefung p = null;
+            int selected_row = this.tbl_pruefungen.getSelectedRow();
+            if(selected_row < 0) {
+                _error_edit_selection();
+                return;
+            }
+            String id = this.tbl_pruefungen.getModel().getValueAt(this.tbl_pruefungen.convertRowIndexToModel(selected_row), 6).toString();
+            p = this.ctrl_pruefungen.find(UUID.fromString(id));
+            if (p != null) {
+                WindowEditPruefung win = new WindowEditPruefung(p, ctrl_inventar, ctrl_pruefer, ctrl_vorschriften, ctrl_pruefungen);
+                win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                win.pack();
+                win.setLocationRelativeTo(get_root_panel());
+                win.setVisible(true);
+            }
         }
         else if (e.getSource() == this.btn_vorschrift_edit) {
             Vorschrift v = null;
             int selected_row = this.tbl_vorschriften.getSelectedRow();
             if(selected_row < 0) {
-                JOptionPane.showMessageDialog(get_root_panel(),
-                        "Bitte den Eintrag auswählen, welcher editiert werden soll!",
-                        "Fehler!",
-                        JOptionPane.ERROR_MESSAGE);
+                _error_edit_selection();
+                return;
             }
             String sachnummer = this.tbl_vorschriften.getModel().getValueAt(this.tbl_vorschriften.convertRowIndexToModel(selected_row), 0).toString();
             v = this.ctrl_vorschriften.get_vorschrift(sachnummer);
@@ -342,6 +350,13 @@ public class WindowMain {
             System.err.println("Handle function called from wrong GUI object!");
             new Throwable().printStackTrace();
         }
+    }
+
+    private void _error_edit_selection() {
+        JOptionPane.showMessageDialog(get_root_panel(),
+                "Bitte den Eintrag auswählen, welcher editiert werden soll!",
+                "Fehler!",
+                JOptionPane.ERROR_MESSAGE);
     }
 
     public void inp_pruefung_kennzeichen_action_performed(ActionEvent e) {

@@ -1,11 +1,9 @@
 # Views
 
-- Modify Prüfung
 
 #Functionality
 
 - Update statements
-    - Modify Prüfung
     - Modify Prüfer
         - Unterschrift from file!
 - Handle errors

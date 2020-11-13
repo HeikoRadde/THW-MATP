@@ -424,6 +424,18 @@ public class Database {
         }
     }
 
+    public void puefung_update_event(UUID id, String kennzeichen, LocalDate datum, UUID pruefer, boolean bestanden, String bemerkungen, boolean ausgesondert) throws SQLException {
+        PreparedStatement pstmt = this.m_connection.prepareStatement("UPDATE pruefungen SET Kennzeichen = ?, Datum = ?, Bestanden = ?, Pruefer = ?, Bemerkungen = ?, Ausgesondert = ? WHERE id = ?");
+        pstmt.setString(1, kennzeichen);
+        pstmt.setObject(2, datum);
+        pstmt.setBoolean(3, bestanden);
+        pstmt.setString(4, pruefer.toString());
+        pstmt.setString(5, bemerkungen);
+        pstmt.setBoolean(6, ausgesondert);
+        pstmt.setString(7, id.toString());
+        pstmt.executeUpdate();
+    }
+
 
 
     //------------------------------------------------------------------------------------------------------------------------------------------------------------------
