@@ -1,9 +1,6 @@
 # Views
 
-- Add Prüfer
-- Add Vorschrift / Sachnummer
 - Modify Prüfung
-- Modify Vorschrift / Sachnummer
 
 #Functionality
 
@@ -11,7 +8,6 @@
     - Modify Prüfung
     - Modify Prüfer
         - Unterschrift from file!
-    - Modify Vorschrift / Sachnummer
 - Handle errors
     - On insertion: Sachnummer not existing
 - Save to CSV (not required)
