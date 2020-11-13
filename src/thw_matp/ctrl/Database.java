@@ -449,6 +449,15 @@ public class Database {
         pstmt.executeUpdate();
     }
 
+    public void vorschriften_update(String sachnr, String link, String vorschrift, String abschnitt) throws SQLException {
+        PreparedStatement pstmt = this.m_connection.prepareStatement("UPDATE vorschriften SET  Vorschrift = ?, Abschnitt = ?, Link = ? WHERE Sachnr = ?");
+        pstmt.setString(1, vorschrift);
+        pstmt.setString(2, abschnitt);
+        pstmt.setString(3, link);
+        pstmt.setString(4, sachnr);
+        pstmt.executeUpdate();
+    }
+
     public List<Vorschrift> vorschriften_get_all() throws SQLException {
         ResultSet rs = this.m_connection.createStatement().executeQuery("SELECT * FROM vorschriften");
         List<Vorschrift> list = new ArrayList<Vorschrift>();

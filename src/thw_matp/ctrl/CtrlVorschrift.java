@@ -70,6 +70,31 @@ public class CtrlVorschrift {
         return true;
     }
 
+    public int add_vorschrift(String sachnummer, String vorschrift, String abschnitt, String link) {
+        try {
+            this.db.vorschriften_add(sachnummer, link, vorschrift, abschnitt);
+        } catch (SQLException e) {
+            if (e.getErrorCode() == Database.DUPLICATE_KEY_1) {
+                System.err.println("Sachnummer " + sachnummer +  " already existing!");
+                return 1;
+            }
+            else {
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
+
+    public boolean edit_vorschrift(String sachnummer, String vorschrift, String abschnitt, String link) {
+        try {
+            this.db.vorschriften_update(sachnummer, link, vorschrift, abschnitt);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
     public void init_db() {
         try {
             this.db.vorschriften_add("2510T91100", "E", "", "");

@@ -61,6 +61,7 @@ public class WindowMain {
         this.btn_pruefung_remove.addActionListener(this::btn_remove_action_performed);
         this.btn_pruefung_print.addActionListener(this::btn_pruefung_print_action_performed);
         this.btn_vorschrift_add.addActionListener(this::btn_add_action_performed);
+        this.btn_vorschrift_edit.addActionListener(this::btn_edit_action_performed);
         this.btn_vorschrift_remove.addActionListener(this::btn_remove_action_performed);
         this.inp_pruefung_kennzeichen.addActionListener(this::inp_pruefung_kennzeichen_action_performed);
         this.btn_license.addActionListener(this::btn_licence_action_performed);
@@ -139,7 +140,11 @@ public class WindowMain {
             win.setVisible(true);
         }
         else if (this.btn_vorschrift_add.equals(source)) {
-            System.out.println("btn_add_action_performed() TODO: Vorschrift add");
+            WindowAddVorschrift win = new WindowAddVorschrift(this.ctrl_vorschriften);
+            win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            win.pack();
+            win.setLocationRelativeTo(get_root_panel());
+            win.setVisible(true);
         }
         else {
             System.err.println("Handle function called from wrong GUI object!");
@@ -312,9 +317,26 @@ public class WindowMain {
         }
         else if (e.getSource() == this.btn_pruefung_edit) {
             System.out.println("btn_edit_action_performed() TODO: Implement Edit Prüfung");
+            //TODO: Implement Edit Prüfung
         }
         else if (e.getSource() == this.btn_vorschrift_edit) {
-            System.out.println("btn_edit_action_performed() TODO: Implement Edit Vorschrift");
+            Vorschrift v = null;
+            int selected_row = this.tbl_vorschriften.getSelectedRow();
+            if(selected_row < 0) {
+                JOptionPane.showMessageDialog(get_root_panel(),
+                        "Bitte den Eintrag auswählen, welcher editiert werden soll!",
+                        "Fehler!",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+            String sachnummer = this.tbl_vorschriften.getModel().getValueAt(this.tbl_vorschriften.convertRowIndexToModel(selected_row), 0).toString();
+            v = this.ctrl_vorschriften.get_vorschrift(sachnummer);
+            if (v != null) {
+                WindowEditVorschrift win = new WindowEditVorschrift(this.ctrl_vorschriften, v);
+                win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                win.pack();
+                win.setLocationRelativeTo(get_root_panel());
+                win.setVisible(true);
+            }
         }
         else {
             System.err.println("Handle function called from wrong GUI object!");
