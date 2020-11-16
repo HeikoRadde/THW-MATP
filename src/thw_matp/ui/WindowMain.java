@@ -17,6 +17,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class WindowMain {
@@ -80,13 +81,27 @@ public class WindowMain {
         if (e.getSource() == this.btn_import) {
             final JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
             fc.setDialogTitle("CSV Datei auswählen");
-            if(fc.showOpenDialog(get_root_panel()) == JFileChooser.APPROVE_OPTION) {
+            if (fc.showOpenDialog(get_root_panel()) == JFileChooser.APPROVE_OPTION) {
                 String path = fc.getSelectedFile().getPath();
                 if(!this.ctrl_inventar.load_data(path))
                 {
                     JOptionPane.showMessageDialog(get_root_panel(), "Daten konnten nicht geladen werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
                 }
                 populate_table_inventar();
+                ArrayList<String> new_vorschriften = this.ctrl_inventar.get_added_vorschriften();
+                if (new_vorschriften != null) {
+                    StringBuilder string_list = new StringBuilder();
+                    for (String vorschrift : new_vorschriften) {
+                        string_list.append(vorschrift);
+                        string_list.append("\n");
+                    }
+                    JOptionPane.showMessageDialog(get_root_panel(),
+                            "Beim Importieren der Datei wurden folgende, bisher unbekannte, Vorschriften gefunden:\n"
+                                    + string_list
+                                    + "Die unbekannten Vorschriften wurden mit leeren Daten erstellt und zur Datenbank hiunzugefügt.",
+                            "Vorschriften automatisch erstellt",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
             }
         }
         else {
@@ -110,7 +125,7 @@ public class WindowMain {
     }
 
     public void btn_refresh_action_performed(ActionEvent e) {
-        if(e.getSource() == this.btn_refresh) {
+        if (e.getSource() == this.btn_refresh) {
             switch (tabs.getSelectedIndex()) {
                 case 0 -> populate_table_inventar();
                 case 1 -> populate_table_pruefer();
@@ -159,7 +174,7 @@ public class WindowMain {
                 "Nein"};
         if (this.btn_inventar_remove.equals(source)) {
             int selected_row = this.tbl_inventar.getSelectedRow();
-            if(selected_row != -1) {
+            if (selected_row != -1) {
                 String kennzeichen = this.tbl_inventar.getModel().getValueAt(this.tbl_inventar.convertRowIndexToModel(selected_row), 0).toString();
                 int reply = JOptionPane.showOptionDialog(get_root_panel(),
                         "Sollen das Gerät mit dem Kennzeichen " + kennzeichen

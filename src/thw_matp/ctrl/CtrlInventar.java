@@ -6,6 +6,7 @@ import thw_matp.datatypes.Pruefung;
 import javax.swing.table.DefaultTableModel;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CtrlInventar {
@@ -18,6 +19,7 @@ public class CtrlInventar {
         CSVImporter importer = new CSVImporter(filepath);
         try {
             importer.read(this.db);
+            m_new_vorschriften = importer.get_added_vorschriften();
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -84,6 +86,10 @@ public class CtrlInventar {
         }
     }
 
+    public ArrayList<String> get_added_vorschriften() {
+        return this.m_new_vorschriften;
+    }
+
     public void update(String kennzeichen, String ov, String einheit, int baujahr, String hersteller, String bezeichnung, String sachnr) throws IllegalArgumentException {
         kennzeichen = kennzeichen.replace('/', '-');
         try {
@@ -129,4 +135,5 @@ public class CtrlInventar {
 
 
     private final Database db;
+    private ArrayList<String> m_new_vorschriften;
 }

@@ -3,8 +3,6 @@
 
 #Functionality
 
-- Handle errors
-    - On insertion: Sachnummer not existing
 - Save to CSV (not required)
     - original format
     - own proper format
