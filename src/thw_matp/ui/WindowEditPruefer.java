@@ -47,6 +47,8 @@ public class WindowEditPruefer extends JFrame {
         this.txt_name.setText(this.m_pruefer.name);
         this.txt_vorname.setText(this.m_pruefer.vorname);
         this.panel_signature.set_signature(this.m_pruefer.unterschrift);
+        this.pack();
+        this.revalidate();
     }
 
     public void btn_ok_action_performed(ActionEvent e) {
@@ -56,8 +58,8 @@ public class WindowEditPruefer extends JFrame {
                 JDialog dialog = new JDialog();
                 dialog.setUndecorated(true);
                 JLabel label = new JLabel( new ImageIcon(signature) );
-                JOptionPane.showMessageDialog(null, label, "ImageDialog",
-                        JOptionPane.PLAIN_MESSAGE, null);
+//                JOptionPane.showMessageDialog(null, label, "ImageDialog",
+//                        JOptionPane.PLAIN_MESSAGE, null);
             }
             if(!this.m_ctrl_pruefer.update(this.m_pruefer.id, this.txt_name.getText(), this.txt_vorname.getText(), signature)) {
                 JOptionPane.showMessageDialog(get_root_panel(),
@@ -88,7 +90,7 @@ public class WindowEditPruefer extends JFrame {
             this.panel_signature.clear_action();
         }
         else {
-            System.err.println("Handle function called from wrong GUI object!");
+            this.panel_signature.clear_action();
             new Throwable().printStackTrace();
         }
     }
@@ -98,7 +100,7 @@ public class WindowEditPruefer extends JFrame {
             this.panel_signature.load_action();
         }
         else {
-            System.err.println("Handle function called from wrong GUI object!");
+            this.panel_signature.load_action();
             new Throwable().printStackTrace();
         }
     }

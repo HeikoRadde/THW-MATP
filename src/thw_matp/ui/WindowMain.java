@@ -79,9 +79,9 @@ public class WindowMain {
     public void btn_import_action_performed(ActionEvent e) {
         if (e.getSource() == this.btn_import) {
             final JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
+            fc.setDialogTitle("CSV Datei auswählen");
             if(fc.showOpenDialog(get_root_panel()) == JFileChooser.APPROVE_OPTION) {
                 String path = fc.getSelectedFile().getPath();
-                System.out.println("Selected: " + path);
                 if(!this.ctrl_inventar.load_data(path))
                 {
                     JOptionPane.showMessageDialog(get_root_panel(), "Daten konnten nicht geladen werden!", "Fehler", JOptionPane.ERROR_MESSAGE);

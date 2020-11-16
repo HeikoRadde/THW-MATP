@@ -24,11 +24,14 @@ import thw_matp.gcacace.signaturepad.utils.ControlTimedPoints;
 import thw_matp.gcacace.signaturepad.utils.SvgBuilder;
 import thw_matp.gcacace.signaturepad.utils.TimedPoint;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,6 +87,9 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
 //            g2d.dispose();
             synchronized(this) {
                 this.mSignature = new BufferedImage(signature.getColorModel(), signature.copyData(null), signature.isAlphaPremultiplied(), null);
+                this.draw_panel.setPreferredSize(new Dimension(this.mSignature.getWidth(), this.mSignature.getHeight()));
+                this.draw_panel.setSize(this.mSignature.getWidth(), this.mSignature.getHeight());
+                this.draw_panel.revalidate();
                 setIsEmpty(false);
             }
             _print_image();
@@ -91,11 +97,21 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
     }
 
     public void clear_action() {
-
+        _clear_signature();
     }
 
     public void load_action() {
-        System.out.println("TODO implement signature load functionality");
+        final JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
+        fc.setDialogTitle("Unterschrift als Bild auswählen");
+        if(fc.showOpenDialog(get_root_panel()) == JFileChooser.APPROVE_OPTION) {
+            String path = fc.getSelectedFile().getPath();
+            try {
+                set_signature(ImageIO.read(new File(path)));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        _print_image();
     }
 
     private void _clear_signature() {
@@ -106,7 +122,10 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
             g2d.clearRect(0, 0, draw_panel.getWidth(), draw_panel.getHeight());
             g2d.setPaint(Color.BLACK);
             g2d.dispose();
+            this.draw_panel.setPreferredSize(new Dimension(IMG_W, IMG_H));
+            this.draw_panel.setSize(IMG_W, IMG_H);
             this.draw_panel.getGraphics().drawImage(this.mSignature, 0, 0, null);
+            this.draw_panel.revalidate();
             this.mPoints.clear();
         }
     }

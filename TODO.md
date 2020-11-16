@@ -3,9 +3,6 @@
 
 #Functionality
 
-- Update statements
-    - Modify Prüfer
-        - Unterschrift from file!
 - Handle errors
     - On insertion: Sachnummer not existing
 - Save to CSV (not required)

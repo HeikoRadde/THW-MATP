@@ -63,7 +63,7 @@ public class WindowAddPruefer extends JFrame {
             this.panel_signature.clear_action();
         }
         else {
-            System.err.println("Handle function called from wrong GUI object!");
+            this.panel_signature.clear_action();
             new Throwable().printStackTrace();
         }
     }
@@ -73,7 +73,7 @@ public class WindowAddPruefer extends JFrame {
             this.panel_signature.load_action();
         }
         else {
-            System.err.println("Handle function called from wrong GUI object!");
+            this.panel_signature.load_action();
             new Throwable().printStackTrace();
         }
     }
