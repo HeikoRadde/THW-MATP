@@ -57,7 +57,7 @@ public class CtrlInventar {
             return this.db.inventar_get(kennzeichen);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-            System.err.println("No entry in table inventar!");
+            System.err.println("No entry " + kennzeichen + " in table inventar!");
             return null;
         }
     }

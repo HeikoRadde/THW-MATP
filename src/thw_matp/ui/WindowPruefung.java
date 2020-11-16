@@ -196,27 +196,47 @@ public class WindowPruefung extends JFrame {
             _error_pruefer();
             return false;
         }
-        Pruefung p = this.m_ctrl_pruefungen.add_pruefung(this.inp_kennzeichen.getText(), this.m_pruefer_list.get(selected_pruefer).id, bestanden, this.txt_bemerkungen.getText(), ausgesondert);
-        if (this.check_create_protocol.isSelected()) {
-            try {
-                path = Paths.get(this.txt_save_path.getText());
-                PrinterProtocolTesting.print_pruefung(path, p, this.m_pruefer_list.get(this.sel_pruefer.getSelectedIndex()), this.m_current_item, this.m_current_vorschrift);
-                PrinterProtocolTestingOverviewCSV.add_pruefung_event(path, p, this.m_pruefer_list.get(this.sel_pruefer.getSelectedIndex()));
-                PrinterProtocolTestingOverviewPDF.set_path(path);
-            } catch (IOException e) {
-                e.printStackTrace();
-                _error_pdf();
-            }
+        String kennzeichen = this.inp_kennzeichen.getText();
+        if(this.m_ctrl_inventar.get_item(kennzeichen) == null) {
+            _error_kennzeichen(kennzeichen);
+            return false;
         }
-        return true;
+        else {
+            Pruefung p = this.m_ctrl_pruefungen.add_pruefung(kennzeichen, this.m_pruefer_list.get(selected_pruefer).id, bestanden, this.txt_bemerkungen.getText(), ausgesondert);
+            if (this.check_create_protocol.isSelected()) {
+                try {
+                    path = Paths.get(this.txt_save_path.getText());
+                    PrinterProtocolTesting.print_pruefung(path, p, this.m_pruefer_list.get(this.sel_pruefer.getSelectedIndex()), this.m_current_item, this.m_current_vorschrift);
+                    PrinterProtocolTestingOverviewCSV.add_pruefung_event(path, p, this.m_pruefer_list.get(this.sel_pruefer.getSelectedIndex()));
+                    PrinterProtocolTestingOverviewPDF.set_path(path);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    _error_pdf();
+                }
+            }
+            return true;
+        }
     }
 
 
     private void _error_kennzeichen(String kennzeichen) {
-        JOptionPane.showMessageDialog(this.root_panel,
-                "Kein Gerät mit dem Kennzeichen " + kennzeichen + " gefunden!",
-                "Fehlerhaftes Kennzeichen",
-                JOptionPane.ERROR_MESSAGE);
+        Object[] options = {"Ja, neu anlegen!",
+                "Nein"};
+        int reply = JOptionPane.showOptionDialog(this.root_panel,
+                "Das Gerät mit dem Kennzeichen " + kennzeichen + " ist unbekannt! Soll es neu angelegt werden?",
+                "Gerät " + kennzeichen + " unbekannt!",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,     //do not use a custom Icon
+                options,  //the titles of buttons
+                options[0]); //default button title
+        if (reply == JOptionPane.YES_OPTION) {
+            WindowAddItem win = new WindowAddItem("Neues Inventar", this.m_ctrl_inventar);
+            win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            win.pack();
+            win.setLocationRelativeTo(this.root_panel);
+            win.setVisible(true);
+        }
     }
 
     private void _error_sachnummer(String sachnummer) {

@@ -16,8 +16,8 @@
 - Error-logging to file
 - Copyright notices
     - im Quelltext
-- beim test: gerät nicht vorhanden -> fehler + frage ob es angelegt werden soll
-    - wenn ja -> logdatei (pdf) beim anlegen erstellen (stetig erweiterte datei)
+- beim anlegen von Gerätem
+    - logdatei (pdf) beim anlegen erstellen (stetig erweiterte datei)
 
 
 #Bugfixes
