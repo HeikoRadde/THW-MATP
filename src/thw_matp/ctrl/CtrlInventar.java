@@ -2,9 +2,11 @@ package thw_matp.ctrl;
 
 import thw_matp.datatypes.Item;
 import thw_matp.datatypes.Pruefung;
+import thw_matp.util.PrinterProtocolAddingItemCSV;
 
 import javax.swing.table.DefaultTableModel;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +44,6 @@ public class CtrlInventar {
                     Pruefung last_pruefung = db.pruefungen_get_last(item.kennzeichen);
                     mdl.addRow(new Object[]{item.kennzeichen, item.sachnr, item.bezeichnung, item.hersteller, item.baujahr, item.einheit, item.ov, last_pruefung.datum, last_pruefung.bestanden, last_pruefung.datum.plusYears(1)});
                 } catch (SQLException throwables) {
-                    throwables.printStackTrace();
                     mdl.addRow(new Object[]{item.kennzeichen, item.sachnr, item.bezeichnung, item.hersteller, item.baujahr, item.einheit, item.ov});
                 }
             }
@@ -68,6 +69,13 @@ public class CtrlInventar {
         kennzeichen = kennzeichen.replace('/', '-');
         try {
             this.db.inventar_add(kennzeichen, ov, einheit, baujahr, hersteller, bezeichnung, sachnr);
+            Item i = new Item(kennzeichen, ov, einheit, baujahr, hersteller, bezeichnung, sachnr);
+            try {
+                PrinterProtocolAddingItemCSV.add_new_item_event(Paths.get("").toAbsolutePath(), i);
+            } catch (IOException e) {
+                System.err.println("Couldn't log new Item!");
+                e.printStackTrace();
+            }
         } catch (SQLException e) {
             if (e.getErrorCode() == Database.ERROR_CODE_REFERENTIAL_INTEGRITY_VIOLATED_PARENT_MISSING_1) {
                 System.err.println("Sachnr " + sachnr +  " not known!");
