@@ -16,10 +16,10 @@
 package thw_matp.datatypes;
 
 public class Vorschrift {
-    public String sachnr;
-    public String vorschrift;
-    public String abschnitt;
-    public String link;
+    public final String sachnr;
+    public final String vorschrift;
+    public final String abschnitt;
+    public final String link;
 
     public Vorschrift(String sachnr, String vorschrift, String abschnitt, String link) {
         this.sachnr = sachnr;
@@ -32,5 +32,6 @@ public class Vorschrift {
         this.sachnr = sachnr;
         this.vorschrift = vorschrift;
         this.abschnitt = abschnitt;
+        this.link = "";
     }
 }

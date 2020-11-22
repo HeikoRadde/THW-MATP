@@ -19,9 +19,9 @@ import java.awt.image.BufferedImage;
 import java.util.UUID;
 
 public class Pruefer {
-    public UUID id;
-    public String name;
-    public String vorname;
+    public final UUID id;
+    public final String name;
+    public final String vorname;
     public BufferedImage unterschrift;
 
     public Pruefer(UUID id, String name, String vorname) {

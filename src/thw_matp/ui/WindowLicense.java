@@ -18,7 +18,6 @@ package thw_matp.ui;
 import javax.swing.*;
 
 public class WindowLicense extends JFrame {
-    private JTabbedPane tabbedPane1;
     private JPanel root_panel;
     private JTextPane txt_licence_program;
     private JTextPane txt_license_pdfbox;
@@ -28,7 +27,6 @@ public class WindowLicense extends JFrame {
     private JLabel lbl_license_pdfbox;
     private JLabel lbl_license_h2database;
     private JLabel lbl_license_common_csv;
-    private JTabbedPane tabbedPane2;
     private JTextPane txt_disclaimer_h2database;
 
     public WindowLicense() {
@@ -374,6 +372,4 @@ public class WindowLicense extends JFrame {
             "DIE SOFTWARE WIRD OHNE MÄNGELGEWÄHR UND OHNE JEGLICHE AUSDRÜCKLICHE ODER STILLSCHWEIGENDE GEWÄHRLEISTUNG, EINSCHLIEẞLICH, ABER NICHT BESCHRÄNKT AUF DIE GEWÄHRLEISTUNG DER MARKTGÄNGIGKEIT, DER EIGNUNG FÜR EINEN BESTIMMTEN ZWECK UND DER NICHTVERLETZUNG VON RECHTEN DRITTER, ZUR VERFÜGUNG GESTELLT. DIE AUTOREN ODER URHEBERRECHTSINHABER SIND IN KEINEM FALL HAFTBAR FÜR ANSPRÜCHE, SCHÄDEN ODER ANDERE VERPFLICHTUNGEN, OB IN EINER VERTRAGS- ODER HAFTUNGSKLAGE, EINER UNERLAUBTEN HANDLUNG ODER ANDERWEITIG, DIE SICH AUS, AUS ODER IN VERBINDUNG MIT DER SOFTWARE ODER DER NUTZUNG ODER ANDEREN GESCHÄFTEN MIT DER SOFTWARE ERGEBEN."
         );
     }
-
-
 }

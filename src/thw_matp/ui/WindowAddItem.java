@@ -16,6 +16,7 @@
 package thw_matp.ui;
 
 import thw_matp.ctrl.CtrlInventar;
+import thw_matp.ctrl.CtrlVorschrift;
 import thw_matp.datatypes.Item;
 import thw_matp.util.FilterInteger;
 
@@ -35,10 +36,11 @@ public class WindowAddItem extends JFrame {
     private JButton btn_cancel;
     private JTextField txt_sachnr;
 
-    public WindowAddItem(String title, CtrlInventar ctrl_inventar) {
+    public WindowAddItem(String title, CtrlInventar ctrl_inventar, CtrlVorschrift ctrl_vorschriften) {
         super(title);
         this.setContentPane(root_panel);
         this.ctrl_inventar = ctrl_inventar;
+        this.ctrl_vorschriften = ctrl_vorschriften;
 
         PlainDocument doc = (PlainDocument) this.txt_baujahr.getDocument();
         doc.setDocumentFilter(new FilterInteger());
@@ -51,7 +53,7 @@ public class WindowAddItem extends JFrame {
     {
         if (e.getSource() == this.btn_ok) {
             String kennzeichen = this.txt_kennzeichen.getText();
-            String sachnr = (String) this.txt_sachnr.getText();
+            String sachnr = this.txt_sachnr.getText();
             String bezeichnung = this.txt_bezeichnung.getText();
             String hersteller = this.txt_hersteller.getText();
             int baujahr = Integer.parseInt(this.txt_baujahr.getText());
@@ -72,7 +74,11 @@ public class WindowAddItem extends JFrame {
                             options,
                             options[0]);
                     if (reply == JOptionPane.YES_OPTION) {
-                        //TODO: Create new Sachnummer!
+                        WindowAddVorschrift win = new WindowAddVorschrift(this.ctrl_vorschriften, sachnr);
+                        win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        win.pack();
+                        win.setLocationRelativeTo(root_panel);
+                        win.setVisible(true);
                     }
                 }
                 else if (exception.getMessage().equals("Kennzeichen existing!")) {
@@ -88,7 +94,7 @@ public class WindowAddItem extends JFrame {
                     if (reply == JOptionPane.YES_OPTION) {
                         Item i = this.ctrl_inventar.get_item(kennzeichen);
                         if (i != null) {
-                            WindowEditItem win = new WindowEditItem("Editiere Inventar", ctrl_inventar, i);
+                            WindowEditItem win = new WindowEditItem("Editiere Inventar", this.ctrl_inventar, i, this.ctrl_vorschriften);
                             win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                             win.pack();
                             win.setLocationRelativeTo(root_panel);
@@ -126,4 +132,5 @@ public class WindowAddItem extends JFrame {
     }
 
     private final CtrlInventar ctrl_inventar;
+    private final CtrlVorschrift ctrl_vorschriften;
 }

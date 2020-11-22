@@ -19,14 +19,14 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public class Pruefung {
-    public UUID id;
-    public String kennzeichen;
-    public LocalDate datum;
-    public boolean bestanden;
-    public UUID pruefer;
-    public String bemerkungen;
-    public boolean ausgesondert;
-    public String ov;
+    public final UUID id;
+    public final String kennzeichen;
+    public final LocalDate datum;
+    public final boolean bestanden;
+    public final UUID pruefer;
+    public final String bemerkungen;
+    public final boolean ausgesondert;
+    public final String ov;
 
     public Pruefung(UUID id, String kennzeichen, LocalDate datum, boolean bestanden) {
         this.id = id;
@@ -36,6 +36,7 @@ public class Pruefung {
         this.pruefer = new UUID(0, 0);
         this.bemerkungen = "";
         this.ausgesondert = false;
+        this.ov = "";
     }
 
     public Pruefung(UUID id, String kennzeichen, LocalDate datum, boolean bestanden, String bemerkungen, boolean ausgesondert, String ov) {

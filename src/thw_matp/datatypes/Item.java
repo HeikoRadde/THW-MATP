@@ -16,13 +16,13 @@
 package thw_matp.datatypes;
 
 public class Item {
-    public String kennzeichen;
-    public String ov;
-    public String einheit;
-    public int baujahr;
-    public String hersteller;
-    public String bezeichnung;
-    public String sachnr;
+    public final String kennzeichen;
+    public final String ov;
+    public final String einheit;
+    public final int baujahr;
+    public final String hersteller;
+    public final String bezeichnung;
+    public final String sachnr;
 
     public Item(String kennzeichen, String ov, String einheit, int baujahr, String hersteller, String bezeichnung, String sachnr) {
         this.kennzeichen = kennzeichen;

@@ -46,7 +46,7 @@ public class PrinterProtocolTestingPDF extends PrinterProtocolPDF {
         document.addPage(page);
         PDPageContentStream content = new PDPageContentStream(document, page);
 
-        float pos_y = 0;
+        float pos_y = 0.0f;
         doc_set_properties(document, pruefung, pruefer);
         pos_y = doc_create_header(document, content);
         pos_y = doc_create_txt_item(content, item, pos_y);

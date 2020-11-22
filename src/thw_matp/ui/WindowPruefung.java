@@ -252,7 +252,7 @@ public class WindowPruefung extends JFrame {
                 options,  //the titles of buttons
                 options[0]); //default button title
         if (reply == JOptionPane.YES_OPTION) {
-            WindowAddItem win = new WindowAddItem("Neues Inventar", this.m_ctrl_inventar);
+            WindowAddItem win = new WindowAddItem("Neues Inventar", this.m_ctrl_inventar, this.m_ctrl_vorschrift);
             win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             win.pack();
             win.setLocationRelativeTo(this.root_panel);

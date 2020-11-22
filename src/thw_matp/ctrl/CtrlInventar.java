@@ -102,8 +102,8 @@ public class CtrlInventar {
             }
             else {
                 e.printStackTrace(System.err);
-                System.err.println("SQLState: " + ((SQLException)e).getSQLState());
-                System.err.println("Error Code: " + ((SQLException)e).getErrorCode());
+                System.err.println("SQLState: " + e.getSQLState());
+                System.err.println("Error Code: " + e.getErrorCode());
                 System.err.println("Message: " + e.getMessage());
             }
         }
@@ -124,8 +124,8 @@ public class CtrlInventar {
             }
             else {
                 e.printStackTrace(System.err);
-                System.err.println("SQLState: " + ((SQLException)e).getSQLState());
-                System.err.println("Error Code: " + ((SQLException)e).getErrorCode());
+                System.err.println("SQLState: " + e.getSQLState());
+                System.err.println("Error Code: " + e.getErrorCode());
                 System.err.println("Message: " + e.getMessage());
             }
         }

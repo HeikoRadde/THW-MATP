@@ -44,12 +44,10 @@ public class WindowEditPruefer extends JFrame {
         this.btn_signature_clear.addActionListener(this::btn_clear_signature_action_performed);
         this.btn_signature_load.addActionListener(this::btn_load_signature_action_performed);
 
-        EventQueue.invokeLater(() -> {
-            // Here, we can safely update the GUI
-            // because we'll be called from the
-            // event dispatch thread
-            update_fields();
-        });
+        // Here, we can safely update the GUI
+        // because we'll be called from the
+        // event dispatch thread
+        EventQueue.invokeLater(this::update_fields);
     }
 
     public JPanel get_root_panel() {

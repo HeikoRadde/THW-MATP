@@ -39,6 +39,17 @@ public class WindowAddVorschrift extends JFrame {
         this.btn_ok.addActionListener(this::btn_ok_action_performed);
         this.btn_cancel.addActionListener(this::btn_cancel_action_performed);
     }
+
+    public WindowAddVorschrift(CtrlVorschrift ctrl_vorschrift, String sachnummer) {
+        super("Vorschrift hinzufügen");
+        this.setContentPane(root_panel);
+        this.m_ctrl_vorschrift = ctrl_vorschrift;
+        this.txt_sachnr.setText(sachnummer);
+
+        this.btn_ok.addActionListener(this::btn_ok_action_performed);
+        this.btn_cancel.addActionListener(this::btn_cancel_action_performed);
+    }
+
     public JPanel get_root_panel() {
         return this.root_panel;
     }

@@ -157,14 +157,14 @@ public class WindowMain {
     public void btn_add_action_performed(ActionEvent e) {
         Object source = e.getSource();
         if (this.btn_inventar_add.equals(source)) {
-            WindowAddItem win = new WindowAddItem("Neues Inventar", ctrl_inventar);
+            WindowAddItem win = new WindowAddItem("Neues Inventar", this.ctrl_inventar, this.ctrl_vorschriften);
             win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             win.pack();
             win.setLocationRelativeTo(get_root_panel());
             win.setVisible(true);
         }
         else if (this.btn_pruefer_add.equals(source)) {
-            WindowAddPruefer win = new WindowAddPruefer("Neuer Prüfer", ctrl_pruefer);
+            WindowAddPruefer win = new WindowAddPruefer("Neuer Prüfer", this.ctrl_pruefer);
             win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             win.pack();
             win.setLocationRelativeTo(get_root_panel());
@@ -309,7 +309,7 @@ public class WindowMain {
 
     public void btn_edit_action_performed(ActionEvent e) {
         if (e.getSource() == this.btn_inventar_edit) {
-            Item i = null;
+            Item i;
             int selected_row = this.tbl_inventar.getSelectedRow();
             if(selected_row < 0) {
                 _error_edit_selection();
@@ -318,7 +318,7 @@ public class WindowMain {
             String kennzeichen = this.tbl_inventar.getModel().getValueAt(this.tbl_inventar.convertRowIndexToModel(selected_row), 0).toString();
             i = this.ctrl_inventar.get_item(kennzeichen);
             if (i != null) {
-                WindowEditItem win = new WindowEditItem("Editiere Inventar", ctrl_inventar, i);
+                WindowEditItem win = new WindowEditItem("Editiere Inventar", this.ctrl_inventar, i, this.ctrl_vorschriften);
                 win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 win.pack();
                 win.setLocationRelativeTo(get_root_panel());
@@ -326,7 +326,7 @@ public class WindowMain {
             }
         }
         else if (e.getSource() == this.btn_pruefer_edit) {
-            Pruefer p = null;
+            Pruefer p;
             int selected_row = this.tbl_pruefer.getSelectedRow();
             if(selected_row < 0) {
                 _error_edit_selection();
@@ -343,7 +343,7 @@ public class WindowMain {
             }
         }
         else if (e.getSource() == this.btn_pruefung_edit) {
-            Pruefung p = null;
+            Pruefung p;
             int selected_row = this.tbl_pruefungen.getSelectedRow();
             if(selected_row < 0) {
                 _error_edit_selection();
@@ -360,7 +360,7 @@ public class WindowMain {
             }
         }
         else if (e.getSource() == this.btn_vorschrift_edit) {
-            Vorschrift v = null;
+            Vorschrift v;
             int selected_row = this.tbl_vorschriften.getSelectedRow();
             if(selected_row < 0) {
                 _error_edit_selection();

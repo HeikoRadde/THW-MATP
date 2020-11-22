@@ -26,7 +26,7 @@ import java.sql.SQLException;
 public class Main {
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> create_gui());
+        SwingUtilities.invokeLater(Main::create_gui);
     }
 
     public static void create_gui() {
