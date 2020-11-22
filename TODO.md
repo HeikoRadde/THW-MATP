@@ -11,8 +11,6 @@
     - own format
     - format of excel-file
 - Error-logging to file
-- Copyright notices
-    - im Quelltext
 
 
 #Bugfixes
