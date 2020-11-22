@@ -3,3 +3,4 @@ out/
 *.pdf
 *.csv
 *.mv.db
+*.trace.db
