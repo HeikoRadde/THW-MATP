@@ -132,6 +132,7 @@ public class CtrlInventar {
     }
 
     public boolean remove_item(String kennzeichen, CtrlPruefungen ctrl_pruefungen) {
+        kennzeichen = kennzeichen.replace('/', '-');
         if (!ctrl_pruefungen.remove_pruefungen(kennzeichen)) return false;
         try {
             this.db.inventar_remove(kennzeichen);
