@@ -62,7 +62,7 @@ public class PrinterProtocolTestingOverviewPDF extends PrinterProtocolPDF {
                 content = new PDPageContentStream(document, page);
                 pos_y = doc_create_header(document, content);
             }
-            pos_y = doc_add_entry(document, content, pos_y, record.get(0), record.get(1), Boolean.parseBoolean(record.get(2)), Boolean.parseBoolean(record.get(3)), record.get(4));
+            pos_y = doc_add_entry(content, pos_y, record.get(0), record.get(1), Boolean.parseBoolean(record.get(2)), Boolean.parseBoolean(record.get(3)), record.get(4));
         }
 
         content.close();
@@ -115,7 +115,7 @@ public class PrinterProtocolTestingOverviewPDF extends PrinterProtocolPDF {
         return pos_y;
     }
 
-    private static float doc_add_entry(PDDocument document, PDPageContentStream content, float pos_y, String kennzeichen, String pruefer, boolean bestanden, boolean ausgesondert, String protocol_filename) throws IOException {
+    private static float doc_add_entry(PDPageContentStream content, float pos_y, String kennzeichen, String pruefer, boolean bestanden, boolean ausgesondert, String protocol_filename) throws IOException {
         float kennzeichen_pos_y = print_txt_box(content, kennzeichen, FONT_NORMAL, TXT_SIZE_SMALL, POS_COL_0, POS_COL_1, pos_y);
         float pruefer_pos_y = print_txt_box(content, pruefer, FONT_NORMAL, TXT_SIZE_SMALL, POS_COL_1, POS_COL_2, pos_y);
         float bestanden_pos_y = print_txt_box(content, bestanden ? "Bestanden" : "Nicht Bestanden", FONT_NORMAL, TXT_SIZE_SMALL, POS_COL_2, POS_COL_3, pos_y);

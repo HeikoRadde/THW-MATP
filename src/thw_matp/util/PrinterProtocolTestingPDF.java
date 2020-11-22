@@ -48,10 +48,10 @@ public class PrinterProtocolTestingPDF extends PrinterProtocolPDF {
 
         float pos_y = 0;
         doc_set_properties(document, pruefung, pruefer);
-        pos_y = doc_create_header(document, content, pruefer);
-        pos_y = doc_create_txt_item(document, content, item, pos_y);
-        pos_y = doc_create_txt_meta(document, content, item, vorschrift, pos_y);
-        pos_y = doc_create_txt_test(document, content, pruefung, pruefer, pos_y);
+        pos_y = doc_create_header(document, content);
+        pos_y = doc_create_txt_item(content, item, pos_y);
+        pos_y = doc_create_txt_meta(content, item, vorschrift, pos_y);
+        pos_y = doc_create_txt_test(content, pruefung, pruefer, pos_y);
         pos_y = doc_create_footer(document, content, pruefer, pos_y);
 
         content.close();
@@ -76,7 +76,7 @@ public class PrinterProtocolTestingPDF extends PrinterProtocolPDF {
         pdd.setKeywords("Materialprüfung, Prüfprotokoll, " + pruefung.kennzeichen);
     }
 
-    private static float doc_create_header(PDDocument document, PDPageContentStream content, Pruefer pruefer) {
+    private static float doc_create_header(PDDocument document, PDPageContentStream content) {
         final String title = "Prüfprotokoll";
         float pos_y = PAGE_MAX_H-40;
         try {
@@ -105,7 +105,7 @@ public class PrinterProtocolTestingPDF extends PrinterProtocolPDF {
         return pos_y;
     }
 
-    private static float doc_create_txt_meta(PDDocument document, PDPageContentStream content, Item item, Vorschrift vorschrift, float pos_y) {
+    private static float doc_create_txt_meta(PDPageContentStream content, Item item, Vorschrift vorschrift, float pos_y) {
         try {
             content.setFont(FONT_NORMAL, TXT_SIZE_SECTION);
             content.beginText();
@@ -154,7 +154,7 @@ public class PrinterProtocolTestingPDF extends PrinterProtocolPDF {
         return pos_y;
     }
 
-    private static float doc_create_txt_item(PDDocument document, PDPageContentStream content, Item item, float pos_y) {
+    private static float doc_create_txt_item(PDPageContentStream content, Item item, float pos_y) {
         try {
             content.setFont(FONT_NORMAL, TXT_SIZE_SECTION);
             content.beginText();
@@ -205,7 +205,7 @@ public class PrinterProtocolTestingPDF extends PrinterProtocolPDF {
         return pos_y;
     }
 
-    private static float doc_create_txt_test(PDDocument document, PDPageContentStream content, Pruefung pruefung, Pruefer pruefer, float pos_y) {
+    private static float doc_create_txt_test(PDPageContentStream content, Pruefung pruefung, Pruefer pruefer, float pos_y) {
         try {
             pos_y -= calc_row_offset(FONT_NORMAL, TXT_SIZE_TEXT) * 0.5f;
 

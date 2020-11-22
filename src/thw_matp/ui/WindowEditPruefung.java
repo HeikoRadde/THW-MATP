@@ -54,7 +54,7 @@ public class WindowEditPruefung extends JFrame {
     private JTextField txt_pruefungsvorschrift;
     private JTextField txt_abschnitt;
     private JRadioButton rb_no;
-    private JComboBox sel_pruefer;
+    private JComboBox<String> sel_pruefer;
     private JTextField txt_bezeichung;
     private JTextField txt_hersteller;
     private JTextField txt_sachnummer;
@@ -192,7 +192,7 @@ public class WindowEditPruefung extends JFrame {
             _error_sachnummer(this.m_current_item.sachnr);
             return false;
         }
-        Integer day, month, year;
+        int day, month, year;
         try {
             day = Integer.parseInt(this.txt_tag.getText());
         }
@@ -222,7 +222,7 @@ public class WindowEditPruefung extends JFrame {
             _error_date();
             return false;
         }
-        Integer pruefer_selected = this.sel_pruefer.getSelectedIndex();
+        int pruefer_selected = this.sel_pruefer.getSelectedIndex();
         if(pruefer_selected == -1) {
             _error_pruefer();
             return false;

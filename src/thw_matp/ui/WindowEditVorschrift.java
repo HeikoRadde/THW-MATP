@@ -50,9 +50,9 @@ public class WindowEditVorschrift extends JFrame {
     public void btn_ok_action_performed(ActionEvent e) {
         if (e.getSource() == this.btn_ok) {
             String sachnummer = this.txt_sachnr.getText();
-            if (!this.m_ctrl_vorschrift.edit_vorschrift(this.txt_sachnr.getText(), this.txt_vorschrift.getText(), this.txt_abschnitt.getText(), this.txt_link.getText())) {
+            if (!this.m_ctrl_vorschrift.edit_vorschrift(sachnummer, this.txt_vorschrift.getText(), this.txt_abschnitt.getText(), this.txt_link.getText())) {
                 JOptionPane.showMessageDialog(get_root_panel(),
-                        "Bei editieren ist ein Fehler aufgetreten!",
+                        "Bei editieren der Vorschrift " + sachnummer + " ist ein Fehler aufgetreten!",
                         "Fehler!",
                         JOptionPane.ERROR_MESSAGE);
             }
@@ -77,5 +77,5 @@ public class WindowEditVorschrift extends JFrame {
 
 
 
-    private CtrlVorschrift m_ctrl_vorschrift;
+    private final CtrlVorschrift m_ctrl_vorschrift;
 }

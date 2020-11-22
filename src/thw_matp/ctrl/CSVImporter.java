@@ -30,7 +30,7 @@ public class CSVImporter {
 
     public CSVImporter(String filepath) {
         this.m_filepath = filepath;
-        this.m_new_vorschriften = new ArrayList<String>();
+        this.m_new_vorschriften = new ArrayList<>();
     }
 
 
@@ -92,5 +92,5 @@ public class CSVImporter {
 
 
     private final String m_filepath;
-    private ArrayList<String> m_new_vorschriften;
+    private final ArrayList<String> m_new_vorschriften;
 }

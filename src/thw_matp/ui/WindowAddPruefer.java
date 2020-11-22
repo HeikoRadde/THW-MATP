@@ -93,5 +93,5 @@ public class WindowAddPruefer extends JFrame {
         }
     }
 
-    private CtrlPruefer m_ctrl_pruefer;
+    private final CtrlPruefer m_ctrl_pruefer;
 }

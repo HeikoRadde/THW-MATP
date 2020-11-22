@@ -55,8 +55,8 @@ public class WindowAddVorschrift extends JFrame {
                 String sachnummer = this.txt_sachnr.getText();
                 int ret = this.m_ctrl_vorschrift.add_vorschrift(sachnummer, this.txt_vorschrift.getText(), this.txt_abschnitt.getText(), this.txt_link.getText());
                 switch (ret) {
-                    case 1: {
-                        Object [] options = {"Ja", "Nein"};
+                    case 1 -> {
+                        Object[] options = {"Ja", "Nein"};
                         int reply = JOptionPane.showOptionDialog(this,
                                 "Die Sachnummer " + sachnummer + " ist existiert bereits!\nSoll die Sachnummer editiert werden?",
                                 "Sachnummer bereits bekannt",
@@ -100,5 +100,5 @@ public class WindowAddVorschrift extends JFrame {
 
 
 
-    private CtrlVorschrift m_ctrl_vorschrift;
+    private final CtrlVorschrift m_ctrl_vorschrift;
 }

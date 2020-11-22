@@ -92,23 +92,23 @@ public class Database {
         if (rs.getObject(4) == null) return new Pruefer(UUID.fromString(rs.getString(1)), rs.getString(2), rs.getString(3));
         else {
             InputStream is = rs.getBinaryStream(4);
-            System.out.println("pruefer_get_all(): is size = " + Integer.toString(is.available()));
+            System.out.println("pruefer_get_all(): is size = " + is.available());
             BufferedImage bsignature = ImageIO.read(is);
-            System.out.println("pruefer_update(): bsignature size = " + Integer.toString(bsignature.getHeight()) + "|" + Integer.toString(bsignature.getWidth()));
+            System.out.println("pruefer_update(): bsignature size = " + bsignature.getHeight() + "|" + bsignature.getWidth());
             return new Pruefer(UUID.fromString(rs.getString(1)), rs.getString(2), rs.getString(3), bsignature);
         }
     }
 
     public List<Pruefer> pruefer_get_all() throws SQLException, IOException {
         ResultSet rs = this.m_connection.createStatement().executeQuery("SELECT * FROM pruefer");
-        List<Pruefer> list = new ArrayList<Pruefer>();
+        List<Pruefer> list = new ArrayList<>();
         while(rs.next()) {
             if (rs.getObject(4) == null) list.add(new Pruefer(UUID.fromString(rs.getString(1)), rs.getString(2), rs.getString(3)));
             else {
                 InputStream is = rs.getBinaryStream(4);
-                System.out.println("pruefer_get_all(): is size = " + Integer.toString(is.available()));
+                System.out.println("pruefer_get_all(): is size = " + is.available());
                 BufferedImage bsignature = ImageIO.read(is);
-                System.out.println("pruefer_update(): bsignature size = " + Integer.toString(bsignature.getHeight()) + "|" + Integer.toString(bsignature.getWidth()));
+                System.out.println("pruefer_update(): bsignature size = " + bsignature.getHeight() + "|" + bsignature.getWidth());
                 list.add(new Pruefer(UUID.fromString(rs.getString(1)), rs.getString(2), rs.getString(3), bsignature));
             }
         }
@@ -236,7 +236,7 @@ public class Database {
     }
 
     public List<Item> inventar_get_by_sachnr(String sachnr) throws SQLException {
-        List<Item> list = new ArrayList<Item>();
+        List<Item> list = new ArrayList<>();
         PreparedStatement pstmt = this.m_connection.prepareStatement("SELECT * FROM inventar WHERE Sachnr = ?");
         pstmt.setString(1, sachnr);
         ResultSet rs = pstmt.executeQuery();
@@ -254,7 +254,7 @@ public class Database {
 
     public List<Item> inventar_get_all() throws SQLException {
         ResultSet rs = this.m_connection.createStatement().executeQuery("SELECT * FROM inventar");
-        List<Item> list = new ArrayList<Item>();
+        List<Item> list = new ArrayList<>();
         while (rs.next()) {
             list.add(new Item(rs.getString(1),
                     rs.getString(2),
@@ -318,7 +318,7 @@ public class Database {
 
     public List<Pruefung> pruefungen_get_all() throws SQLException {
         ResultSet rs = this.m_connection.createStatement().executeQuery("SELECT * FROM pruefungen");
-        List<Pruefung> list = new ArrayList<Pruefung>();
+        List<Pruefung> list = new ArrayList<>();
         while (rs.next()) {
             Pruefung p;
             String pruefer = rs.getString(5);
@@ -355,7 +355,7 @@ public class Database {
         PreparedStatement pstmt = this.m_connection.prepareStatement("SELECT * FROM pruefungen WHERE Kennzeichen = ?");
         pstmt.setString(1, kennzeichen);
         ResultSet rs = pstmt.executeQuery();
-        List<Pruefung> list = new ArrayList<Pruefung>();
+        List<Pruefung> list = new ArrayList<>();
         while (rs.next()) {
             Pruefung p;
             String pruefer = rs.getString(5);
@@ -513,7 +513,7 @@ public class Database {
 
     public List<Vorschrift> vorschriften_get_all() throws SQLException {
         ResultSet rs = this.m_connection.createStatement().executeQuery("SELECT * FROM vorschriften");
-        List<Vorschrift> list = new ArrayList<Vorschrift>();
+        List<Vorschrift> list = new ArrayList<>();
         while (rs.next()) {
             Vorschrift p;
             if(rs.getString(4) == null) { //Link might be null
@@ -565,13 +565,13 @@ public class Database {
 
 
     public String execute_querry(String sql) throws SQLException {
-        String ret = "";
+        StringBuilder ret = new StringBuilder();
         ResultSet rs = this.m_connection.createStatement().executeQuery(sql);
         while (rs.next()) {
-            ret += rs.toString();
-            ret += "\r\n";
+            ret.append(rs.toString());
+            ret.append("\r\n");
         }
-        return ret;
+        return ret.toString();
     }
 
 
@@ -582,7 +582,7 @@ public class Database {
 
 
 
-    private Connection m_connection;
+    private final Connection m_connection;
     private static final String CREATE_TABLE_INVENTAR_SQL="CREATE TABLE inventar ("
             + "Kennzeichen CHAR(11) NOT NULL,"
             + "OV CHAR(510),"

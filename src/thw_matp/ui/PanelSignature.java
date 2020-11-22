@@ -57,6 +57,7 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
             mPoints = new ArrayList<>();
             mLastVelocity = 0;
             mLastWidth = (mMinWidth + mMaxWidth) / 2;
+            this.mClearOnDoubleClick = DEFAULT_ATTR_CLEAR_ON_DOUBLE_CLICK;
 
             setIsEmpty(true);
         }
@@ -372,7 +373,7 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
             TimedPoint firstPoint = mPoints.get(0);
             mPoints.add(getNewPoint(firstPoint.x, firstPoint.y));
         }
-        this.mHasEditState = true;
+        Boolean mHasEditState = true;
     }
 
     private void addBezier(Bezier curve, double startWidth, double endWidth) {
@@ -558,7 +559,6 @@ public class PanelSignature extends JPanel implements MouseListener, MouseMotion
     //View state
     private java.util.List<TimedPoint> mPoints;
     private boolean mIsEmpty;
-    private Boolean mHasEditState;
     private double mLastTouchX;
     private double mLastTouchY;
     private double mLastVelocity;

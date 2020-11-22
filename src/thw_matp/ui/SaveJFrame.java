@@ -31,7 +31,7 @@ public class SaveJFrame extends JFrame {
              * Invoked when a window is in the process of being closed.
              * The close operation can be overridden at this point.
              *
-             * @param e
+             * @param e Event
              */
             @Override
             public void windowClosing(WindowEvent e) {

@@ -207,7 +207,7 @@ public class WindowPruefung extends JFrame {
             _error_sachnummer(this.m_current_item.sachnr);
             return false;
         }
-        Integer selected_pruefer = this.sel_pruefer.getSelectedIndex();
+        int selected_pruefer = this.sel_pruefer.getSelectedIndex();
         if (selected_pruefer == -1) {
             _error_pruefer();
             return false;

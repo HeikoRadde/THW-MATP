@@ -44,13 +44,11 @@ public class WindowEditPruefer extends JFrame {
         this.btn_signature_clear.addActionListener(this::btn_clear_signature_action_performed);
         this.btn_signature_load.addActionListener(this::btn_load_signature_action_performed);
 
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                // Here, we can safely update the GUI
-                // because we'll be called from the
-                // event dispatch thread
-                update_fields();
-            }
+        EventQueue.invokeLater(() -> {
+            // Here, we can safely update the GUI
+            // because we'll be called from the
+            // event dispatch thread
+            update_fields();
         });
     }
 
@@ -72,9 +70,6 @@ public class WindowEditPruefer extends JFrame {
             {
                 JDialog dialog = new JDialog();
                 dialog.setUndecorated(true);
-                JLabel label = new JLabel( new ImageIcon(signature) );
-//                JOptionPane.showMessageDialog(null, label, "ImageDialog",
-//                        JOptionPane.PLAIN_MESSAGE, null);
             }
             if(!this.m_ctrl_pruefer.update(this.m_pruefer.id, this.txt_name.getText(), this.txt_vorname.getText(), signature)) {
                 JOptionPane.showMessageDialog(get_root_panel(),
@@ -120,6 +115,6 @@ public class WindowEditPruefer extends JFrame {
         }
     }
 
-    private CtrlPruefer m_ctrl_pruefer;
-    private Pruefer m_pruefer;
+    private final CtrlPruefer m_ctrl_pruefer;
+    private final Pruefer m_pruefer;
 }

@@ -60,7 +60,7 @@ public class CtrlVorschrift {
     }
 
     public List<String> get_sachnummern() {
-        List<String> ret = new ArrayList<String>();
+        List<String> ret = new ArrayList<>();
         try {
             List<Vorschrift> vorschriften = this.db.vorschriften_get_all();
             for (Vorschrift vorschrift : vorschriften) {
