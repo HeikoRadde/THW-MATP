@@ -33,7 +33,7 @@ public class CtrlPruefungen {
 
     public DefaultTableModel get_data() {
         DefaultTableModel mdl = new DefaultTableModel();
-        mdl.setColumnIdentifiers(new String[]{"Kennzeichen", "Datum", "Prüfer", "Bestanden", "Ausgesondert", "Bemerkungen", "ID"});
+        mdl.setColumnIdentifiers(new String[]{"Kennzeichen", "Datum", "Prüfer", "Ort", "Bestanden", "Ausgesondert", "Bemerkungen", "ID"});
         List<Pruefung> pruefungen = null;
         try {
             pruefungen = this.db.pruefungen_get_all();
@@ -49,7 +49,7 @@ public class CtrlPruefungen {
                 } catch (SQLException | IOException throwables) {
                     pruefer_name = "";
                 }
-                mdl.addRow(new Object[]{pruefung.kennzeichen, pruefung.datum, pruefer_name, pruefung.bestanden, pruefung.ausgesondert, pruefung.bemerkungen, pruefung.id});
+                mdl.addRow(new Object[]{pruefung.kennzeichen, pruefung.datum, pruefer_name, pruefung.ov, pruefung.bestanden, pruefung.ausgesondert, pruefung.bemerkungen, pruefung.id});
             }
         }
         else {
@@ -86,10 +86,10 @@ public class CtrlPruefungen {
         return mdl;
     }
 
-    public Pruefung add_pruefung(String kennzeichen, UUID pruefer, boolean bestanden, String bemerkungen, boolean ausgesondert) {
+    public Pruefung add_pruefung(String kennzeichen, UUID pruefer, boolean bestanden, String bemerkungen, boolean ausgesondert, String ov) {
         kennzeichen = kennzeichen.replace('/', '-');
         try {
-            return this.db.puefung_add_event(kennzeichen, pruefer, bestanden, bemerkungen, ausgesondert);
+            return this.db.puefung_add_event(kennzeichen, pruefer, bestanden, bemerkungen, ausgesondert, ov);
         } catch (SQLException throwables) {
             System.err.println("Failed to enter new entry in table pruefungen!");
             throwables.printStackTrace();

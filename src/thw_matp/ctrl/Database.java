@@ -281,16 +281,17 @@ public class Database {
 
 
 
-    public Pruefung puefung_add_event(String kennzeichen, UUID pruefer, boolean bestanden, String bemerkungen, boolean ausgesondert) throws SQLException {
-        PreparedStatement pstmt = this.m_connection.prepareStatement("INSERT INTO pruefungen (id, Kennzeichen, Datum, Bestanden, Pruefer, Bemerkungen, Ausgesondert) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        Pruefung p = new Pruefung(UUID.randomUUID(), kennzeichen, LocalDate.now(), bestanden, pruefer, bemerkungen, ausgesondert);
+    public Pruefung puefung_add_event(String kennzeichen, UUID pruefer, boolean bestanden, String bemerkungen, boolean ausgesondert, String ov) throws SQLException {
+        PreparedStatement pstmt = this.m_connection.prepareStatement("INSERT INTO pruefungen (id, Kennzeichen, Datum, Bestanden, Pruefer, Bemerkungen, Ausgesondert, OV) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        Pruefung p = new Pruefung(UUID.randomUUID(), kennzeichen, LocalDate.now(), bestanden, pruefer, bemerkungen, ausgesondert, ov);
         pstmt.setString(1, p.id.toString());
         pstmt.setString(2, p.kennzeichen);
         pstmt.setObject(3, p.datum);
         pstmt.setBoolean(4, p.bestanden);
         pstmt.setString(5, p.pruefer.toString());
-        pstmt.setString(6, bemerkungen);
-        pstmt.setBoolean(7, ausgesondert);
+        pstmt.setString(6, p.bemerkungen);
+        pstmt.setBoolean(7, p.ausgesondert);
+        pstmt.setString(8, p.ov);
         pstmt.executeUpdate();
         return p;
     }
@@ -323,14 +324,17 @@ public class Database {
             String pruefer = rs.getString(5);
             String bemerkungen = rs.getString(6);
             boolean ausgesondert = rs.getBoolean(7);
+            String ov = rs.getString(8);
             if(bemerkungen == null) bemerkungen = "";
+            if(ov == null) ov = "";
             if(pruefer == null) { //Pruefer might be null
                 p = new Pruefung(UUID.fromString(rs.getString(1)),
                         rs.getString(2),
                         rs.getObject(3, LocalDate.class),
                         rs.getBoolean(4),
                         bemerkungen,
-                        ausgesondert);
+                        ausgesondert,
+                        ov);
             }
             else {
                 p = new Pruefung(UUID.fromString(rs.getString(1)),
@@ -339,7 +343,8 @@ public class Database {
                         rs.getBoolean(4),
                         UUID.fromString(rs.getString(5)),
                         bemerkungen,
-                        ausgesondert);
+                        ausgesondert,
+                        ov);
             }
             list.add(p);
         }
@@ -356,14 +361,17 @@ public class Database {
             String pruefer = rs.getString(5);
             String bemerkungen = rs.getString(6);
             boolean ausgesondert = rs.getBoolean(7);
+            String ov = rs.getString(8);
             if(bemerkungen == null) bemerkungen = "";
+            if(ov == null) ov = "";
             if(pruefer == null) { //Pruefer might be null
                 p = new Pruefung(UUID.fromString(rs.getString(1)),
                         rs.getString(2),
                         rs.getObject(3, LocalDate.class),
                         rs.getBoolean(4),
                         bemerkungen,
-                        ausgesondert);
+                        ausgesondert,
+                        ov);
             }
             else {
                 p = new Pruefung(UUID.fromString(rs.getString(1)),
@@ -372,7 +380,8 @@ public class Database {
                         rs.getBoolean(4),
                         UUID.fromString(rs.getString(5)),
                         bemerkungen,
-                        ausgesondert);
+                        ausgesondert,
+                        ov);
             }
             list.add(p);
         }
@@ -388,14 +397,17 @@ public class Database {
         String pruefer = rs.getString(5);
         String bemerkungen = rs.getString(6);
         boolean ausgesondert = rs.getBoolean(7);
+        String ov = rs.getString(8);
         if(bemerkungen == null) bemerkungen = "";
+        if(ov == null) ov = "";
         if(pruefer == null) { //Pruefer might be null
             return new Pruefung(UUID.fromString(rs.getString(1)),
                     rs.getString(2),
                     rs.getObject(3, LocalDate.class),
                     rs.getBoolean(4),
                     bemerkungen,
-                    ausgesondert);
+                    ausgesondert,
+                    ov);
         }
         else {
             return new Pruefung(UUID.fromString(rs.getString(1)),
@@ -404,7 +416,8 @@ public class Database {
                     rs.getBoolean(4),
                     UUID.fromString(rs.getString(5)),
                     bemerkungen,
-                    ausgesondert);
+                    ausgesondert,
+                    ov);
         }
     }
 
@@ -428,14 +441,17 @@ public class Database {
         String pruefer = rs.getString(5);
         String bemerkungen = rs.getString(6);
         boolean ausgesondert = rs.getBoolean(7);
+        String ov = rs.getString(8);
         if(bemerkungen == null) bemerkungen = "";
+        if(ov == null) ov = "";
         if(pruefer == null) { //Pruefer might be null
             return new Pruefung(UUID.fromString(rs.getString(1)),
                     rs.getString(2),
                     rs.getObject(3, LocalDate.class),
                     rs.getBoolean(4),
                     bemerkungen,
-                    ausgesondert);
+                    ausgesondert,
+                    ov);
         }
         else {
             return new Pruefung(UUID.fromString(rs.getString(1)),
@@ -444,7 +460,8 @@ public class Database {
                     rs.getBoolean(4),
                     UUID.fromString(rs.getString(5)),
                     bemerkungen,
-                    ausgesondert);
+                    ausgesondert,
+                    ov);
         }
     }
 
@@ -592,6 +609,7 @@ public class Database {
             + "Pruefer UUID,"
             + "Bemerkungen CHAR(2048),"
             + "Ausgesondert BOOLEAN,"
+            + "OV CHAR(512),"
             + "PRIMARY KEY (id),"
             + "FOREIGN KEY (Kennzeichen) REFERENCES inventar(Kennzeichen),"
             + "FOREIGN KEY (Pruefer) REFERENCES pruefer(id)"

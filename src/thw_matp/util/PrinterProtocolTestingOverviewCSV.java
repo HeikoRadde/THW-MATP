@@ -44,7 +44,7 @@ public class PrinterProtocolTestingOverviewCSV {
             table_add_header(csv_printer);
         }
 
-        csv_printer.printRecord(pruefung.kennzeichen, pruefer.toString(), pruefung.bestanden, pruefung.ausgesondert, PrinterProtocolTesting.get_log_filename(pruefung));
+        csv_printer.printRecord(pruefung.kennzeichen, pruefer.toString(), pruefung.bestanden, pruefung.ausgesondert, PrinterProtocolTestingPDF.get_log_filename(pruefung));
 
         csv_printer.close();
         writer.close();

@@ -26,6 +26,7 @@ public class Pruefung {
     public UUID pruefer;
     public String bemerkungen;
     public boolean ausgesondert;
+    public String ov;
 
     public Pruefung(UUID id, String kennzeichen, LocalDate datum, boolean bestanden) {
         this.id = id;
@@ -37,7 +38,7 @@ public class Pruefung {
         this.ausgesondert = false;
     }
 
-    public Pruefung(UUID id, String kennzeichen, LocalDate datum, boolean bestanden, String bemerkungen, boolean ausgesondert) {
+    public Pruefung(UUID id, String kennzeichen, LocalDate datum, boolean bestanden, String bemerkungen, boolean ausgesondert, String ov) {
         this.id = id;
         this.kennzeichen = kennzeichen;
         this.datum = datum;
@@ -45,9 +46,10 @@ public class Pruefung {
         this.pruefer = new UUID(0, 0);
         this.bemerkungen = bemerkungen;
         this.ausgesondert = ausgesondert;
+        this.ov = ov;
     }
 
-    public Pruefung(UUID id, String kennzeichen, LocalDate datum, boolean bestanden, UUID pruefer, String bemerkungen, boolean ausgesondert) {
+    public Pruefung(UUID id, String kennzeichen, LocalDate datum, boolean bestanden, UUID pruefer, String bemerkungen, boolean ausgesondert, String ov) {
         this.id = id;
         this.kennzeichen = kennzeichen;
         this.datum = datum;
@@ -55,5 +57,6 @@ public class Pruefung {
         this.pruefer = pruefer;
         this.bemerkungen = bemerkungen;
         this.ausgesondert = ausgesondert;
+        this.ov = ov;
     }
 }

@@ -12,7 +12,6 @@
     - format of excel-file
 - Error-logging to file
 
-
 #Bugfixes
 
 - Codes are scanned with `/` instead of `-` -> replace character in all kennzeichen strings!  

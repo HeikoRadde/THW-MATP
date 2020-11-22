@@ -86,7 +86,7 @@ public class PrinterProtocolTestingOverviewPDF extends PrinterProtocolPDF {
         final String title = "Protokollübersicht";
         float pos_y = PAGE_MAX_H-40;
         try {
-            InputStream is = PrinterProtocolTesting.class.getClassLoader().getResourceAsStream("logo_thw_blau.png");
+            InputStream is = PrinterProtocolTestingPDF.class.getClassLoader().getResourceAsStream("logo_thw_blau.png");
             assert is != null;
             File thw_logo_tmp = File.createTempFile("tmp", "thw_logo");
             IOUtils.copy(is, new FileOutputStream(thw_logo_tmp));

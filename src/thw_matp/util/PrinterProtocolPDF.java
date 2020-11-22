@@ -53,7 +53,7 @@ public class PrinterProtocolPDF {
     }
 
     protected static String create_file_path_name(Path path, Pruefung pruefung) {
-        return Paths.get(path.toString(), PrinterProtocolTesting.get_log_filename(pruefung)).toString();
+        return Paths.get(path.toString(), PrinterProtocolTestingPDF.get_log_filename(pruefung)).toString();
     }
 
     protected static float calc_font_height(PDType1Font font, float font_size) {

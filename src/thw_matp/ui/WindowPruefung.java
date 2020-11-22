@@ -24,7 +24,7 @@ import thw_matp.datatypes.Pruefer;
 import thw_matp.datatypes.Pruefung;
 import thw_matp.datatypes.Vorschrift;
 import thw_matp.util.PrinterProtocolTestingOverviewCSV;
-import thw_matp.util.PrinterProtocolTesting;
+import thw_matp.util.PrinterProtocolTestingPDF;
 import thw_matp.util.PrinterProtocolTestingOverviewPDF;
 
 import javax.swing.*;
@@ -47,7 +47,7 @@ public class WindowPruefung extends JFrame {
     private JButton btn_end;
     private JTextArea txt_bemerkungen;
     private JRadioButton rb_yes;
-    private JTextField txt_oe;
+    private JTextField txt_ov;
     private JTextField txt_einheit;
     private JTextField txt_hersteller;
     private JTextField txt_bezeichung;
@@ -59,6 +59,7 @@ public class WindowPruefung extends JFrame {
     private JTextField txt_link;
     private JCheckBox check_create_protocol;
     private JTextField txt_save_path;
+    private JTextField txt_ort;
 
     public WindowPruefung(String title, CtrlInventar ctrl_inventar, CtrlPruefer ctrl_pruefer, CtrlVorschrift ctrl_vorschrift, CtrlPruefungen ctrl_pruefungen) {
         super(title);
@@ -142,17 +143,17 @@ public class WindowPruefung extends JFrame {
 
     private void _fill_fields() {
         this.m_current_item = this.m_ctrl_inventar.get_item(this.inp_kennzeichen.getText());
-        if(m_current_item == null) {
+        if (m_current_item == null) {
             _error_kennzeichen(this.inp_kennzeichen.getText());
             return;
         }
         this.m_current_vorschrift = this.m_ctrl_vorschrift.get_vorschrift(this.m_current_item.sachnr);
-        if(this.m_current_vorschrift == null) {
+        if (this.m_current_vorschrift == null) {
             _error_sachnummer(this.m_current_item.sachnr);
             return;
         }
 
-        this.txt_oe.setText(this.m_current_item.ov);
+        this.txt_ov.setText(this.m_current_item.ov);
         this.txt_einheit.setText(this.m_current_item.einheit);
         this.txt_bezeichung.setText(this.m_current_item.bezeichnung);
         this.txt_hersteller.setText(this.m_current_item.hersteller);
@@ -166,7 +167,7 @@ public class WindowPruefung extends JFrame {
     }
 
     private void _clear_fields() {
-        this.txt_oe.setText("");
+        this.txt_ov.setText("");
         this.txt_einheit.setText("");
         this.txt_bezeichung.setText("");
         this.txt_hersteller.setText("");
@@ -197,12 +198,12 @@ public class WindowPruefung extends JFrame {
         boolean ausgesondert = false;
         if (rb_yes.isSelected()) ausgesondert = true;
         this.m_current_item = this.m_ctrl_inventar.get_item(this.inp_kennzeichen.getText());
-        if(m_current_item == null) {
+        if (m_current_item == null) {
             _error_kennzeichen(this.inp_kennzeichen.getText());
             return false;
         }
         this.m_current_vorschrift = this.m_ctrl_vorschrift.get_vorschrift(this.m_current_item.sachnr);
-        if(this.m_current_vorschrift == null) {
+        if (this.m_current_vorschrift == null) {
             _error_sachnummer(this.m_current_item.sachnr);
             return false;
         }
@@ -212,16 +213,21 @@ public class WindowPruefung extends JFrame {
             return false;
         }
         String kennzeichen = this.inp_kennzeichen.getText();
-        if(this.m_ctrl_inventar.get_item(kennzeichen) == null) {
+        if (this.m_ctrl_inventar.get_item(kennzeichen) == null) {
             _error_kennzeichen(kennzeichen);
             return false;
         }
+        String ov = this.txt_ort.getText();
+        if (ov.isEmpty()) {
+            _error_ort();
+            return false;
+        }
         else {
-            Pruefung p = this.m_ctrl_pruefungen.add_pruefung(kennzeichen, this.m_pruefer_list.get(selected_pruefer).id, bestanden, this.txt_bemerkungen.getText(), ausgesondert);
+            Pruefung p = this.m_ctrl_pruefungen.add_pruefung(kennzeichen, this.m_pruefer_list.get(selected_pruefer).id, bestanden, this.txt_bemerkungen.getText(), ausgesondert, ov);
             if (this.check_create_protocol.isSelected()) {
                 try {
                     path = Paths.get(this.txt_save_path.getText());
-                    PrinterProtocolTesting.print_pruefung(path, p, this.m_pruefer_list.get(this.sel_pruefer.getSelectedIndex()), this.m_current_item, this.m_current_vorschrift);
+                    PrinterProtocolTestingPDF.print_pruefung(path, p, this.m_pruefer_list.get(this.sel_pruefer.getSelectedIndex()), this.m_current_item, this.m_current_vorschrift);
                     PrinterProtocolTestingOverviewCSV.add_pruefung_event(path, p, this.m_pruefer_list.get(this.sel_pruefer.getSelectedIndex()));
                     PrinterProtocolTestingOverviewPDF.set_path(path);
                 } catch (IOException e) {
@@ -271,6 +277,13 @@ public class WindowPruefung extends JFrame {
     private void _error_pdf() {
         JOptionPane.showMessageDialog(this.root_panel,
                 "Fehler beim Erstellen der PDF Datei!",
+                "Fehler!",
+                JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void _error_ort() {
+        JOptionPane.showMessageDialog(this.root_panel,
+                "Der Ort der Prüfung fehlt!",
                 "Fehler!",
                 JOptionPane.ERROR_MESSAGE);
     }

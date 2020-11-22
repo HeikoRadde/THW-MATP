@@ -23,7 +23,7 @@ import thw_matp.datatypes.Item;
 import thw_matp.datatypes.Pruefer;
 import thw_matp.datatypes.Pruefung;
 import thw_matp.datatypes.Vorschrift;
-import thw_matp.util.PrinterProtocolTesting;
+import thw_matp.util.PrinterProtocolTestingPDF;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
@@ -432,7 +432,7 @@ public class WindowMain {
                 Item item = this.ctrl_inventar.get_item(pruefung.kennzeichen);
                 Vorschrift vorschrift = this.ctrl_vorschriften.get_vorschrift(item.sachnr);
                 try {
-                    PrinterProtocolTesting.print_pruefung(path, pruefung, pruefer, item, vorschrift);
+                    PrinterProtocolTestingPDF.print_pruefung(path, pruefung, pruefer, item, vorschrift);
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
                 }

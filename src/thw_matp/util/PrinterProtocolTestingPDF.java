@@ -38,7 +38,7 @@ import java.nio.file.Path;
 import java.util.GregorianCalendar;
 
 
-public class PrinterProtocolTesting extends PrinterProtocolPDF {
+public class PrinterProtocolTestingPDF extends PrinterProtocolPDF {
 
     public static void print_pruefung(Path path, Pruefung pruefung, Pruefer pruefer, Item item, Vorschrift vorschrift) throws IOException {
         PDDocument document = new PDDocument();
@@ -80,7 +80,7 @@ public class PrinterProtocolTesting extends PrinterProtocolPDF {
         final String title = "Prüfprotokoll";
         float pos_y = PAGE_MAX_H-40;
         try {
-            InputStream is = PrinterProtocolTesting.class.getClassLoader().getResourceAsStream("logo_thw_blau.png");
+            InputStream is = PrinterProtocolTestingPDF.class.getClassLoader().getResourceAsStream("logo_thw_blau.png");
             assert is != null;
             File thw_logo_tmp = File.createTempFile("tmp", "thw_logo");
             IOUtils.copy(is, new FileOutputStream(thw_logo_tmp));
@@ -254,7 +254,7 @@ public class PrinterProtocolTesting extends PrinterProtocolPDF {
             content.setFont(FONT_BOLD, TXT_SIZE_TEXT);
             content.beginText();
             content.newLineAtOffset(POS_COL_1, pos_y);
-            content.showText("OV_NAME");
+            content.showText(pruefung.ov);
             content.endText();
             pos_y -= calc_row_offset(FONT_NORMAL, TXT_SIZE_TEXT);
 
