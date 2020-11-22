@@ -367,7 +367,7 @@ public class CtrlVorschrift {
             this.db.vorschriften_add("7910T60300", "ElektrogeräteAlggemein.htm", "GUV-V A3", "VDE 0701-0702");
             this.db.vorschriften_add("8110T91300", "ElektrogeräteAlggemein.htm", "GUV-V A3", "VDE 0701-0702");
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+//            throwables.printStackTrace();
         }
 
     }

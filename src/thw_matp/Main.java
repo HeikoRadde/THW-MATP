@@ -23,11 +23,10 @@ public class Main {
     public static void create_gui() {
         Database db = null;
         try {
-            db = new Database();
-            db.pruefer_add("Mustermann", "Max");
-            db.pruefer_print_all();
+            db = new Database("thw_matp_datenbank");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+            System.exit(1);
         }
 
         CtrlInventar ctrl_items = new CtrlInventar(db);
@@ -51,8 +50,6 @@ public class Main {
         win.populate_table_pruefer();
         win.populate_table_pruefungen();
         win.populate_table_vorschriften();
-
-
     }
 
 

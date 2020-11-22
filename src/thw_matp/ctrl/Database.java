@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,14 +22,21 @@ import java.util.UUID;
 
 public class Database {
 
-    public Database() throws SQLException {
-        this.m_connection = DriverManager.getConnection("jdbc:h2:mem:db1");
+    public Database(String db_name) throws SQLException {
+        Path local_path = Paths.get("").toAbsolutePath();
+        String db_absolute_path = Paths.get(local_path.toString(), db_name).toString();
 
-        this.m_connection.createStatement().executeUpdate(CREATE_TABLE_VORSCHRIFTEN_SQL);
-        this.m_connection.createStatement().executeUpdate(CREATE_TABLE_INVENTAR_SQL);
-        this.m_connection.createStatement().executeUpdate(CREATE_TABLE_PRUEFER_SQL);
-        this.m_connection.createStatement().executeUpdate(CREATE_TABLE_PRUEFUNGEN_SQL);
-        System.out.println("Tables created");
+//        this.m_connection = DriverManager.getConnection("jdbc:h2:mem:db1");
+        this.m_connection = DriverManager.getConnection("jdbc:h2:file:" + db_absolute_path);
+
+        try {
+            this.m_connection.createStatement().executeUpdate(CREATE_TABLE_VORSCHRIFTEN_SQL);
+            this.m_connection.createStatement().executeUpdate(CREATE_TABLE_INVENTAR_SQL);
+            this.m_connection.createStatement().executeUpdate(CREATE_TABLE_PRUEFER_SQL);
+            this.m_connection.createStatement().executeUpdate(CREATE_TABLE_PRUEFUNGEN_SQL);
+        } catch (SQLException throwables) {            System.out.println("New database - Tables created");
+
+        }
     }
 
 

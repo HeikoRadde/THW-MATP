@@ -10,7 +10,6 @@
 - Load from CSV
     - own format
     - format of excel-file
-- Persistent DB
 - Error-logging to file
 - Copyright notices
     - im Quelltext
