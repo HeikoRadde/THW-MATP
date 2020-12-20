@@ -15,25 +15,20 @@
  */
 package thw_matp.ui;
 
-import thw_matp.ctrl.CtrlInventar;
-import thw_matp.ctrl.CtrlPruefer;
-import thw_matp.ctrl.CtrlPruefungen;
-import thw_matp.ctrl.CtrlVorschrift;
+import thw_matp.ctrl.*;
 import thw_matp.datatypes.Item;
 import thw_matp.datatypes.Pruefer;
 import thw_matp.datatypes.Pruefung;
 import thw_matp.datatypes.Vorschrift;
 import thw_matp.util.PrinterProtocolTestingOverviewCSV;
-import thw_matp.util.PrinterProtocolTestingPDF;
 import thw_matp.util.PrinterProtocolTestingOverviewPDF;
+import thw_matp.util.PrinterProtocolTestingPDF;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -60,6 +55,7 @@ public class WindowPruefung extends JFrame {
     private JCheckBox check_create_protocol;
     private JTextField txt_save_path;
     private JTextField txt_ort;
+    private JButton btn_select_save_path;
 
     public WindowPruefung(String title, CtrlInventar ctrl_inventar, CtrlPruefer ctrl_pruefer, CtrlVorschrift ctrl_vorschrift, CtrlPruefungen ctrl_pruefungen) {
         super(title);
@@ -79,11 +75,13 @@ public class WindowPruefung extends JFrame {
         this.btn_fail.addActionListener(this::btn_fail_action_performed);
         this.btn_end.addActionListener(this::btn_end_action_performed);
         this.inp_kennzeichen.addActionListener(this::inp_kennzeichen_action_performed);
+        this.btn_select_save_path.addActionListener(this::btn_select_save_path_action_performed);
         this.addWindowListener(new WindowAdapter() {
             public void windowOpened(WindowEvent e) {
                 inp_kennzeichen.requestFocus();
             }
         });
+        this.txt_save_path.setText(Settings.getInstance().get_path_protocols().toString());
 
         this.m_ctrl_inventar = ctrl_inventar;
         this.m_ctrl_vorschrift = ctrl_vorschrift;
@@ -141,6 +139,23 @@ public class WindowPruefung extends JFrame {
         }
     }
 
+    public void btn_select_save_path_action_performed(ActionEvent e) {
+        if (e.getSource() == btn_select_save_path) {
+            JFileChooser f = new JFileChooser();
+            f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            f.setCurrentDirectory(Settings.getInstance().get_path_protocols().toFile());
+            f.setDialogTitle("Ordner auswählen");
+            if (f.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+                Settings.getInstance().set_path_protocols(java.nio.file.Paths.get(f.getSelectedFile().getAbsolutePath()));
+                this.txt_save_path.setText(Settings.getInstance().get_path_protocols().toString());
+            }
+        }
+        else {
+            System.err.println("Handle function called from wrong GUI object!");
+            new Throwable().printStackTrace();
+        }
+    }
+
     private void _fill_fields() {
         this.m_current_item = this.m_ctrl_inventar.get_item(this.inp_kennzeichen.getText());
         if (m_current_item == null) {
@@ -182,19 +197,6 @@ public class WindowPruefung extends JFrame {
     }
 
     private boolean _enter_pruefung(boolean bestanden) {
-        Path path;
-        if (this.check_create_protocol.isSelected()) {
-            if (txt_save_path.getText().isEmpty())
-            {
-                JFileChooser f = new JFileChooser();
-                f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                f.setCurrentDirectory(new java.io.File("."));
-                f.setDialogTitle("Ordner auswählen");
-                f.showSaveDialog(this);
-                path = java.nio.file.Paths.get(f.getSelectedFile().getAbsolutePath());
-                this.txt_save_path.setText(path.toString());
-            }
-        }
         boolean ausgesondert = false;
         if (rb_yes.isSelected()) ausgesondert = true;
         this.m_current_item = this.m_ctrl_inventar.get_item(this.inp_kennzeichen.getText());
@@ -226,10 +228,9 @@ public class WindowPruefung extends JFrame {
             Pruefung p = this.m_ctrl_pruefungen.add_pruefung(kennzeichen, this.m_pruefer_list.get(selected_pruefer).id, bestanden, this.txt_bemerkungen.getText(), ausgesondert, ov);
             if (this.check_create_protocol.isSelected()) {
                 try {
-                    path = Paths.get(this.txt_save_path.getText());
-                    PrinterProtocolTestingPDF.print_pruefung(path, p, this.m_pruefer_list.get(this.sel_pruefer.getSelectedIndex()), this.m_current_item, this.m_current_vorschrift);
-                    PrinterProtocolTestingOverviewCSV.add_pruefung_event(path, p, this.m_pruefer_list.get(this.sel_pruefer.getSelectedIndex()));
-                    PrinterProtocolTestingOverviewPDF.set_path(path);
+                    PrinterProtocolTestingPDF.print_pruefung(Settings.getInstance().get_path_protocols(), p, this.m_pruefer_list.get(this.sel_pruefer.getSelectedIndex()), this.m_current_item, this.m_current_vorschrift);
+                    PrinterProtocolTestingOverviewCSV.add_pruefung_event(Settings.getInstance().get_path_protocols(), p, this.m_pruefer_list.get(this.sel_pruefer.getSelectedIndex()));
+                    PrinterProtocolTestingOverviewPDF.set_path(Settings.getInstance().get_path_protocols());
                 } catch (IOException e) {
                     e.printStackTrace();
                     _error_pdf();

@@ -96,6 +96,7 @@ public class WindowMain {
         if (e.getSource() == this.btn_import) {
             final JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
             fc.setDialogTitle("CSV Datei auswählen");
+            fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
             if (fc.showOpenDialog(get_root_panel()) == JFileChooser.APPROVE_OPTION) {
                 String path = fc.getSelectedFile().getPath();
                 if(!this.ctrl_inventar.load_data(path))
@@ -413,28 +414,27 @@ public class WindowMain {
             f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             f.setCurrentDirectory(new java.io.File("."));
             f.setDialogTitle("Ordner auswählen");
-            f.showSaveDialog(this.root_panel);
-            Path path = java.nio.file.Paths.get(f.getSelectedFile().getAbsolutePath());
-            for (int selection : selections) {
-                UUID id = UUID.fromString(this.tbl_pruefungen.getModel().getValueAt(this.tbl_pruefungen.convertRowIndexToModel(selection), 6).toString());
-                Pruefung pruefung = this.ctrl_pruefungen.find(id);
-                if(pruefung == null)
-                {
-                    continue;
-                }
-                Pruefer pruefer;
-                if (pruefung.pruefer.equals(new UUID(0, 0))) {
-                    pruefer = new Pruefer(new UUID(0, 0), "", "");
-                }
-                else {
-                    pruefer = this.ctrl_pruefer.find(pruefung.pruefer);
-                }
-                Item item = this.ctrl_inventar.get_item(pruefung.kennzeichen);
-                Vorschrift vorschrift = this.ctrl_vorschriften.get_vorschrift(item.sachnr);
-                try {
-                    PrinterProtocolTestingPDF.print_pruefung(path, pruefung, pruefer, item, vorschrift);
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
+            if (f.showSaveDialog(this.root_panel) == JFileChooser.APPROVE_OPTION) {
+                Path path = java.nio.file.Paths.get(f.getSelectedFile().getAbsolutePath());
+                for (int selection : selections) {
+                    UUID id = UUID.fromString(this.tbl_pruefungen.getModel().getValueAt(this.tbl_pruefungen.convertRowIndexToModel(selection), 6).toString());
+                    Pruefung pruefung = this.ctrl_pruefungen.find(id);
+                    if (pruefung == null) {
+                        continue;
+                    }
+                    Pruefer pruefer;
+                    if (pruefung.pruefer.equals(new UUID(0, 0))) {
+                        pruefer = new Pruefer(new UUID(0, 0), "", "");
+                    } else {
+                        pruefer = this.ctrl_pruefer.find(pruefung.pruefer);
+                    }
+                    Item item = this.ctrl_inventar.get_item(pruefung.kennzeichen);
+                    Vorschrift vorschrift = this.ctrl_vorschriften.get_vorschrift(item.sachnr);
+                    try {
+                        PrinterProtocolTestingPDF.print_pruefung(path, pruefung, pruefer, item, vorschrift);
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
                 }
             }
         }
