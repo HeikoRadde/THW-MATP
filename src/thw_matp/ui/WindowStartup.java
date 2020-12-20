@@ -5,8 +5,11 @@ import thw_matp.ctrl.Settings;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class WindowStartup extends JFrame {
+
 
     public WindowStartup() {
         super("Startup");
@@ -19,6 +22,8 @@ public class WindowStartup extends JFrame {
         this.btn_protocols.addActionListener(this::btn_select_path_protocols_action_performed);
         this.btn_cancel.addActionListener(this::btn_cancel_action_performed);
         this.btn_ok.addActionListener(this::btn_ok_action_performed);
+
+        resourceBundle = ResourceBundle.getBundle("lang.ui.windowStartup", Locale.getDefault());
     }
 
     public void btn_select_path_database_action_performed(ActionEvent e) {
@@ -26,14 +31,14 @@ public class WindowStartup extends JFrame {
             JFileChooser f = new JFileChooser();
             f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             f.setCurrentDirectory(Settings.getInstance().get_path_db().toFile());
-            f.setDialogTitle("Ordner für die Datenbank auswählen");
+            f.setDialogTitle(resourceBundle.getString("filechooser_db_title"));
             if (f.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
                 Settings.getInstance().set_path_db(java.nio.file.Paths.get(f.getSelectedFile().getAbsolutePath()));
                 this.txt_database.setText(Settings.getInstance().get_path_db().toString());
             }
         }
         else {
-            System.err.println("Handle function called from wrong GUI object!");
+            System.err.println(resourceBundle.getString("error_handle_fct"));
             new Throwable().printStackTrace();
         }
     }
@@ -42,14 +47,14 @@ public class WindowStartup extends JFrame {
             JFileChooser f = new JFileChooser();
             f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             f.setCurrentDirectory(Settings.getInstance().get_path_protocols().toFile());
-            f.setDialogTitle("Ordner für Protokolle auswählen");
+            f.setDialogTitle(resourceBundle.getString("filechooser_protocols_title"));
             if (f.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
                 Settings.getInstance().set_path_protocols(java.nio.file.Paths.get(f.getSelectedFile().getAbsolutePath()));
                 this.txt_protocols.setText(Settings.getInstance().get_path_protocols().toString());
             }
         }
         else {
-            System.err.println("Handle function called from wrong GUI object!");
+            System.err.println(resourceBundle.getString("error_handle_fct"));
             new Throwable().printStackTrace();
         }
     }
@@ -86,4 +91,5 @@ public class WindowStartup extends JFrame {
     private JButton btn_ok;
     private JButton btn_cancel;
     private JPanel root_panel;
+    private ResourceBundle resourceBundle;
 }
