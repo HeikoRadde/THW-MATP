@@ -18,6 +18,7 @@ package thw_matp;
 import thw_matp.ctrl.*;
 import thw_matp.ui.SaveJFrame;
 import thw_matp.ui.WindowMain;
+import thw_matp.ui.WindowStartup;
 
 import javax.swing.*;
 import java.sql.SQLException;
@@ -26,7 +27,15 @@ import java.sql.SQLException;
 public class Main {
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(Main::create_gui);
+        SwingUtilities.invokeLater(Main::create_startup);
+    }
+
+    public static void create_startup() {
+        WindowStartup startup = new WindowStartup();
+        startup.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        startup.pack();
+        startup.setLocationRelativeTo(null);
+        startup.setVisible(true);
     }
 
     public static void create_gui() {
