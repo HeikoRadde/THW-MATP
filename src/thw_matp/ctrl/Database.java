@@ -581,7 +581,7 @@ public class Database {
 
 
     private final Connection m_connection;
-    private static final String CREATE_TABLE_INVENTAR_SQL="CREATE TABLE inventar ("
+    private static final String CREATE_TABLE_INVENTAR_SQL="CREATE TABLE IF NOT EXISTS inventar ("
             + "Kennzeichen CHAR(11) NOT NULL,"
             + "OV CHAR(510),"
             + "Einheit CHAR(510),"
@@ -592,14 +592,14 @@ public class Database {
             + "PRIMARY KEY (Kennzeichen),"
             + "FOREIGN KEY (Sachnr) REFERENCES vorschriften(Sachnr)"
             + ")";
-    private static final String CREATE_TABLE_PRUEFER_SQL="CREATE TABLE pruefer ("
+    private static final String CREATE_TABLE_PRUEFER_SQL="CREATE TABLE IF NOT EXISTS pruefer ("
             + "id UUID NOT NULL,"
             + "Name CHAR(510) NOT NULL,"
             + "Vorname CHAR(510) NOT NULL,"
             + "Unterschrift IMAGE,"
             + "PRIMARY KEY (id)"
             + ")";
-    private static final String CREATE_TABLE_PRUEFUNGEN_SQL="CREATE TABLE pruefungen ("
+    private static final String CREATE_TABLE_PRUEFUNGEN_SQL="CREATE TABLE IF NOT EXISTS pruefungen ("
             + "id UUID NOT NULL,"
             + "Kennzeichen CHAR(11) NOT NULL,"
             + "Datum DATE NOT NULL,"
@@ -612,7 +612,7 @@ public class Database {
             + "FOREIGN KEY (Kennzeichen) REFERENCES inventar(Kennzeichen),"
             + "FOREIGN KEY (Pruefer) REFERENCES pruefer(id)"
             + ")";
-    private static final String CREATE_TABLE_VORSCHRIFTEN_SQL="CREATE TABLE vorschriften ("
+    private static final String CREATE_TABLE_VORSCHRIFTEN_SQL="CREATE TABLE IF NOT EXISTS vorschriften ("
             + "Sachnr CHAR(510) NOT NULL,"
             + "Vorschrift CHAR(510) NOT NULL,"
             + "Abschnitt CHAR(510) NOT NULL,"
