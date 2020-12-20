@@ -35,8 +35,6 @@ public class Pruefer {
         this.name = name;
         this.vorname = vorname;
         this.unterschrift = unterschrift;
-        System.out.println(unterschrift.getWidth(null));
-        System.out.println(unterschrift.getHeight(null));
     }
 
     public String toString() {

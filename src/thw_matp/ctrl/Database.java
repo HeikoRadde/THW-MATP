@@ -90,9 +90,7 @@ public class Database {
         if (rs.getObject(4) == null) return new Pruefer(UUID.fromString(rs.getString(1)), rs.getString(2), rs.getString(3));
         else {
             InputStream is = rs.getBinaryStream(4);
-            System.out.println("pruefer_get_all(): is size = " + is.available());
             BufferedImage bsignature = ImageIO.read(is);
-            System.out.println("pruefer_update(): bsignature size = " + bsignature.getHeight() + "|" + bsignature.getWidth());
             return new Pruefer(UUID.fromString(rs.getString(1)), rs.getString(2), rs.getString(3), bsignature);
         }
     }
@@ -104,9 +102,7 @@ public class Database {
             if (rs.getObject(4) == null) list.add(new Pruefer(UUID.fromString(rs.getString(1)), rs.getString(2), rs.getString(3)));
             else {
                 InputStream is = rs.getBinaryStream(4);
-                System.out.println("pruefer_get_all(): is size = " + is.available());
                 BufferedImage bsignature = ImageIO.read(is);
-                System.out.println("pruefer_update(): bsignature size = " + bsignature.getHeight() + "|" + bsignature.getWidth());
                 list.add(new Pruefer(UUID.fromString(rs.getString(1)), rs.getString(2), rs.getString(3), bsignature));
             }
         }
@@ -168,7 +164,6 @@ public class Database {
         InputStream is = new FileInputStream(signature_tmp);
         pstmt.setBinaryStream(3, is);
         pstmt.setString(4, id.toString());
-        System.out.println("pruefer_update() SQL: " + pstmt.toString());
         pstmt.executeUpdate();
         signature_tmp.delete();
     }
