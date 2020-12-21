@@ -129,7 +129,6 @@ public class WindowPruefung extends JFrame {
 
     public void inp_kennzeichen_action_performed(ActionEvent e) {
         if (e.getSource() == inp_kennzeichen) {
-            System.out.println(this.inp_kennzeichen.getText());
             _clear_fields();
             _fill_fields();
         }
@@ -191,6 +190,8 @@ public class WindowPruefung extends JFrame {
         this.txt_pruefungsvorschrift.setText("");
         this.txt_abschnitt.setText("");
         this.txt_link.setText("");
+        this.rb_no.setSelected(true);
+        this.rb_yes.setSelected(false);
 
         this.m_current_item = null;
         this.m_current_vorschrift = null;
