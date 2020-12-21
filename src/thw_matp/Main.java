@@ -19,6 +19,7 @@ import thw_matp.ctrl.*;
 import thw_matp.ui.SaveJFrame;
 import thw_matp.ui.WindowMain;
 import thw_matp.ui.WindowStartup;
+import thw_matp.util.PrinterProtocolTestingOverviewPDF;
 
 import javax.swing.*;
 import java.sql.SQLException;
@@ -56,8 +57,8 @@ public class Main {
 
         WindowMain win = new WindowMain(ctrl_items, ctrl_pruefer, ctrl_pruefungen, ctrl_vorschriften);
         JPanel root = win.get_root_panel();
-        JFrame frame = new SaveJFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        SaveJFrame frame = new SaveJFrame();
+        frame.setDefaultCloseOperation(SaveJFrame.EXIT_ON_CLOSE);
         frame.setContentPane(root);
         frame.setTitle("THW-MATP");
         frame.pack();
@@ -68,6 +69,8 @@ public class Main {
         win.populate_table_pruefer();
         win.populate_table_pruefungen();
         win.populate_table_vorschriften();
+
+        PrinterProtocolTestingOverviewPDF.set_path(Settings.getInstance().get_path_protocols());
     }
 
 
