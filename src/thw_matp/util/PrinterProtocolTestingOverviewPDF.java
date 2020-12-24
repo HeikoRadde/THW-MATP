@@ -43,6 +43,9 @@ public class PrinterProtocolTestingOverviewPDF extends PrinterProtocolPDF {
         {
             return;
         }
+        if (!new File(PrinterProtocolTestingOverviewCSV.create_file_path_name(path)).isFile()) {
+            return;
+        }
         Reader in = new InputStreamReader(new FileInputStream(PrinterProtocolTestingOverviewCSV.create_file_path_name(path)), StandardCharsets.UTF_8);
         Iterable<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(in);
 
