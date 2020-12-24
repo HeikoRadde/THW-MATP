@@ -25,6 +25,7 @@ import thw_matp.util.PrinterProtocolTestingOverviewPDF;
 import thw_matp.util.PrinterProtocolTestingPDF;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -76,6 +77,7 @@ public class WindowPruefung extends JFrame {
         this.btn_end.addActionListener(this::btn_end_action_performed);
         this.inp_kennzeichen.addActionListener(this::inp_kennzeichen_action_performed);
         this.btn_select_save_path.addActionListener(this::btn_select_save_path_action_performed);
+        this.sel_pruefer.addActionListener(this::sel_pruefer_action_performed);
         this.addWindowListener(new WindowAdapter() {
             public void windowOpened(WindowEvent e) {
                 inp_kennzeichen.requestFocus();
@@ -155,6 +157,16 @@ public class WindowPruefung extends JFrame {
         }
     }
 
+    public void sel_pruefer_action_performed(ActionEvent e) {
+        if (e.getSource() == sel_pruefer) {
+            this.sel_pruefer.setBackground(Color.WHITE);
+        }
+        else {
+            System.err.println("Handle function called from wrong GUI object!");
+            new Throwable().printStackTrace();
+        }
+    }
+
     private void _fill_fields() {
         this.m_current_item = this.m_ctrl_inventar.get_item(this.inp_kennzeichen.getText());
         if (m_current_item == null) {
@@ -195,6 +207,8 @@ public class WindowPruefung extends JFrame {
 
         this.m_current_item = null;
         this.m_current_vorschrift = null;
+
+        this.inp_kennzeichen.setBackground(Color.WHITE);
     }
 
     private boolean _enter_pruefung(boolean bestanden) {
@@ -260,6 +274,7 @@ public class WindowPruefung extends JFrame {
             win.setLocationRelativeTo(this.root_panel);
             win.setVisible(true);
         }
+        this.inp_kennzeichen.setBackground(Color.RED);
     }
 
     private void _error_sachnummer(String sachnummer) {
@@ -274,6 +289,7 @@ public class WindowPruefung extends JFrame {
                 "Kein Prüfer ausgewählt!",
                 "Fehlender Prüfer!",
                 JOptionPane.ERROR_MESSAGE);
+        this.sel_pruefer.setBackground(Color.RED);
     }
 
     private void _error_pdf() {
