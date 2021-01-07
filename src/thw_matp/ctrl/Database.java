@@ -37,11 +37,35 @@ import java.util.UUID;
 public class Database {
 
     public Database(String db_name) throws SQLException {
-        String db_absolute_path = Paths.get(Settings.getInstance().get_path_db().toAbsolutePath().toString(), db_name).toString();
+        String db_absolute_path = get_db_full_path(db_name);
 
 //        this.m_connection = DriverManager.getConnection("jdbc:h2:mem:db1");
-        this.m_connection = DriverManager.getConnection("jdbc:h2:file:" + db_absolute_path);
+        this.m_connection = DriverManager.getConnection("jdbc:h2:file:" + db_absolute_path + ";AUTO_SERVER=TRUE", "sa", "sa");
 
+        db_start();
+    }
+
+    public Database(String ip, String port, String db_name) throws SQLException {
+        System.out.println("URL: " + "jdbc:h2:tcp://" + ip + ":" + port + "/" + db_name);
+        this.m_connection = DriverManager.getConnection("jdbc:h2:tcp://" + ip + ":" + port + "/" + db_name, "sa", "sa");
+        db_start();
+    }
+
+    protected Database() {
+        ;
+    }
+
+    protected String get_db_full_path(String db_name) {
+        return Paths.get(Settings.getInstance().get_path_db().toAbsolutePath().toString(), db_name).toString();
+    }
+
+    protected void connect(String url, String db_name) throws SQLException {
+        System.out.println("URL: " + "jdbc:h2:" + url + "/" + db_name);
+        this.m_connection = DriverManager.getConnection("jdbc:h2:" + url + "/" + db_name, "sa", "sa");
+        db_start();
+    }
+
+    private void db_start() {
         try {
             this.m_connection.createStatement().executeUpdate(CREATE_TABLE_VORSCHRIFTEN_SQL);
             this.m_connection.createStatement().executeUpdate(CREATE_TABLE_INVENTAR_SQL);
@@ -575,7 +599,7 @@ public class Database {
 
 
 
-    private final Connection m_connection;
+    protected Connection m_connection;
     private static final String CREATE_TABLE_INVENTAR_SQL="CREATE TABLE IF NOT EXISTS inventar ("
             + "Kennzeichen CHAR(11) NOT NULL,"
             + "OV CHAR(510),"

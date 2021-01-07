@@ -27,6 +27,8 @@ import java.sql.SQLException;
 
 public class Main {
 
+    public static final String THW_MATP_DATENBANK = "thw_matp_datenbank";
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(Main::create_startup);
     }
@@ -42,7 +44,12 @@ public class Main {
     public static void create_gui() {
         Database db = null;
         try {
-            db = new Database("thw_matp_datenbank");
+            if(Settings.getInstance().db_is_local()) {
+                db = new DatabaseServer(THW_MATP_DATENBANK);
+            }
+            else {
+                db = new Database(Settings.getInstance().get_ip(), Settings.getInstance().get_port(), THW_MATP_DATENBANK);
+            }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
             System.exit(1);

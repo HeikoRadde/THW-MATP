@@ -28,6 +28,37 @@ public class Settings {
         this.startup_done = b;
     }
 
+    public void db_is_local(boolean b) {
+        this.local_database = b;
+    }
+
+    public boolean db_is_local() {
+        return this.local_database;
+    }
+
+    public void set_remote(String ip, String port) {
+        this.ip = ip;
+        this.port = port;
+    }
+
+    public String get_ip() {
+        if (this.local_database) {
+            throw new IllegalStateException();
+        }
+        else {
+            return this.ip;
+        }
+    }
+
+    public String get_port() {
+        if (this.local_database) {
+            throw new IllegalStateException();
+        }
+        else {
+            return this.port;
+        }
+    }
+
     // SINGLETON mechanic
 
     private static final class InstanceHolder {
@@ -48,4 +79,7 @@ public class Settings {
     private Path path_db;
     private Path path_protocols;
     private boolean startup_done;
+    private boolean local_database;
+    private String ip;
+    private String port;
 }

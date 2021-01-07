@@ -61,6 +61,13 @@ public class WindowStartup extends JFrame {
 
     public void btn_ok_action_performed(ActionEvent e) {
         if (e.getSource() == this.btn_ok) {
+            if (this.txt_ip.getText().isEmpty() && this.txt_port.getText().isEmpty()) {
+                Settings.getInstance().db_is_local(true);
+            }
+            else {
+                Settings.getInstance().db_is_local(false);
+                Settings.getInstance().set_remote(this.txt_ip.getText(), this.txt_port.getText());
+            }
             Settings.getInstance().startup_done(true);
             SwingUtilities.invokeLater(Main::create_gui);
             dispose();
@@ -91,5 +98,8 @@ public class WindowStartup extends JFrame {
     private JButton btn_ok;
     private JButton btn_cancel;
     private JPanel root_panel;
+    private JTabbedPane tabbedPane1;
+    private JTextField txt_ip;
+    private JTextField txt_port;
     private ResourceBundle resourceBundle;
 }
