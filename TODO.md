@@ -12,4 +12,3 @@
     - format of excel-file
 - Error-logging to file
 - Handle remote connect errors (host closed, automatic retry, etc.)
-- Display IP(s) of host DB

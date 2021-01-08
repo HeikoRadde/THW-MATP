@@ -42,21 +42,11 @@ public class Settings {
     }
 
     public String get_ip() {
-        if (this.local_database) {
-            throw new IllegalStateException();
-        }
-        else {
-            return this.ip;
-        }
+        return this.ip;
     }
 
     public String get_port() {
-        if (this.local_database) {
-            throw new IllegalStateException();
-        }
-        else {
-            return this.port;
-        }
+        return this.port;
     }
 
     // SINGLETON mechanic

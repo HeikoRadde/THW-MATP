@@ -60,7 +60,7 @@ public class Database {
     }
 
     protected void connect(String url, String db_name) throws SQLException {
-        System.out.println("URL: " + "jdbc:h2:" + url + "/" + db_name);
+        System.out.println("DB-Connection: " + "jdbc:h2:" + url + "/" + db_name);
         this.m_connection = DriverManager.getConnection("jdbc:h2:" + url + "/" + db_name, "sa", "sa");
         db_start();
     }

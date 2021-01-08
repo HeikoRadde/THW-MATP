@@ -39,6 +39,7 @@ public class Main {
         startup.pack();
         startup.setLocationRelativeTo(null);
         startup.setVisible(true);
+        startup.setResizable(false);
     }
 
     public static void create_gui() {

@@ -15,10 +15,7 @@
  */
 package thw_matp.ui;
 
-import thw_matp.ctrl.CtrlInventar;
-import thw_matp.ctrl.CtrlPruefer;
-import thw_matp.ctrl.CtrlPruefungen;
-import thw_matp.ctrl.CtrlVorschrift;
+import thw_matp.ctrl.*;
 import thw_matp.datatypes.Item;
 import thw_matp.datatypes.Pruefer;
 import thw_matp.datatypes.Pruefung;
@@ -59,6 +56,16 @@ public class WindowMain {
     private JButton btn_pruefung_edit;
     private JButton btn_license;
     private JButton btn_pruefung_print;
+    private JLabel lbl_ip;
+    private JLabel lbl_port;
+    private JTextField txt_db_mode;
+    private JTextField txt_ip;
+    private JTextField txt_port;
+    private JButton btn_inet_addr_infos;
+    private JPanel pnl_local;
+    private JPanel pnl_remote;
+    private JPanel pnl_inet_info;
+    private JPanel pnl_mode;
 
     public WindowMain(CtrlInventar ctrl_inventar, CtrlPruefer ctrl_pruefer, CtrlPruefungen ctrl_pruefungen, CtrlVorschrift ctrl_vorschriften) {
         this.ctrl_inventar = ctrl_inventar;
@@ -82,10 +89,23 @@ public class WindowMain {
         this.btn_vorschrift_remove.addActionListener(this::btn_remove_action_performed);
         this.inp_pruefung_kennzeichen.addActionListener(this::inp_pruefung_kennzeichen_action_performed);
         this.btn_license.addActionListener(this::btn_licence_action_performed);
+        this.btn_inet_addr_infos.addActionListener(this::btn_inet_addr_info_action_performed);
         this.tbl_inventar.setAutoCreateRowSorter(true);
         this.tbl_pruefer.setAutoCreateRowSorter(true);
         this.tbl_pruefungen.setAutoCreateRowSorter(true);
         this.tbl_vorschriften.setAutoCreateRowSorter(true);
+
+        if(Settings.getInstance().db_is_local()) {
+            this.txt_db_mode.setText("Lokal");
+            this.pnl_inet_info.remove(this.pnl_remote);
+        }
+        else {
+            this.txt_db_mode.setText("Netzwerk");
+            this.txt_ip.setText(Settings.getInstance().get_ip());
+            this.txt_port.setText(Settings.getInstance().get_port());
+            this.pnl_inet_info.remove(this.pnl_local);
+            this.pnl_inet_info.remove(this.btn_inet_addr_infos);
+        }
     }
 
     public JPanel get_root_panel() {
@@ -451,6 +471,19 @@ public class WindowMain {
             win.pack();
             win.setLocationRelativeTo(get_root_panel());
             win.setVisible(true);
+        }
+        else {
+            System.err.println("Handle function called from wrong GUI object!");
+            new Throwable().printStackTrace();
+        }
+    }
+
+    public void btn_inet_addr_info_action_performed(ActionEvent e) {
+        if(e.getSource() == this.btn_inet_addr_infos) {
+            DialogInetInfo dialogInetInfo = new DialogInetInfo();
+            dialogInetInfo.pack();
+            dialogInetInfo.setLocationRelativeTo(this.get_root_panel());
+            dialogInetInfo.setVisible(true);
         }
         else {
             System.err.println("Handle function called from wrong GUI object!");
