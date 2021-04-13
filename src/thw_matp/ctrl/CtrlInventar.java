@@ -21,7 +21,6 @@ import thw_matp.util.PrinterProtocolAddingItemCSV;
 
 import javax.swing.table.DefaultTableModel;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,7 +85,7 @@ public class CtrlInventar {
             this.db.inventar_add(kennzeichen, ov, einheit, baujahr, hersteller, bezeichnung, sachnr);
             Item i = new Item(kennzeichen, ov, einheit, baujahr, hersteller, bezeichnung, sachnr);
             try {
-                PrinterProtocolAddingItemCSV.add_new_item_event(Paths.get("").toAbsolutePath(), i);
+                PrinterProtocolAddingItemCSV.add_new_item_event(Settings.getInstance().get_path_protocols(), i);
             } catch (IOException e) {
                 System.err.println("Couldn't log new Item!");
                 e.printStackTrace();
