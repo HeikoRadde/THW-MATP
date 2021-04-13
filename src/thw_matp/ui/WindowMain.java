@@ -235,6 +235,10 @@ public class WindowMain {
                     }
                 }
             }
+            else {
+                _error_remove_selection();
+                return;
+            }
         }
         else if (this.btn_pruefer_remove.equals(source)) {
             int selected_row = this.tbl_pruefer.getSelectedRow();
@@ -265,6 +269,10 @@ public class WindowMain {
                     }
                 }
             }
+            else {
+                _error_remove_selection();
+                return;
+            }
         }
         else if (this.btn_pruefung_remove.equals(source)) {
             int selected_row = this.tbl_pruefungen.getSelectedRow();
@@ -291,6 +299,10 @@ public class WindowMain {
                         populate_table_pruefungen();
                     }
                 }
+            }
+            else {
+                _error_remove_selection();
+                return;
             }
         }
         else if (this.btn_vorschrift_remove.equals(source)) {
@@ -320,6 +332,10 @@ public class WindowMain {
                         populate_table_vorschriften();
                     }
                 }
+            }
+            else {
+                _error_remove_selection();
+                return;
             }
         }
         else {
@@ -406,6 +422,13 @@ public class WindowMain {
     private void _error_edit_selection() {
         JOptionPane.showMessageDialog(get_root_panel(),
                 "Bitte den Eintrag auswählen, welcher editiert werden soll!",
+                "Fehler!",
+                JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void _error_remove_selection() {
+        JOptionPane.showMessageDialog(get_root_panel(),
+                "Bitte den Eintrag auswählen, welcher entfernt werden soll!",
                 "Fehler!",
                 JOptionPane.ERROR_MESSAGE);
     }
