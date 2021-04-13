@@ -28,6 +28,7 @@ import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -459,6 +460,13 @@ public class WindowMain {
             f.setDialogTitle("Ordner auswählen");
             if (f.showSaveDialog(this.root_panel) == JFileChooser.APPROVE_OPTION) {
                 Path path = java.nio.file.Paths.get(f.getSelectedFile().getAbsolutePath());
+                if (Files.notExists(path)) {
+                    JOptionPane.showMessageDialog(get_root_panel(),
+                            "Der Ordner '" + path.toAbsolutePath().toString() + "' existiert nicht!",
+                            "Fehler!",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 for (int selection : selections) {
                     UUID id = UUID.fromString(this.tbl_pruefungen.getModel().getValueAt(this.tbl_pruefungen.convertRowIndexToModel(selection), 6).toString());
                     Pruefung pruefung = this.ctrl_pruefungen.find(id);
@@ -474,7 +482,7 @@ public class WindowMain {
                     Item item = this.ctrl_inventar.get_item(pruefung.kennzeichen);
                     Vorschrift vorschrift = this.ctrl_vorschriften.get_vorschrift(item.sachnr);
                     try {
-                        PrinterProtocolTestingPDF.print_pruefung(path, pruefung, pruefer, item, vorschrift);
+                        PrinterProtocolTestingPDF.print_pruefung(path.toAbsolutePath(), pruefung, pruefer, item, vorschrift);
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
                     }
