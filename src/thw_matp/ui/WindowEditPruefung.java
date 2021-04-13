@@ -236,9 +236,9 @@ public class WindowEditPruefung extends JFrame {
         Pruefung p = this.m_ctrl_pruefungen.find(UUID.fromString(this.txt_id.getText()));
         if (this.check_create_protocol.isSelected() && p != null) {
             try {
+                PrinterProtocolTestingOverviewPDF.set_path(Settings.getInstance().get_path_protocols());
                 PrinterProtocolTestingPDF.print_pruefung(Settings.getInstance().get_path_protocols(), p, this.m_pruefer_list.get(this.sel_pruefer.getSelectedIndex()), this.m_current_item, this.m_current_vorschrift);
                 PrinterProtocolTestingOverviewCSV.add_pruefung_event(Settings.getInstance().get_path_protocols(), p, this.m_pruefer_list.get(this.sel_pruefer.getSelectedIndex()));
-                PrinterProtocolTestingOverviewPDF.set_path(Settings.getInstance().get_path_protocols());
             } catch (IOException e) {
                 e.printStackTrace();
             }
