@@ -35,7 +35,7 @@ public class WindowStartup extends JFrame {
             f.setCurrentDirectory(Settings.getInstance().get_path_db().toFile());
             f.setDialogTitle(resourceBundle.getString("filechooser_db_title"));
             if (f.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-                this.txt_database.setText(Settings.getInstance().get_path_db().toString());
+                this.txt_database.setText(f.getSelectedFile().getAbsolutePath());
             }
         }
         else {
@@ -50,8 +50,7 @@ public class WindowStartup extends JFrame {
             f.setCurrentDirectory(Settings.getInstance().get_path_protocols().toFile());
             f.setDialogTitle(resourceBundle.getString("filechooser_protocols_title"));
             if (f.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-                Settings.getInstance().set_path_protocols(java.nio.file.Paths.get(f.getSelectedFile().getAbsolutePath()));
-                this.txt_protocols.setText(Settings.getInstance().get_path_protocols().toString());
+                this.txt_protocols.setText(f.getSelectedFile().getAbsolutePath());
             }
         }
         else {
@@ -66,15 +65,24 @@ public class WindowStartup extends JFrame {
                 case 0 : //local
                     if (!this.txt_database.getText().isEmpty()) {
                         Settings.getInstance().db_is_local(true);
-                        Path path = java.nio.file.Paths.get(this.txt_database.getText());
-                        if (Files.notExists(path)) {
+                        Path path_db   = java.nio.file.Paths.get(this.txt_database.getText());
+                        Path path_logs = java.nio.file.Paths.get(this.txt_protocols.getText());
+                        if (Files.notExists(path_db)) {
                             JOptionPane.showMessageDialog(this.root_panel,
-                                    "Ordner '" + this.txt_database.getText() +  "' existiert nicht!",
+                                    "Der Ordner für die Datenbank '" + this.txt_database.getText() +  "' existiert nicht!",
                                     "Fehler!",
                                     JOptionPane.ERROR_MESSAGE);
                             return;
                         }
-                        Settings.getInstance().set_path_db(path);
+                        if (Files.notExists(path_logs)) {
+                            JOptionPane.showMessageDialog(this.root_panel,
+                                    "Ordner für die Protokolle '" + this.txt_protocols.getText() +  "' existiert nicht!",
+                                    "Fehler!",
+                                    JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                        Settings.getInstance().set_path_db(path_db);
+                        Settings.getInstance().set_path_protocols(path_logs);
                     }
                     else {
                         JOptionPane.showMessageDialog(this.root_panel,
