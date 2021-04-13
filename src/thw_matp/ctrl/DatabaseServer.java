@@ -7,7 +7,8 @@ import java.sql.SQLException;
 public class DatabaseServer extends Database {
 
     public DatabaseServer(String db_name) throws SQLException {
-        super();
+        super(db_name);
+
         this.m_server = Server.createTcpServer("-tcp", "-tcpAllowOthers", "-baseDir", get_db_full_path("")).start();
         connect(get_url(), db_name);
         Settings.getInstance().set_remote(this.m_server.getURL().substring(this.m_server.getURL().lastIndexOf('/')+1, this.m_server.getURL().lastIndexOf(':')), Integer.toString(this.m_server.getPort()));
