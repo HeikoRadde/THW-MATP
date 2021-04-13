@@ -5,6 +5,8 @@ import thw_matp.ctrl.Settings;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -33,7 +35,6 @@ public class WindowStartup extends JFrame {
             f.setCurrentDirectory(Settings.getInstance().get_path_db().toFile());
             f.setDialogTitle(resourceBundle.getString("filechooser_db_title"));
             if (f.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-                Settings.getInstance().set_path_db(java.nio.file.Paths.get(f.getSelectedFile().getAbsolutePath()));
                 this.txt_database.setText(Settings.getInstance().get_path_db().toString());
             }
         }
@@ -61,12 +62,44 @@ public class WindowStartup extends JFrame {
 
     public void btn_ok_action_performed(ActionEvent e) {
         if (e.getSource() == this.btn_ok) {
-            if (this.txt_ip.getText().isEmpty() && this.txt_port.getText().isEmpty()) {
-                Settings.getInstance().db_is_local(true);
-            }
-            else {
-                Settings.getInstance().db_is_local(false);
-                Settings.getInstance().set_remote(this.txt_ip.getText(), this.txt_port.getText());
+            switch (this.tabbedPane1.getSelectedIndex()) {
+                case 0 : //local
+                    if (!this.txt_database.getText().isEmpty()) {
+                        Settings.getInstance().db_is_local(true);
+                        Path path = java.nio.file.Paths.get(this.txt_database.getText());
+                        if (Files.notExists(path)) {
+                            JOptionPane.showMessageDialog(this.root_panel,
+                                    "Ordner '" + this.txt_database.getText() +  "' existiert nicht!",
+                                    "Fehler!",
+                                    JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                        Settings.getInstance().set_path_db(path);
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(this.root_panel,
+                                "Pfad zur Datenbank fehlt!",
+                                "Fehler!",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    break;
+                case 1: //remote
+                    if (!this.txt_ip.getText().isEmpty() && !this.txt_port.getText().isEmpty()) {
+                        Settings.getInstance().db_is_local(false);
+                        Settings.getInstance().set_remote(this.txt_ip.getText(), this.txt_port.getText());
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(this.root_panel,
+                                "IP und/oder Port fehlen!",
+                                "Fehler!",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    break;
+                default:
+                    System.err.print("Invalid tabbedPane1 value!");
+                    return;
             }
             Settings.getInstance().startup_done(true);
             SwingUtilities.invokeLater(Main::create_gui);

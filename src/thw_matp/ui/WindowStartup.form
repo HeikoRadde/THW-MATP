@@ -27,7 +27,7 @@
         <properties>
           <editable value="false"/>
           <opaque value="false"/>
-          <text value=""/>
+          <text resource-bundle="lang/ui/windowStartup" key="description"/>
         </properties>
       </component>
       <vspacer id="eb9ed">
