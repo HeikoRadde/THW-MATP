@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2020 Heiko Radde
+    Copyright (c) 2021 Heiko Radde
     Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
     documentation files (the "Software"), to deal in the Software without restriction, including without limitation
     the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
@@ -27,10 +27,18 @@ import java.util.List;
 
 public class CtrlInventar {
 
+    /**
+     * @param db Database where the Inventar is saved
+     */
     public CtrlInventar(Database db) {
         this.db = db;
     }
 
+    /**
+     *                  Import Inventar from CSV file
+     * @param filepath  Path to the CSV file with the data to import
+     * @return          true if data was imported, false if it failed
+     */
     public boolean load_data(String filepath) {
         CSVImporter importer = new CSVImporter(filepath);
         try {
@@ -43,6 +51,10 @@ public class CtrlInventar {
         }
     }
 
+    /**
+     *          Retrieve all Inventar as a {@link javax.swing.table.DefaultTableModel} ready to be displayed
+     * @return  {@link javax.swing.table.DefaultTableModel} ready to be displayed
+     */
     public DefaultTableModel get_data() {
         DefaultTableModel mdl = new DefaultTableModel();
         mdl.setColumnIdentifiers(new String[]{"Kennzeichen", "Sachnummer", "Bezeichnung", "Hersteller", "Baujahr", "Einheit", "OV", "Letzte Prüfung", "Bestanden", "Nächste Prüfung"});
@@ -68,6 +80,11 @@ public class CtrlInventar {
         return mdl;
     }
 
+    /**
+     *                      Get an Item identified by its Kennzeichen
+     * @param kennzeichen   Kennzeichen identifier
+     * @return              {@link thw_matp.datatypes.Item} if it was found, null if not
+     */
     public Item get_item(String kennzeichen) {
         kennzeichen = kennzeichen.replace('/', '-');
         try {
@@ -79,6 +96,17 @@ public class CtrlInventar {
         }
     }
 
+    /**
+     *                      Add a item to the database
+     * @param kennzeichen   Kennzeichen of the Item. Has to be unique
+     * @param ov            OV where the Item is located
+     * @param einheit       Einheit where the Item is dislocated
+     * @param baujahr       Build year of the Item
+     * @param hersteller    Producer of the Item
+     * @param bezeichnung   Descriptive string / Name of the Item
+     * @param sachnr        Sachnummer of the Vorschrift used for testing the Item
+     * @throws IllegalArgumentException If the Kennzeichen is already in use or if the Sachnummer is not known
+     */
     public void add_item(String kennzeichen, String ov, String einheit, int baujahr, String hersteller, String bezeichnung, String sachnr) throws IllegalArgumentException {
         kennzeichen = kennzeichen.replace('/', '-');
         try {
@@ -108,10 +136,24 @@ public class CtrlInventar {
         }
     }
 
+    /**
+     * @return All Sachnummern of the Vorschriften added during the runtime of the program
+     */
     public ArrayList<String> get_added_vorschriften() {
         return this.m_new_vorschriften;
     }
 
+    /**
+     *                      Update the data of an Item
+     * @param kennzeichen   Kennzeichen of the Item to update. Has to be unique and exist
+     * @param ov            OV where the Item is located
+     * @param einheit       Einheit where the Item is dislocated
+     * @param baujahr       Build year of the Item
+     * @param hersteller    Producer of the Item
+     * @param bezeichnung   Descriptive string / Name of the Item
+     * @param sachnr        Sachnummer of the Vorschrift used for testing the Item
+     * @throws IllegalArgumentException If the Sachnummer is not known
+     */
     public void update(String kennzeichen, String ov, String einheit, int baujahr, String hersteller, String bezeichnung, String sachnr) throws IllegalArgumentException {
         kennzeichen = kennzeichen.replace('/', '-');
         try {
@@ -130,6 +172,12 @@ public class CtrlInventar {
         }
     }
 
+    /**
+     *                          Remove a specified Item from the database and all the Prüfungen attached to it
+     * @param kennzeichen       Unique Kennzeichen of the Item
+     * @param ctrl_pruefungen   Controler for the Prüfungen
+     * @return                  True on success, false on failure
+     */
     public boolean remove_item(String kennzeichen, CtrlPruefungen ctrl_pruefungen) {
         kennzeichen = kennzeichen.replace('/', '-');
         if (!ctrl_pruefungen.remove_pruefungen(kennzeichen)) return false;
@@ -143,6 +191,12 @@ public class CtrlInventar {
         return true;
     }
 
+    /**
+     *                          Remove all items connected to a given Sachnummer and all the Prüfungen attached to those Items
+     * @param sachnummer        Sachnummer used by the items to be deleted
+     * @param ctrl_pruefungen   Controler for the Prüfungen
+     * @return                  True on success, false on failure
+     */
     public boolean remove_items(String sachnummer, CtrlPruefungen ctrl_pruefungen) {
         try {
             List<Item> items = this.db.inventar_get_by_sachnr(sachnummer);

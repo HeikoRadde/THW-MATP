@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2020 Heiko Radde
+    Copyright (c) 2021 Heiko Radde
     Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
     documentation files (the "Software"), to deal in the Software without restriction, including without limitation
     the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
@@ -28,10 +28,16 @@ import java.util.UUID;
 public class CtrlPruefer {
 
 
+    /**
+     * @param db Database where the Prüfer are saved
+     */
     public CtrlPruefer(Database db) {
         this.db = db;
     }
 
+    /**
+     * @return {@link javax.swing.table.DefaultTableModel} with all Prüfer in the database, ready for display
+     */
     public DefaultTableModel get_data() {
         DefaultTableModel mdl = new DefaultTableModel();
         mdl.setColumnIdentifiers(new String[]{"Name", "Vorname", "ID"});
@@ -52,10 +58,20 @@ public class CtrlPruefer {
         return mdl;
     }
 
+    /**
+     * @return              Get all Prüfer in the database
+     * @throws SQLException On SQL querry errors
+     * @throws IOException  On SQL database access errors
+     */
     public List<Pruefer> get_all() throws SQLException, IOException {
         return this.db.pruefer_get_all();
     }
 
+    /**
+     *              Find a specific Prüfer in the database
+     * @param id    Unique ID of the Prüfer to find
+     * @return      {@link thw_matp.datatypes.Pruefer} identified by `id` or null if none was found
+     */
     public Pruefer find(UUID id) {
         try {
             return this.db.pruefer_get(id);
@@ -66,6 +82,12 @@ public class CtrlPruefer {
         }
     }
 
+    /**
+     *                  Add the signature to a specific Prüfer
+     * @param id        Unique ID of the Prüfer
+     * @param signature Signature to add
+     * @return          True on success, false on failure
+     */
     public boolean add_signature(UUID id, BufferedImage signature) {
         try {
             this.db.pruefer_add_signature(signature, id);
@@ -78,6 +100,14 @@ public class CtrlPruefer {
         return true;
     }
 
+    /**
+     *                  Update a specific Prüfers data
+     * @param id        Unique ID of the Prüfer
+     * @param name      Name of the Prüfer
+     * @param vorname   First name of the Prüfer
+     * @param signature Signature of the Prüfer
+     * @return          True on success, false on failure
+     */
     public boolean update(UUID id, String name, String vorname, BufferedImage signature) {
         try {
             this.db.pruefer_update(id, name, vorname, signature);
@@ -89,6 +119,11 @@ public class CtrlPruefer {
         return true;
     }
 
+    /**
+     *              Retrieve the signature of a specific Prüfer
+     * @param id    Unique ID of the Prüfer
+     * @return      {@link java.awt.Image} if found, null if not found
+     */
     public Image get_signature(UUID id) {
         Image signature = null;
         try {
@@ -99,6 +134,13 @@ public class CtrlPruefer {
         return signature;
     }
 
+    /**
+     *                  Add a new Prüfer with a signature to the database. A unique ID will be picked at random
+     * @param name      Name of the Prüfer
+     * @param vorname   First name of the Prüfer
+     * @param signature Signature of the Prüfer
+     * @return          True on success, false on failure
+     */
     public boolean add_pruefer(String name, String vorname, BufferedImage signature) {
         try {
             UUID id = UUID.randomUUID();
@@ -112,6 +154,12 @@ public class CtrlPruefer {
         return true;
     }
 
+    /**
+     *                  Add a new Prüfer without a signature to the database. A unique ID will be picked at random
+     * @param name      Name of the Prüfer
+     * @param vorname   First name of the Prüfer
+     * @return          True on success, false on failure
+     */
     public boolean add_pruefer(String name, String vorname) {
         try {
             UUID id = UUID.randomUUID();
@@ -124,6 +172,11 @@ public class CtrlPruefer {
         return true;
     }
 
+    /**
+     *              Remove a specifig Prüfer
+     * @param id    Unique ID of the Prüfer to remove
+     * @return      True on success, false on failure
+     */
     public boolean remove_pruefer(UUID id) {
         try {
             this.db.pruefer_remove(id);

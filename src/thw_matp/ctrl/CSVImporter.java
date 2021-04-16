@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2020 Heiko Radde
+    Copyright (c) 2021 Heiko Radde
     Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
     documentation files (the "Software"), to deal in the Software without restriction, including without limitation
     the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
@@ -26,14 +26,24 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+/**
+ * Class for importing CSV files into the database
+ */
 public class CSVImporter {
 
+    /**
+     * @param filepath Path to the CSV file to import
+     */
     public CSVImporter(String filepath) {
         this.m_filepath = filepath;
         this.m_new_vorschriften = new ArrayList<>();
     }
 
-
+    /**
+     *              Read the CSV-file specified in {@link #m_filepath} and add its content to the database
+     * @param db    Database to add the content of the CSV-file to
+     * @throws IOException
+     */
     public void read(Database db) throws IOException {
         Reader in = new InputStreamReader(new FileInputStream(this.m_filepath), "windows-1252");
         Iterable<CSVRecord> records = CSVFormat.EXCEL.withFirstRecordAsHeader().withDelimiter(';').parse(in);
@@ -45,10 +55,20 @@ public class CSVImporter {
         }
     }
 
+    /**
+     *          Retrieve all Vorschriften added during {@link #read(Database)}
+     * @return  List of all new Vorschriften
+     */
     public ArrayList<String> get_added_vorschriften() {
         return this.m_new_vorschriften;
     }
 
+    /**
+     *                  Add a single CSV record to the database
+     * @param db        Database to modify
+     * @param record    Record to add
+     * @return          0 on success, 1 if unknown Sachnummer couldn't be added, 2 on other error
+     */
     private int _insert_record(Database db, CSVRecord record) {
         String kennzeichen = record.get(6);
         String ov = record.get(0);
