@@ -71,7 +71,7 @@ public class WindowEditPruefer extends JFrame {
             }
             if(!this.m_ctrl_pruefer.update(this.m_pruefer.id, this.txt_name.getText(), this.txt_vorname.getText(), signature)) {
                 JOptionPane.showMessageDialog(get_root_panel(),
-                        "Fehler Editieren der Daten zum Prüfer " + this.txt_name.getText(),
+                        "Fehler beim Editieren der Daten zum Prüfer " + this.txt_name.getText(),
                         "Fehler!",
                         JOptionPane.ERROR_MESSAGE);
             }

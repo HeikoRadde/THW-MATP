@@ -112,6 +112,18 @@ public class CtrlPruefer {
         return true;
     }
 
+    public boolean add_pruefer(String name, String vorname) {
+        try {
+            UUID id = UUID.randomUUID();
+            this.db.pruefer_add(id, name, vorname);
+        } catch (SQLException throwables) {
+            System.err.println("Failed to update data of pruefer " + vorname + " " + name + " in table pruefer!");
+            throwables.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
     public boolean remove_pruefer(UUID id) {
         try {
             this.db.pruefer_remove(id);
