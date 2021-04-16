@@ -468,7 +468,7 @@ public class WindowMain {
                     return;
                 }
                 for (int selection : selections) {
-                    UUID id = UUID.fromString(this.tbl_pruefungen.getModel().getValueAt(this.tbl_pruefungen.convertRowIndexToModel(selection), 6).toString());
+                    UUID id = UUID.fromString(this.tbl_pruefungen.getModel().getValueAt(this.tbl_pruefungen.convertRowIndexToModel(selection), 7).toString());
                     Pruefung pruefung = this.ctrl_pruefungen.find(id);
                     if (pruefung == null) {
                         continue;
