@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2020 Heiko Radde
+    Copyright (c) 2021 Heiko Radde
     Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
     documentation files (the "Software"), to deal in the Software without restriction, including without limitation
     the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
@@ -34,8 +34,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Class with all Database interactions
+ */
 public class Database {
 
+    /**
+     *                      Initialise with a local database
+     * @param db_name       Name of the database to use. The path to it is retrieved from {@link thw_matp.ctrl.Settings}
+     * @throws SQLException On failure to connect to the database
+     */
     public Database(String db_name) throws SQLException {
         String db_absolute_path = get_db_full_path(db_name);
 
@@ -45,6 +53,13 @@ public class Database {
         db_start();
     }
 
+    /**
+     *                      Initialise with a remote (connection via network) database
+     * @param ip            IP of the remote PC with the database
+     * @param port          Remote port to use
+     * @param db_name       Name of the remote database
+     * @throws SQLException On failure to connect to the database
+     */
     public Database(String ip, String port, String db_name) throws SQLException {
         System.out.println("URL: " + "jdbc:h2:tcp://" + ip + ":" + port + "/" + db_name);
         this.m_connection = DriverManager.getConnection("jdbc:h2:tcp://" + ip + ":" + port + "/" + db_name, "sa", "sa");
@@ -55,16 +70,30 @@ public class Database {
         ;
     }
 
+    /**
+     *                  Get the complete path to the database, using the path from {@link thw_matp.ctrl.Settings}
+     * @param db_name   Name of the database to use
+     * @return          Complete path to the database to use as a string
+     */
     protected String get_db_full_path(String db_name) {
         return Paths.get(Settings.getInstance().get_path_db().toAbsolutePath().toString(), db_name).toString();
     }
 
+    /**
+     *                      Connect to a remote database
+     * @param url           URL to the remote database
+     * @param db_name       Name of the remote database
+     * @throws SQLException On failure to connect to the database
+     */
     protected void connect(String url, String db_name) throws SQLException {
         System.out.println("DB-Connection: " + "jdbc:h2:" + url + "/" + db_name);
         this.m_connection = DriverManager.getConnection("jdbc:h2:" + url + "/" + db_name, "sa", "sa");
         db_start();
     }
 
+    /**
+     * Initialise the database with the required tables, if the database is new
+     */
     private void db_start() {
         try {
             this.m_connection.createStatement().executeUpdate(CREATE_TABLE_VORSCHRIFTEN_SQL);
@@ -83,7 +112,12 @@ public class Database {
     //------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-
+    /**
+     *                      Add a Prüfer without a signature
+     * @param name          Last name
+     * @param vorname       First name
+     * @throws SQLException Failed to add
+     */
     public void pruefer_add(String name, String vorname) throws SQLException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("INSERT INTO pruefer (id, Name, Vorname) VALUES(?, ?, ?)");
         this.m_connection.setAutoCommit(false);
@@ -95,6 +129,13 @@ public class Database {
         this.m_connection.setAutoCommit(true);
     }
 
+    /**
+     *                      Add a Prüfer without a signature
+     * @param id            Unique ID for the Prüfer
+     * @param name          Last name
+     * @param vorname       First name
+     * @throws SQLException Failed to add
+     */
     public void pruefer_add(UUID id, String name, String vorname) throws SQLException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("INSERT INTO pruefer (id, Name, Vorname) VALUES(?, ?, ?)");
         this.m_connection.setAutoCommit(false);
@@ -106,6 +147,13 @@ public class Database {
         this.m_connection.setAutoCommit(true);
     }
 
+    /**
+     *                      Retrieve a Prüfer by its unique ID
+     * @param id            Unique ID
+     * @return              Initialised {@link thw_matp.datatypes.Pruefer} object
+     * @throws SQLException Failure during database interaction
+     * @throws IOException  Failure during read of the saved signature
+     */
     public Pruefer pruefer_get(UUID id) throws SQLException, IOException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("SELECT * FROM pruefer WHERE id = ?");
         pstmt.setString(1, id.toString());
@@ -119,6 +167,11 @@ public class Database {
         }
     }
 
+    /**
+     * @return              A list with all Prüfer in the database as {@link thw_matp.datatypes.Pruefer} objects
+     * @throws SQLException Failure during database interaction
+     * @throws IOException  Failure during read of the saved signature
+     */
     public List<Pruefer> pruefer_get_all() throws SQLException, IOException {
         ResultSet rs = this.m_connection.createStatement().executeQuery("SELECT * FROM pruefer");
         List<Pruefer> list = new ArrayList<>();
@@ -157,6 +210,13 @@ public class Database {
         return UUID.fromString(rs.getString(1));
     }
 
+    /**
+     *                      Add the signature to an existing Prüfer
+     * @param signature     Image with the signature
+     * @param id            Unique ID of the corresponding Prüfer
+     * @throws SQLException Failure during database interaction
+     * @throws IOException  Failure during interaction with the signature
+     */
     public void pruefer_add_signature(BufferedImage signature, UUID id) throws SQLException, IOException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("UPDATE pruefer SET Unterschrift = ? WHERE id = ?");
         File signature_tmp = File.createTempFile("tmp", "signature");
@@ -169,6 +229,13 @@ public class Database {
         signature_tmp.delete();
     }
 
+    /**
+     *                      Retrieve the signature of a Prüfer
+     * @param id            Unique ID of the Prüfer
+     * @return              Image with the signature
+     * @throws SQLException Failure during database interaction
+     * @throws IOException  Failure during interaction with the signature
+     */
     public Image pruefer_get_signature(UUID id) throws SQLException, IOException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("SELECT Unterschrift from pruefer WHERE id = ?");
         pstmt.setString(1, id.toString());
@@ -178,6 +245,15 @@ public class Database {
         return ImageIO.read(is);
     }
 
+    /**
+     *                      Update the saved data of an existing Prüfer
+     * @param id            Unique ID of the existing Prüfer whos data is to be updated
+     * @param name          (new) last name
+     * @param vorname       (new) first name
+     * @param signature     (new) signature
+     * @throws SQLException Failure during database interaction
+     * @throws IOException  Failure during interaction with the signature
+     */
     public void pruefer_update(UUID id, String name, String vorname, BufferedImage signature) throws SQLException, IOException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("UPDATE pruefer SET Name = ?, Vorname = ?, Unterschrift = ? WHERE id = ?");
         pstmt.setString(1, name);
@@ -192,6 +268,11 @@ public class Database {
         signature_tmp.delete();
     }
 
+    /**
+     *                      Remove a Prüfer from the database
+     * @param id            Unique ID of the Prüfer to be removed
+     * @throws SQLException Failure during database interaction
+     */
     public void pruefer_remove(UUID id) throws SQLException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("DELETE FROM pruefer WHERE id = ?");
         pstmt.setString(1, id.toString());
