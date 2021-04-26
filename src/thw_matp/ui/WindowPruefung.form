@@ -23,6 +23,11 @@
               </grid>
             </constraints>
             <properties>
+              <background color="-15156463"/>
+              <contentAreaFilled value="false"/>
+              <enabled value="true"/>
+              <foreground color="-12828854"/>
+              <opaque value="true"/>
               <text value="Bestanden"/>
             </properties>
           </component>
@@ -33,6 +38,10 @@
               </grid>
             </constraints>
             <properties>
+              <background color="-4518632"/>
+              <contentAreaFilled value="false"/>
+              <foreground color="-12828854"/>
+              <opaque value="true"/>
               <text value="Durchgefallen"/>
             </properties>
           </component>
