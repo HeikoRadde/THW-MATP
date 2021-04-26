@@ -56,8 +56,8 @@ public class Settings {
     }
 
     private Settings() {
-        this.path_db = Paths.get("").toAbsolutePath();
-        this.path_protocols = Paths.get("").toAbsolutePath();
+        this.path_db = Paths.get(System.getProperty("user.home")).toAbsolutePath();
+        this.path_protocols = Paths.get(System.getProperty("user.home")).toAbsolutePath();
         this.startup_done = false;
     }
 
