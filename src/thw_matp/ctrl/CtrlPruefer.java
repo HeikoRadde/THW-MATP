@@ -25,6 +25,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Controller for actions related to Prüfer
+ */
 public class CtrlPruefer {
 
 

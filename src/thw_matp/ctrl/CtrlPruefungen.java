@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2020 Heiko Radde
+    Copyright (c) 2021 Heiko Radde
     Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
     documentation files (the "Software"), to deal in the Software without restriction, including without limitation
     the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
@@ -25,12 +25,21 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Controller for actions related to Prüfungen
+ */
 public class CtrlPruefungen {
 
+    /**
+     * @param db Database to be used
+     */
     public CtrlPruefungen(Database db) {
         this.db = db;
     }
 
+    /**
+     * @return Get data related to all Prüfugen in a ready-to-use format for tables
+     */
     public DefaultTableModel get_data() {
         DefaultTableModel mdl = new DefaultTableModel();
         mdl.setColumnIdentifiers(new String[]{"Kennzeichen", "Datum", "Prüfer", "Ort", "Bestanden", "Ausgesondert", "Bemerkungen", "ID"});
@@ -58,6 +67,11 @@ public class CtrlPruefungen {
         return mdl;
     }
 
+    /**
+     *                      Get data of all Prüfungen of a single item
+     * @param kennzeichen   Unique Kennzeichen of item
+     * @return              Ready-to-use format for tables with all Prüfungen for a specific item
+     */
     public DefaultTableModel get_data(String kennzeichen) {
         kennzeichen = kennzeichen.replace('/', '-');
         DefaultTableModel mdl = new DefaultTableModel();
@@ -86,6 +100,16 @@ public class CtrlPruefungen {
         return mdl;
     }
 
+    /**
+     *                      Add a Prüfung to the database
+     * @param kennzeichen   Unique ID of the checked item
+     * @param pruefer       Unique ID of the Prüfer doing the test
+     * @param bestanden     Item tested OK / not OK
+     * @param bemerkungen   Comment for this test
+     * @param ausgesondert  True if item was discarded from inventory after the test
+     * @param ov            Ortsverband where the test was performed
+     * @return              {@link thw_matp.datatypes.Pruefung} object if adding was successfull, null if not
+     */
     public Pruefung add_pruefung(String kennzeichen, UUID pruefer, boolean bestanden, String bemerkungen, boolean ausgesondert, String ov) {
         kennzeichen = kennzeichen.replace('/', '-');
         try {
@@ -97,6 +121,17 @@ public class CtrlPruefungen {
         }
     }
 
+    /**
+     *                      Edit a past Prüfung
+     * @param id            Unique ID of the Prüfung to edit
+     * @param kennzeichen   Potentially modified unique ID of the tested item
+     * @param datum         Potentially modified data of the test
+     * @param pruefer       Potentially modified unique ID of the Prüfer who did the test
+     * @param bestanden     Potentially modified value if the item tested OK / not OK
+     * @param bemerkungen   Potentially modified comment for this test
+     * @param ausgesondert  Potentially modified value if the item was discarded from inventory after this test
+     * @return              True if modification was successfull, false if it failed
+     */
     public boolean edit_pruefung(UUID id, String kennzeichen, LocalDate datum, UUID pruefer, boolean bestanden, String bemerkungen, boolean ausgesondert) {
         kennzeichen = kennzeichen.replace('/', '-');
         try {
@@ -109,6 +144,11 @@ public class CtrlPruefungen {
         return true;
     }
 
+    /**
+     *              Remove a Prüfung from the database
+     * @param id    Unique ID of the Prüfung to remove
+     * @return      True if removal was successfull, false if it failed
+     */
     public boolean remove_pruefung(UUID id) {
         try {
             this.db.pruefungen_remove(id);
@@ -120,6 +160,11 @@ public class CtrlPruefungen {
         return true;
     }
 
+    /**
+     *                      Remove all Prüfungen related to an item of the inventory from the database
+     * @param kennzeichen   Unique ID of the item
+     * @return              True if removal was successfull, false if it failed
+     */
     public boolean remove_pruefungen(String kennzeichen) {
         kennzeichen = kennzeichen.replace('/', '-');
         try {
@@ -132,6 +177,11 @@ public class CtrlPruefungen {
         return true;
     }
 
+    /**
+     *              Retrieve the data of a certain Prüfung
+     * @param id    Unique ID of the Prüfung
+     * @return      {@link thw_matp.datatypes.Pruefung} object if found, null if not found
+     */
     public Pruefung find(UUID id) {
         try {
             return this.db.pruefungen_find(id);

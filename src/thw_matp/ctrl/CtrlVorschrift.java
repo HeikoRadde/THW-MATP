@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2020 Heiko Radde
+    Copyright (c) 2021 Heiko Radde
     Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
     documentation files (the "Software"), to deal in the Software without restriction, including without limitation
     the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
@@ -23,12 +23,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Controller for actions related to Vorschriften
+ */
 public class CtrlVorschrift {
 
+    /**
+     * @param db Database to be used by this controller
+     */
     public CtrlVorschrift(Database db) {
         this.db = db;
     }
 
+    /**
+     * @return Get data related to all Vorschriften in a ready-to-use format for tables
+     */
     public DefaultTableModel get_data() {
         DefaultTableModel mdl = new DefaultTableModel();
         mdl.setColumnIdentifiers(new String[]{"Sachnr", "Vorschrift", "Abschnitt", "Link"});
@@ -49,6 +58,11 @@ public class CtrlVorschrift {
         return mdl;
     }
 
+    /**
+     *                  Get Data of a certain Vorschrift
+     * @param sachnr    Unique ID of the Vorschrift to retrieve
+     * @return          Ready-to-use format for tables with the Vorschrift, null of Vorschrift wasn't found
+     */
     public Vorschrift get_vorschrift(String sachnr) {
         try {
             return this.db.vorschriften_get(sachnr);
@@ -59,6 +73,9 @@ public class CtrlVorschrift {
         }
     }
 
+    /**
+     * @return Get list with all available Sachnummern
+     */
     public List<String> get_sachnummern() {
         List<String> ret = new ArrayList<>();
         try {
@@ -73,6 +90,13 @@ public class CtrlVorschrift {
         return ret;
     }
 
+    /**
+     *                          Remove a certain Vorschrift and all Items and Prüfungen related to it
+     * @param sachnummer        Unique Sachnummer of the Vorschrift
+     * @param ctrl_inventar     Controller for the inventory
+     * @param ctrl_pruefungen   Controller for the Prüfungen
+     * @return                  True if removal was successfull, false if it failed
+     */
     public boolean remove_vorschrift(String sachnummer, CtrlInventar ctrl_inventar, CtrlPruefungen ctrl_pruefungen) {
         try {
             if (!ctrl_inventar.remove_items(sachnummer, ctrl_pruefungen)) return false;
@@ -85,6 +109,14 @@ public class CtrlVorschrift {
         return true;
     }
 
+    /**
+     *                      Add a Vorschrift to the database
+     * @param sachnummer    Unique Sachnummer of the Vorschrift
+     * @param vorschrift    Name of the Vorschrift
+     * @param abschnitt     [Optional] Section of the Vorschrift
+     * @param link          [Optional] Link to the Vorschrift
+     * @return
+     */
     public int add_vorschrift(String sachnummer, String vorschrift, String abschnitt, String link) {
         try {
             this.db.vorschriften_add(sachnummer, link, vorschrift, abschnitt);
@@ -100,6 +132,14 @@ public class CtrlVorschrift {
         return 0;
     }
 
+    /**
+     *                      Edit an existing Vorschrift
+     * @param sachnummer    Unique Sachnummer of the Vorschrift
+     * @param vorschrift    Potentially modified name of the Vorschrift
+     * @param abschnitt     Potentially modified section of the Vorschrift
+     * @param link          Potentially modified link to the Vorschrift
+     * @return
+     */
     public boolean edit_vorschrift(String sachnummer, String vorschrift, String abschnitt, String link) {
         try {
             this.db.vorschriften_update(sachnummer, link, vorschrift, abschnitt);
@@ -110,6 +150,9 @@ public class CtrlVorschrift {
         return true;
     }
 
+    /**
+     * Initialise the database with known Vorschriften
+     */
     public void init_db() {
         try {
             this.db.vorschriften_add("2510T91100", "E", "", "");
