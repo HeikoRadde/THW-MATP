@@ -14,7 +14,7 @@
  */
 
 /*
- * Copyright 2020 Heiko Radde
+ * Copyright 2021 Heiko Radde
  */
 
 package thw_matp.ui;
@@ -35,6 +35,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Panel for recording a users Signature, used for {@link thw_matp.datatypes.Pruefer}. Ported from Gianluca Cacaces solution for Android
+ */
 public class PanelSignature extends JPanel implements MouseListener, MouseMotionListener, ComponentListener {
     private JPanel root_panel;
     private JPanel draw_panel;

@@ -15,6 +15,9 @@
  */
 package thw_matp.datatypes;
 
+/**
+ * Class for transfering data of Vorschriften
+ */
 public class Vorschrift {
     public final String sachnr;
     public final String vorschrift;

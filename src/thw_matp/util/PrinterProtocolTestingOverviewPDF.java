@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2020 Heiko Radde
+    Copyright (c) 2021 Heiko Radde
     Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
     documentation files (the "Software"), to deal in the Software without restriction, including without limitation
     the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
@@ -32,6 +32,9 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.GregorianCalendar;
 
+/**
+ * Printer for creating a PDF version of the CSV file with overview-data of all Prüfungen of the day
+ */
 public class PrinterProtocolTestingOverviewPDF extends PrinterProtocolPDF {
 
     public static void set_path(Path path) {

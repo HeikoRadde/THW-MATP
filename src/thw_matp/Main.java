@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2020 Heiko Radde
+    Copyright (c) 2021 Heiko Radde
     Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
     documentation files (the "Software"), to deal in the Software without restriction, including without limitation
     the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
@@ -25,6 +25,10 @@ import javax.swing.*;
 import java.sql.SQLException;
 
 
+/**
+ * Main-function of the Program.
+ * Starts the startu-window {@link thw_matp.ui.WindowStartup} and provides the init for the main-window {@link thw_matp.ui.WindowMain} after that window was closed
+ */
 public class Main {
 
     public static final String THW_MATP_DATENBANK = "thw_matp_datenbank";
@@ -33,6 +37,9 @@ public class Main {
         SwingUtilities.invokeLater(Main::create_startup);
     }
 
+    /**
+     * Start and initialise the startup-window  {@link thw_matp.ui.WindowStartup}
+     */
     public static void create_startup() {
         WindowStartup startup = new WindowStartup();
         startup.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -42,6 +49,9 @@ public class Main {
         startup.setResizable(false);
     }
 
+    /**
+     * Start and initialise the main-window {@link thw_matp.ui.WindowMain}.
+     */
     public static void create_gui() {
         Database db = null;
         try {

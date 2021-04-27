@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2020 Heiko Radde
+    Copyright (c) 2021 Heiko Radde
     Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
     documentation files (the "Software"), to deal in the Software without restriction, including without limitation
     the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
@@ -33,6 +33,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.UUID;
 
+/**
+ * Main program window
+ */
 public class WindowMain {
     private JButton btn_import;
     private JPanel root_panel;
@@ -113,6 +116,10 @@ public class WindowMain {
         return root_panel;
     }
 
+    /**
+     *          Event-handler for clicks on the 'Import' button.
+     * @param e Event
+     */
     public void btn_import_action_performed(ActionEvent e) {
         if (e.getSource() == this.btn_import) {
             final JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
@@ -147,6 +154,10 @@ public class WindowMain {
         }
     }
 
+    /**
+     *          Event-handler for clicking on the 'Prüfung' Button
+     * @param e Event
+     */
     public void btn_pruefung_action_performed(ActionEvent e) {
         if (e.getSource() == this.btn_pruefung) {
             WindowPruefung win = new WindowPruefung("Prüfung", this.ctrl_inventar, this.ctrl_pruefer, this.ctrl_vorschriften, this.ctrl_pruefungen);
@@ -161,6 +172,10 @@ public class WindowMain {
         }
     }
 
+    /**
+     *          Event-handle for clicking on the refresh button. Refreshes the currently visible table.
+     * @param e Event
+     */
     public void btn_refresh_action_performed(ActionEvent e) {
         if (e.getSource() == this.btn_refresh) {
             switch (tabs.getSelectedIndex()) {
@@ -176,6 +191,11 @@ public class WindowMain {
         }
     }
 
+    /**
+     *          Event-handler for clicking on the add buttons. Starts the dialog for adding a new entry to
+     *          the database, depending on the currently selected table
+     * @param e Event
+     */
     public void btn_add_action_performed(ActionEvent e) {
         Object source = e.getSource();
         if (this.btn_inventar_add.equals(source)) {
@@ -205,6 +225,11 @@ public class WindowMain {
         }
     }
 
+    /**
+     *          Event-handler for the delete buttons. Starts the dialog for removing an entry from the database,
+     *          depending on the currently selected table and entry.
+     * @param e Event
+     */
     public void btn_remove_action_performed(ActionEvent e) {
         Object source = e.getSource();
         Object[] options = {"Ja, unwiederruflich löschen!",
@@ -345,6 +370,11 @@ public class WindowMain {
         }
     }
 
+    /**
+     *          Event-handler for the edit buttons. Starts the dialog for editing an entry in the database,
+     *          depending on the currently selected table and entry.
+     * @param e Event
+     */
     public void btn_edit_action_performed(ActionEvent e) {
         if (e.getSource() == this.btn_inventar_edit) {
             Item i;
@@ -420,6 +450,9 @@ public class WindowMain {
         }
     }
 
+    /**
+     * Error-message for missing selection of entry to be edited.
+     */
     private void _error_edit_selection() {
         JOptionPane.showMessageDialog(get_root_panel(),
                 "Bitte den Eintrag auswählen, welcher editiert werden soll!",
@@ -427,6 +460,9 @@ public class WindowMain {
                 JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Error-message for missing selection of entry to be deleted.
+     */
     private void _error_remove_selection() {
         JOptionPane.showMessageDialog(get_root_panel(),
                 "Bitte den Eintrag auswählen, welcher entfernt werden soll!",
@@ -434,6 +470,10 @@ public class WindowMain {
                 JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     *          Event-handler for the search field of Prüfungen
+     * @param e Event
+     */
     public void inp_pruefung_kennzeichen_action_performed(ActionEvent e) {
         if (e.getSource() == this.inp_pruefung_kennzeichen) {
             if (this.inp_pruefung_kennzeichen.getText().isEmpty())
@@ -451,6 +491,10 @@ public class WindowMain {
         }
     }
 
+    /**
+     *          Event-handler for the print button. Generates the protocol PDF of a selected Prüfung
+     * @param e Event
+     */
     public void btn_pruefung_print_action_performed(ActionEvent e) {
         if (e.getSource() == this.btn_pruefung_print) {
             int[] selections = this.tbl_pruefungen.getSelectedRows();
@@ -495,6 +539,10 @@ public class WindowMain {
         }
     }
 
+    /**
+     *          Event-handler for the license button. Opens the dialog with the licensing informations
+     * @param e Event
+     */
     public void btn_licence_action_performed(ActionEvent e) {
         if (e.getSource() == this.btn_license) {
             WindowLicense win = new WindowLicense();
@@ -509,6 +557,10 @@ public class WindowMain {
         }
     }
 
+    /**
+     *          Event-handler for the internet-address-info button. Opens a dialog with the inet-addr infos
+     * @param e Event
+     */
     public void btn_inet_addr_info_action_performed(ActionEvent e) {
         if(e.getSource() == this.btn_inet_addr_infos) {
             DialogInetInfo dialogInetInfo = new DialogInetInfo();
@@ -522,6 +574,9 @@ public class WindowMain {
         }
     }
 
+    /**
+     * Retrieve all Inventar data from the database and populate the table with it
+     */
     public void populate_table_inventar() {
 //        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>();
 //        TableModel mdl = this.ctrl_inventar.get_data();
@@ -533,21 +588,34 @@ public class WindowMain {
         resize_table_column_width(this.tbl_inventar);
     }
 
+    /**
+     * Retrieve all Prüfer data from the database and populate the table with it
+     */
     public void populate_table_pruefer() {
         this.tbl_pruefer.setModel(this.ctrl_pruefer.get_data());
         resize_table_column_width(this.tbl_pruefer);
     }
 
+    /**
+     * Retrieve all Prüfungen data from the database and populate the table with it
+     */
     public void populate_table_pruefungen() {
         this.tbl_pruefungen.setModel(this.ctrl_pruefungen.get_data());
         resize_table_column_width(this.tbl_pruefungen);
     }
 
+    /**
+     * Retrieve all Vorschriften data from the database and populate the table with it
+     */
     public void populate_table_vorschriften() {
         this.tbl_vorschriften.setModel(this.ctrl_vorschriften.get_data());
         resize_table_column_width(this.tbl_vorschriften);
     }
 
+    /**
+     *              Resize a specified tables columns so that their data fits
+     * @param table Table to resize
+     */
     public static void resize_table_column_width(JTable table)
     {
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);

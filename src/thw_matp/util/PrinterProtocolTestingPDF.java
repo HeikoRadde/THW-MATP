@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2020 Heiko Radde
+    Copyright (c) 2021 Heiko Radde
     Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
     documentation files (the "Software"), to deal in the Software without restriction, including without limitation
     the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
@@ -38,6 +38,9 @@ import java.nio.file.Path;
 import java.util.GregorianCalendar;
 
 
+/**
+ * Printer for creating a PDF file detailling the results of a Prüfung
+ */
 public class PrinterProtocolTestingPDF extends PrinterProtocolPDF {
 
     public static void print_pruefung(Path path, Pruefung pruefung, Pruefer pruefer, Item item, Vorschrift vorschrift) throws IOException {

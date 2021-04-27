@@ -14,7 +14,7 @@
  */
 
 /*
- * Copyright 2020 Heiko Radde
+ * Copyright 2021 Heiko Radde
  */
 package thw_matp.gcacace.signaturepad.utils;
 
