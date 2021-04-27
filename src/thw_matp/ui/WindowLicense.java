@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2020 Heiko Radde
+    Copyright (c) 2021 Heiko Radde
     Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
     documentation files (the "Software"), to deal in the Software without restriction, including without limitation
     the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
@@ -17,6 +17,9 @@ package thw_matp.ui;
 
 import javax.swing.*;
 
+/**
+ * Window for displaying licensing informations of this program and the integrated libraries
+ */
 public class WindowLicense extends JFrame {
     private JPanel root_panel;
     private JTextPane txt_licence_program;
@@ -28,6 +31,8 @@ public class WindowLicense extends JFrame {
     private JLabel lbl_license_h2database;
     private JLabel lbl_license_common_csv;
     private JTextPane txt_disclaimer_h2database;
+    private JLabel lbl_license_signaturepad;
+    private JTextPane txt_license_signaturepad;
 
     public WindowLicense() {
         super("Lizenzen");
@@ -37,6 +42,7 @@ public class WindowLicense extends JFrame {
         write_license_common_csv();
         write_license_h2database();
         write_license_pdfbox();
+        write_license_signaturepad();
     }
 
     public JPanel get_root_panel() {
@@ -45,26 +51,26 @@ public class WindowLicense extends JFrame {
 
 
     private void write_license_program() {
-        lbl_license_program.setText("Lizenz zum Programm THW-MATP");
+        this.lbl_license_program.setText("Lizenz zum Programm THW-MATP");
         write_license_mit(this.txt_licence_program);
         this.txt_licence_program.setCaretPosition(0);
     }
 
     private void write_license_pdfbox() {
-        lbl_license_pdfbox.setText("Apache PDFBox 2.0.21 Lizenz");
+        this.lbl_license_pdfbox.setText("Apache PDFBox 2.0.21 Lizenz");
         write_license_apace(this.txt_license_pdfbox);
         this.txt_license_pdfbox.setCaretPosition(0);
     }
 
     private void write_license_common_csv() {
-        lbl_license_common_csv.setText("Apache Commons CSV 1.8");
+        this.lbl_license_common_csv.setText("Apache Commons CSV 1.8");
         write_license_apace(this.txt_license_common_csv);
         this.txt_license_common_csv.setCaretPosition(0);
     }
 
     private void write_license_h2database() {
-        lbl_license_h2database.setText("H2 Database Engine Version 1.4.200");
-        txt_disclaimer_h2database.setText(
+        this.lbl_license_h2database.setText("H2 Database Engine Version 1.4.200");
+        this.txt_disclaimer_h2database.setText(
             "This software contains unmodified binary redistributions for\n" +
             "H2 database engine (https://h2database.com/),\n" +
             "which is dual licensed and available under the MPL 2.0\n" +
@@ -75,6 +81,26 @@ public class WindowLicense extends JFrame {
         write_license_mozilla(this.txt_license_h2database);
         this.txt_license_h2database.setCaretPosition(0);
         this.txt_disclaimer_h2database.setCaretPosition(0);
+    }
+
+    private void write_license_signaturepad() {
+        this.lbl_license_signaturepad.setText("Gianluca Cacace's android-signaturepad");
+        this.txt_license_signaturepad.setText(
+                "Copyright 2014-2016 Gianluca Cacace\n" +
+                "\n" +
+                "Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
+                "you may not use this file except in compliance with the License.\n" +
+                "You may obtain a copy of the License at\n" +
+                "\n" +
+                "   http://www.apache.org/licenses/LICENSE-2.0\n" +
+                "\n" +
+                "Unless required by applicable law or agreed to in writing, software\n" +
+                "distributed under the License is distributed on an \"AS IS\" BASIS,\n" +
+                "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" +
+                "See the License for the specific language governing permissions and\n" +
+                "limitations under the License."
+        );
+        this.txt_license_signaturepad.setCaretPosition(0);
     }
 
     private void write_license_apace(JTextPane txt) {
