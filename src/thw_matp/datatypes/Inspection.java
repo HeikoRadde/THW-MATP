@@ -19,9 +19,9 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 /**
- * Class for transfering Data of Prüfungen
+ * Class for transfering data of inspections
  */
-public class Pruefung {
+public class Inspection {
     public final UUID id;
     public final String kennzeichen;
     public final LocalDate datum;
@@ -31,7 +31,7 @@ public class Pruefung {
     public final boolean ausgesondert;
     public final String ov;
 
-    public Pruefung(UUID id, String kennzeichen, LocalDate datum, boolean bestanden) {
+    public Inspection(UUID id, String kennzeichen, LocalDate datum, boolean bestanden) {
         this.id = id;
         this.kennzeichen = kennzeichen;
         this.datum = datum;
@@ -42,7 +42,7 @@ public class Pruefung {
         this.ov = "";
     }
 
-    public Pruefung(UUID id, String kennzeichen, LocalDate datum, boolean bestanden, String bemerkungen, boolean ausgesondert, String ov) {
+    public Inspection(UUID id, String kennzeichen, LocalDate datum, boolean bestanden, String bemerkungen, boolean ausgesondert, String ov) {
         this.id = id;
         this.kennzeichen = kennzeichen;
         this.datum = datum;
@@ -53,7 +53,7 @@ public class Pruefung {
         this.ov = ov;
     }
 
-    public Pruefung(UUID id, String kennzeichen, LocalDate datum, boolean bestanden, UUID pruefer, String bemerkungen, boolean ausgesondert, String ov) {
+    public Inspection(UUID id, String kennzeichen, LocalDate datum, boolean bestanden, UUID pruefer, String bemerkungen, boolean ausgesondert, String ov) {
         this.id = id;
         this.kennzeichen = kennzeichen;
         this.datum = datum;

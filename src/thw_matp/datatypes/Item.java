@@ -16,7 +16,7 @@
 package thw_matp.datatypes;
 
 /**
- * Class for transfering data of Items
+ * Class for transfering data of stems
  */
 public class Item {
     public final String kennzeichen;

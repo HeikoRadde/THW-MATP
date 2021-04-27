@@ -16,7 +16,7 @@
 package thw_matp.ctrl;
 
 import thw_matp.datatypes.Item;
-import thw_matp.datatypes.Pruefung;
+import thw_matp.datatypes.Inspection;
 import thw_matp.util.PrinterProtocolAddingItemCSV;
 
 import javax.swing.table.DefaultTableModel;
@@ -25,17 +25,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CtrlInventar {
+public class CtrlInventory {
 
     /**
-     * @param db Database where the Inventar is saved
+     * @param db Database where the inventory is saved
      */
-    public CtrlInventar(Database db) {
+    public CtrlInventory(Database db) {
         this.db = db;
     }
 
     /**
-     *                  Import Inventar from CSV file
+     *                  Import inventory from CSV file
      * @param filepath  Path to the CSV file with the data to import
      * @return          true if data was imported, false if it failed
      */
@@ -43,7 +43,7 @@ public class CtrlInventar {
         CSVImporter importer = new CSVImporter(filepath);
         try {
             importer.read(this.db);
-            m_new_vorschriften = importer.get_added_vorschriften();
+            m_new_vorschriften = importer.get_added_inspections();
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -52,46 +52,46 @@ public class CtrlInventar {
     }
 
     /**
-     *          Retrieve all Inventar as a {@link javax.swing.table.DefaultTableModel} ready to be displayed
+     *          Retrieve all inventory as a {@link javax.swing.table.DefaultTableModel} ready to be displayed
      * @return  {@link javax.swing.table.DefaultTableModel} ready to be displayed
      */
     public DefaultTableModel get_data() {
         DefaultTableModel mdl = new DefaultTableModel();
         mdl.setColumnIdentifiers(new String[]{"Kennzeichen", "Sachnummer", "Bezeichnung", "Hersteller", "Baujahr", "Einheit", "OV", "Letzte Prüfung", "Bestanden", "Nächste Prüfung"});
-        List<Item> inventar = null;
+        List<Item> inventory = null;
         try {
-            inventar = this.db.inventar_get_all();
+            inventory = this.db.inventory_get_all();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        if(inventar != null) {
-            for (Item item : inventar) {
+        if(inventory != null) {
+            for (Item item : inventory) {
                 try {
-                    Pruefung last_pruefung = db.pruefungen_get_last(item.kennzeichen);
-                    mdl.addRow(new Object[]{item.kennzeichen, item.sachnr, item.bezeichnung, item.hersteller, item.baujahr, item.einheit, item.ov, last_pruefung.datum, last_pruefung.bestanden, last_pruefung.datum.plusYears(1)});
+                    Inspection last_inspection = db.inspections_get_last(item.kennzeichen);
+                    mdl.addRow(new Object[]{item.kennzeichen, item.sachnr, item.bezeichnung, item.hersteller, item.baujahr, item.einheit, item.ov, last_inspection.datum, last_inspection.bestanden, last_inspection.datum.plusYears(1)});
                 } catch (SQLException throwables) {
                     mdl.addRow(new Object[]{item.kennzeichen, item.sachnr, item.bezeichnung, item.hersteller, item.baujahr, item.einheit, item.ov});
                 }
             }
         }
         else {
-            System.err.println("No entry in table inventar!");
+            System.err.println("No entry in table inventory!");
         }
         return mdl;
     }
 
     /**
-     *                      Get an Item identified by its Kennzeichen
+     *                      Get an Item identified by its `Kennzeichen`
      * @param kennzeichen   Kennzeichen identifier
      * @return              {@link thw_matp.datatypes.Item} if it was found, null if not
      */
     public Item get_item(String kennzeichen) {
         kennzeichen = kennzeichen.replace('/', '-');
         try {
-            return this.db.inventar_get(kennzeichen);
+            return this.db.inventory_get(kennzeichen);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-            System.err.println("No entry " + kennzeichen + " in table inventar!");
+            System.err.println("No entry " + kennzeichen + " in table inventory!");
             return null;
         }
     }
@@ -110,7 +110,7 @@ public class CtrlInventar {
     public void add_item(String kennzeichen, String ov, String einheit, int baujahr, String hersteller, String bezeichnung, String sachnr) throws IllegalArgumentException {
         kennzeichen = kennzeichen.replace('/', '-');
         try {
-            this.db.inventar_add(kennzeichen, ov, einheit, baujahr, hersteller, bezeichnung, sachnr);
+            this.db.inventory_add(kennzeichen, ov, einheit, baujahr, hersteller, bezeichnung, sachnr);
             Item i = new Item(kennzeichen, ov, einheit, baujahr, hersteller, bezeichnung, sachnr);
             try {
                 PrinterProtocolAddingItemCSV.add_new_item_event(Settings.getInstance().get_path_protocols(), i);
@@ -151,13 +151,13 @@ public class CtrlInventar {
      * @param baujahr       Build year of the Item
      * @param hersteller    Producer of the Item
      * @param bezeichnung   Descriptive string / Name of the Item
-     * @param sachnr        Sachnummer of the Vorschrift used for testing the Item
+     * @param sachnr        Sachnummer of the Specification used for testing the Item
      * @throws IllegalArgumentException If the Sachnummer is not known
      */
     public void update(String kennzeichen, String ov, String einheit, int baujahr, String hersteller, String bezeichnung, String sachnr) throws IllegalArgumentException {
         kennzeichen = kennzeichen.replace('/', '-');
         try {
-            this.db.inventar_update(kennzeichen, ov, einheit, baujahr, hersteller, bezeichnung, sachnr);
+            this.db.inventory_update(kennzeichen, ov, einheit, baujahr, hersteller, bezeichnung, sachnr);
         } catch (SQLException e) {
             if (e.getErrorCode() == Database.ERROR_CODE_REFERENTIAL_INTEGRITY_VIOLATED_PARENT_MISSING_1) {
                 System.err.println("Sachnr " + sachnr +  " not known!");
@@ -173,18 +173,18 @@ public class CtrlInventar {
     }
 
     /**
-     *                          Remove a specified Item from the database and all the Prüfungen attached to it
-     * @param kennzeichen       Unique Kennzeichen of the Item
-     * @param ctrl_pruefungen   Controler for the Prüfungen
+     *                          Remove a specified Item from the database and all the inspections attached to it
+     * @param kennzeichen       Unique `Kennzeichen` of the Item
+     * @param ctrl_pruefungen   Controler for the inspections
      * @return                  True on success, false on failure
      */
-    public boolean remove_item(String kennzeichen, CtrlPruefungen ctrl_pruefungen) {
+    public boolean remove_item(String kennzeichen, CtrlInspections ctrl_pruefungen) {
         kennzeichen = kennzeichen.replace('/', '-');
-        if (!ctrl_pruefungen.remove_pruefungen(kennzeichen)) return false;
+        if (!ctrl_pruefungen.remove_inspection(kennzeichen)) return false;
         try {
-            this.db.inventar_remove(kennzeichen);
+            this.db.inventory_remove(kennzeichen);
         } catch (SQLException throwables) {
-            System.err.println("Failed to remove entry " + kennzeichen + " in table inventar!");
+            System.err.println("Failed to remove entry " + kennzeichen + " in table inventory!");
             throwables.printStackTrace();
             return false;
         }
@@ -192,14 +192,14 @@ public class CtrlInventar {
     }
 
     /**
-     *                          Remove all items connected to a given Sachnummer and all the Prüfungen attached to those Items
+     *                          Remove all items connected to a given `Sachnummer` and all the inspections attached to those Items
      * @param sachnummer        Sachnummer used by the items to be deleted
-     * @param ctrl_pruefungen   Controler for the Prüfungen
+     * @param ctrl_pruefungen   Controler for the inspections
      * @return                  True on success, false on failure
      */
-    public boolean remove_items(String sachnummer, CtrlPruefungen ctrl_pruefungen) {
+    public boolean remove_items(String sachnummer, CtrlInspections ctrl_pruefungen) {
         try {
-            List<Item> items = this.db.inventar_get_by_sachnr(sachnummer);
+            List<Item> items = this.db.inventory_get_by_sachnr(sachnummer);
             for (Item item : items)
             {
                 if (!remove_item(item.kennzeichen, ctrl_pruefungen)) return false;

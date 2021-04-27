@@ -19,7 +19,7 @@ import thw_matp.ctrl.*;
 import thw_matp.ui.SaveJFrame;
 import thw_matp.ui.WindowMain;
 import thw_matp.ui.WindowStartup;
-import thw_matp.util.PrinterProtocolTestingOverviewPDF;
+import thw_matp.util.PrinterProtocolInspectionsOverviewPDF;
 
 import javax.swing.*;
 import java.sql.SQLException;
@@ -66,10 +66,10 @@ public class Main {
             System.exit(1);
         }
 
-        CtrlInventar ctrl_items = new CtrlInventar(db);
-        CtrlPruefer ctrl_pruefer = new CtrlPruefer(db);
-        CtrlPruefungen ctrl_pruefungen = new CtrlPruefungen(db);
-        CtrlVorschrift ctrl_vorschriften = new CtrlVorschrift(db);
+        CtrlInventory ctrl_items = new CtrlInventory(db);
+        CtrlInspectors ctrl_pruefer = new CtrlInspectors(db);
+        CtrlInspections ctrl_pruefungen = new CtrlInspections(db);
+        CtrlSpecifications ctrl_vorschriften = new CtrlSpecifications(db);
 
         ctrl_vorschriften.init_db();
 
@@ -88,7 +88,7 @@ public class Main {
         win.populate_table_pruefungen();
         win.populate_table_vorschriften();
 
-        PrinterProtocolTestingOverviewPDF.set_path(Settings.getInstance().get_path_protocols());
+        PrinterProtocolInspectionsOverviewPDF.set_path(Settings.getInstance().get_path_protocols());
     }
 
 

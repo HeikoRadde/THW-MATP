@@ -16,22 +16,22 @@
 package thw_matp.datatypes;
 
 /**
- * Class for transfering data of Vorschriften
+ * Class for transfering data of specifications
  */
-public class Vorschrift {
+public class Specification {
     public final String sachnr;
     public final String vorschrift;
     public final String abschnitt;
     public final String link;
 
-    public Vorschrift(String sachnr, String vorschrift, String abschnitt, String link) {
+    public Specification(String sachnr, String vorschrift, String abschnitt, String link) {
         this.sachnr = sachnr;
         this.vorschrift = vorschrift;
         this.abschnitt = abschnitt;
         this.link = link;
     }
 
-    public Vorschrift(String sachnr, String vorschrift, String abschnitt) {
+    public Specification(String sachnr, String vorschrift, String abschnitt) {
         this.sachnr = sachnr;
         this.vorschrift = vorschrift;
         this.abschnitt = abschnitt;

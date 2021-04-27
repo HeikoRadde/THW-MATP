@@ -15,7 +15,7 @@
  */
 package thw_matp.ui;
 
-import thw_matp.util.PrinterProtocolTestingOverviewPDF;
+import thw_matp.util.PrinterProtocolInspectionsOverviewPDF;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
@@ -39,7 +39,7 @@ public class SaveJFrame extends JFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 try {
-                    PrinterProtocolTestingOverviewPDF.create_pdf();
+                    PrinterProtocolInspectionsOverviewPDF.create_pdf();
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
                 }

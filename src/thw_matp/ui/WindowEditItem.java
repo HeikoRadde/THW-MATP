@@ -15,8 +15,8 @@
  */
 package thw_matp.ui;
 
-import thw_matp.ctrl.CtrlInventar;
-import thw_matp.ctrl.CtrlVorschrift;
+import thw_matp.ctrl.CtrlInventory;
+import thw_matp.ctrl.CtrlSpecifications;
 import thw_matp.datatypes.Item;
 import thw_matp.util.FilterInteger;
 
@@ -25,7 +25,7 @@ import javax.swing.text.PlainDocument;
 import java.awt.event.ActionEvent;
 
 /**
- * Window for editing existing Items in the database
+ * Window for editing existing items in the database
  */
 public class WindowEditItem extends JFrame {
     private JPanel root_panel;
@@ -39,7 +39,7 @@ public class WindowEditItem extends JFrame {
     private JButton btn_cancel;
     private JTextField txt_sachnr;
 
-    public WindowEditItem(String title, CtrlInventar ctrl_inventar, Item item, CtrlVorschrift ctrl_vorschriften) {
+    public WindowEditItem(String title, CtrlInventory ctrl_inventar, Item item, CtrlSpecifications ctrl_vorschriften) {
         super(title);
         this.setContentPane(root_panel);
         this.ctrl_inventar = ctrl_inventar;
@@ -87,7 +87,7 @@ public class WindowEditItem extends JFrame {
                             options,
                             options[0]);
                     if (reply == JOptionPane.YES_OPTION) {
-                        WindowAddVorschrift win = new WindowAddVorschrift(this.ctrl_vorschriften, sachnr);
+                        WindowAddSpecification win = new WindowAddSpecification(this.ctrl_vorschriften, sachnr);
                         win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                         win.pack();
                         win.setLocationRelativeTo(root_panel);
@@ -116,6 +116,6 @@ public class WindowEditItem extends JFrame {
         }
     }
 
-    private final CtrlInventar ctrl_inventar;
-    private final CtrlVorschrift ctrl_vorschriften;
+    private final CtrlInventory ctrl_inventar;
+    private final CtrlSpecifications ctrl_vorschriften;
 }

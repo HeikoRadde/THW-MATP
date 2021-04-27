@@ -19,6 +19,7 @@
 
 package thw_matp.ui;
 
+import thw_matp.datatypes.Inspector;
 import thw_matp.gcacace.signaturepad.utils.Bezier;
 import thw_matp.gcacace.signaturepad.utils.ControlTimedPoints;
 import thw_matp.gcacace.signaturepad.utils.SvgBuilder;
@@ -36,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Panel for recording a users Signature, used for {@link thw_matp.datatypes.Pruefer}. Ported from Gianluca Cacaces solution for Android
+ * Panel for recording a users signature, used for {@link Inspector}. Ported from Gianluca Cacaces solution for Android
  */
 public class PanelSignature extends JPanel implements MouseListener, MouseMotionListener, ComponentListener {
     private JPanel root_panel;

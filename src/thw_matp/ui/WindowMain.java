@@ -17,10 +17,10 @@ package thw_matp.ui;
 
 import thw_matp.ctrl.*;
 import thw_matp.datatypes.Item;
-import thw_matp.datatypes.Pruefer;
-import thw_matp.datatypes.Pruefung;
-import thw_matp.datatypes.Vorschrift;
-import thw_matp.util.PrinterProtocolTestingPDF;
+import thw_matp.datatypes.Inspector;
+import thw_matp.datatypes.Inspection;
+import thw_matp.datatypes.Specification;
+import thw_matp.util.PrinterProtocolInspectionPDF;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
@@ -71,11 +71,11 @@ public class WindowMain {
     private JPanel pnl_inet_info;
     private JPanel pnl_mode;
 
-    public WindowMain(CtrlInventar ctrl_inventar, CtrlPruefer ctrl_pruefer, CtrlPruefungen ctrl_pruefungen, CtrlVorschrift ctrl_vorschriften) {
-        this.ctrl_inventar = ctrl_inventar;
-        this.ctrl_pruefer = ctrl_pruefer;
-        this.ctrl_pruefungen = ctrl_pruefungen;
-        this.ctrl_vorschriften = ctrl_vorschriften;
+    public WindowMain(CtrlInventory ctrl_inventory, CtrlInspectors ctrl_inspectors, CtrlInspections ctrl_inspections, CtrlSpecifications ctrl_specifications) {
+        this.ctrl_inventory = ctrl_inventory;
+        this.ctrl_inspectors = ctrl_inspectors;
+        this.ctrl_inspections = ctrl_inspections;
+        this.ctrl_specifications = ctrl_specifications;
         this.btn_import.addActionListener(this::btn_import_action_performed);
         this.btn_pruefung.addActionListener(this::btn_pruefung_action_performed);
         this.btn_refresh.addActionListener(this::btn_refresh_action_performed);
@@ -127,12 +127,12 @@ public class WindowMain {
             fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
             if (fc.showOpenDialog(get_root_panel()) == JFileChooser.APPROVE_OPTION) {
                 String path = fc.getSelectedFile().getPath();
-                if(!this.ctrl_inventar.load_data(path))
+                if(!this.ctrl_inventory.load_data(path))
                 {
                     JOptionPane.showMessageDialog(get_root_panel(), "Daten konnten nicht geladen werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
                 }
                 populate_table_inventar();
-                ArrayList<String> new_vorschriften = this.ctrl_inventar.get_added_vorschriften();
+                ArrayList<String> new_vorschriften = this.ctrl_inventory.get_added_vorschriften();
                 if (new_vorschriften != null) {
                     StringBuilder string_list = new StringBuilder();
                     for (String vorschrift : new_vorschriften) {
@@ -155,12 +155,12 @@ public class WindowMain {
     }
 
     /**
-     *          Event-handler for clicking on the 'Prüfung' Button
+     *          Event-handler for clicking on the 'Prüfung' button to start a inspection
      * @param e Event
      */
     public void btn_pruefung_action_performed(ActionEvent e) {
         if (e.getSource() == this.btn_pruefung) {
-            WindowPruefung win = new WindowPruefung("Prüfung", this.ctrl_inventar, this.ctrl_pruefer, this.ctrl_vorschriften, this.ctrl_pruefungen);
+            WindowInspection win = new WindowInspection("Prüfung", this.ctrl_inventory, this.ctrl_inspectors, this.ctrl_specifications, this.ctrl_inspections);
             win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             win.pack();
             win.setLocationRelativeTo(get_root_panel());
@@ -199,21 +199,21 @@ public class WindowMain {
     public void btn_add_action_performed(ActionEvent e) {
         Object source = e.getSource();
         if (this.btn_inventar_add.equals(source)) {
-            WindowAddItem win = new WindowAddItem("Neues Inventar", this.ctrl_inventar, this.ctrl_vorschriften);
+            WindowAddItem win = new WindowAddItem("Neues Inventar", this.ctrl_inventory, this.ctrl_specifications);
             win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             win.pack();
             win.setLocationRelativeTo(get_root_panel());
             win.setVisible(true);
         }
         else if (this.btn_pruefer_add.equals(source)) {
-            WindowAddPruefer win = new WindowAddPruefer("Neuer Prüfer", this.ctrl_pruefer);
+            WindowAddInspector win = new WindowAddInspector("Neuer Prüfer", this.ctrl_inspectors);
             win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             win.pack();
             win.setLocationRelativeTo(get_root_panel());
             win.setVisible(true);
         }
         else if (this.btn_vorschrift_add.equals(source)) {
-            WindowAddVorschrift win = new WindowAddVorschrift(this.ctrl_vorschriften);
+            WindowAddSpecification win = new WindowAddSpecification(this.ctrl_specifications);
             win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             win.pack();
             win.setLocationRelativeTo(get_root_panel());
@@ -249,7 +249,7 @@ public class WindowMain {
                         options[0]); //default button title
                 if (reply == JOptionPane.YES_OPTION) {
                     System.out.println("Inventar remove " + kennzeichen);
-                    if (!this.ctrl_inventar.remove_item(kennzeichen, this.ctrl_pruefungen)) {
+                    if (!this.ctrl_inventory.remove_item(kennzeichen, this.ctrl_inspections)) {
                         JOptionPane.showMessageDialog(get_root_panel(),
                                 "Fehler beim Entfernen der Einträge zum Gerät " + kennzeichen,
                                 "Fehler!",
@@ -283,7 +283,7 @@ public class WindowMain {
                         options[0]); //default button title
                 if (reply == JOptionPane.YES_OPTION) {
                     System.out.println("Pruefer remove" + pruefer_id);
-                    if (!this.ctrl_pruefer.remove_pruefer(UUID.fromString(pruefer_id))) {
+                    if (!this.ctrl_inspectors.remove_inspector(UUID.fromString(pruefer_id))) {
                         JOptionPane.showMessageDialog(get_root_panel(),
                                 "Fehler beim Entfernen des Prüfers " + pruefer_name + " (ID: " + pruefer_id + ")!",
                                 "Fehler!",
@@ -315,7 +315,7 @@ public class WindowMain {
                         options[0]); //default button title
                 if (reply == JOptionPane.YES_OPTION) {
                     System.out.println("Pruefung remove" + pruefung_id);
-                    if (!this.ctrl_pruefungen.remove_pruefung(UUID.fromString(pruefung_id))) {
+                    if (!this.ctrl_inspections.remnove_inspection(UUID.fromString(pruefung_id))) {
                         JOptionPane.showMessageDialog(get_root_panel(),
                                 "Fehler beim Entfernen der Prüfung mit der ID" + pruefung_id,
                                 "Fehler!",
@@ -346,7 +346,7 @@ public class WindowMain {
                         options[0]); //default button title
                 if (reply == JOptionPane.YES_OPTION) {
                     System.out.println("Vorschrift remove" + vorschrift_sachnr);
-                    if (!this.ctrl_vorschriften.remove_vorschrift(vorschrift_sachnr, ctrl_inventar, ctrl_pruefungen)) {
+                    if (!this.ctrl_specifications.remove_specification(vorschrift_sachnr, ctrl_inventory, ctrl_inspections)) {
                         JOptionPane.showMessageDialog(get_root_panel(),
                                 "Fehler beim Einträge zur Sachnummer " + vorschrift_sachnr,
                                 "Fehler!",
@@ -384,9 +384,9 @@ public class WindowMain {
                 return;
             }
             String kennzeichen = this.tbl_inventar.getModel().getValueAt(this.tbl_inventar.convertRowIndexToModel(selected_row), 0).toString();
-            i = this.ctrl_inventar.get_item(kennzeichen);
+            i = this.ctrl_inventory.get_item(kennzeichen);
             if (i != null) {
-                WindowEditItem win = new WindowEditItem("Editiere Inventar", this.ctrl_inventar, i, this.ctrl_vorschriften);
+                WindowEditItem win = new WindowEditItem("Editiere Inventar", this.ctrl_inventory, i, this.ctrl_specifications);
                 win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 win.pack();
                 win.setLocationRelativeTo(get_root_panel());
@@ -394,16 +394,16 @@ public class WindowMain {
             }
         }
         else if (e.getSource() == this.btn_pruefer_edit) {
-            Pruefer p;
+            Inspector p;
             int selected_row = this.tbl_pruefer.getSelectedRow();
             if(selected_row < 0) {
                 _error_edit_selection();
                 return;
             }
             UUID id = UUID.fromString(this.tbl_pruefer.getModel().getValueAt(this.tbl_pruefer.convertRowIndexToModel(selected_row), 2).toString());
-            p = this.ctrl_pruefer.find(id);
+            p = this.ctrl_inspectors.find(id);
             if(p != null) {
-                WindowEditPruefer win = new WindowEditPruefer("Prüfer Editieren", this.ctrl_pruefer, p);
+                WindowEditInspector win = new WindowEditInspector("Prüfer Editieren", this.ctrl_inspectors, p);
                 win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 win.pack();
                 win.setLocationRelativeTo(get_root_panel());
@@ -411,16 +411,16 @@ public class WindowMain {
             }
         }
         else if (e.getSource() == this.btn_pruefung_edit) {
-            Pruefung p;
+            Inspection p;
             int selected_row = this.tbl_pruefungen.getSelectedRow();
             if(selected_row < 0) {
                 _error_edit_selection();
                 return;
             }
             String id = this.tbl_pruefungen.getModel().getValueAt(this.tbl_pruefungen.convertRowIndexToModel(selected_row), 6).toString();
-            p = this.ctrl_pruefungen.find(UUID.fromString(id));
+            p = this.ctrl_inspections.find(UUID.fromString(id));
             if (p != null) {
-                WindowEditPruefung win = new WindowEditPruefung(p, ctrl_inventar, ctrl_pruefer, ctrl_vorschriften, ctrl_pruefungen);
+                WindowEditInspection win = new WindowEditInspection(p, ctrl_inventory, ctrl_inspectors, ctrl_specifications, ctrl_inspections);
                 win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 win.pack();
                 win.setLocationRelativeTo(get_root_panel());
@@ -428,16 +428,16 @@ public class WindowMain {
             }
         }
         else if (e.getSource() == this.btn_vorschrift_edit) {
-            Vorschrift v;
+            Specification v;
             int selected_row = this.tbl_vorschriften.getSelectedRow();
             if(selected_row < 0) {
                 _error_edit_selection();
                 return;
             }
             String sachnummer = this.tbl_vorschriften.getModel().getValueAt(this.tbl_vorschriften.convertRowIndexToModel(selected_row), 0).toString();
-            v = this.ctrl_vorschriften.get_vorschrift(sachnummer);
+            v = this.ctrl_specifications.get_specification(sachnummer);
             if (v != null) {
-                WindowEditVorschrift win = new WindowEditVorschrift(this.ctrl_vorschriften, v);
+                WindowEditSpecification win = new WindowEditSpecification(this.ctrl_specifications, v);
                 win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 win.pack();
                 win.setLocationRelativeTo(get_root_panel());
@@ -471,7 +471,7 @@ public class WindowMain {
     }
 
     /**
-     *          Event-handler for the search field of Prüfungen
+     *          Event-handler for the search field of inspections
      * @param e Event
      */
     public void inp_pruefung_kennzeichen_action_performed(ActionEvent e) {
@@ -481,7 +481,7 @@ public class WindowMain {
                 populate_table_pruefungen();
             }
             else {
-                this.tbl_pruefungen.setModel(this.ctrl_pruefungen.get_data(this.inp_pruefung_kennzeichen.getText()));
+                this.tbl_pruefungen.setModel(this.ctrl_inspections.get_data(this.inp_pruefung_kennzeichen.getText()));
             }
             resize_table_column_width(this.tbl_pruefungen);
         }
@@ -492,7 +492,7 @@ public class WindowMain {
     }
 
     /**
-     *          Event-handler for the print button. Generates the protocol PDF of a selected Prüfung
+     *          Event-handler for the print button. Generates the protocol PDF of a selected inspections
      * @param e Event
      */
     public void btn_pruefung_print_action_performed(ActionEvent e) {
@@ -513,20 +513,20 @@ public class WindowMain {
                 }
                 for (int selection : selections) {
                     UUID id = UUID.fromString(this.tbl_pruefungen.getModel().getValueAt(this.tbl_pruefungen.convertRowIndexToModel(selection), 7).toString());
-                    Pruefung pruefung = this.ctrl_pruefungen.find(id);
-                    if (pruefung == null) {
+                    Inspection inspection = this.ctrl_inspections.find(id);
+                    if (inspection == null) {
                         continue;
                     }
-                    Pruefer pruefer;
-                    if (pruefung.pruefer.equals(new UUID(0, 0))) {
-                        pruefer = new Pruefer(new UUID(0, 0), "", "");
+                    Inspector inspector;
+                    if (inspection.pruefer.equals(new UUID(0, 0))) {
+                        inspector = new Inspector(new UUID(0, 0), "", "");
                     } else {
-                        pruefer = this.ctrl_pruefer.find(pruefung.pruefer);
+                        inspector = this.ctrl_inspectors.find(inspection.pruefer);
                     }
-                    Item item = this.ctrl_inventar.get_item(pruefung.kennzeichen);
-                    Vorschrift vorschrift = this.ctrl_vorschriften.get_vorschrift(item.sachnr);
+                    Item item = this.ctrl_inventory.get_item(inspection.kennzeichen);
+                    Specification specification = this.ctrl_specifications.get_specification(item.sachnr);
                     try {
-                        PrinterProtocolTestingPDF.print_pruefung(path.toAbsolutePath(), pruefung, pruefer, item, vorschrift);
+                        PrinterProtocolInspectionPDF.print_pruefung(path.toAbsolutePath(), inspection, inspector, item, specification);
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
                     }
@@ -575,7 +575,7 @@ public class WindowMain {
     }
 
     /**
-     * Retrieve all Inventar data from the database and populate the table with it
+     * Retrieve all inventory data from the database and populate the table with it
      */
     public void populate_table_inventar() {
 //        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>();
@@ -584,31 +584,31 @@ public class WindowMain {
 //        this.tbl_inventar.setModel(mdl);
 //        this.tbl_inventar.setRowSorter(sorter);
 //        this.tbl_inventar.setModel(this.ctrl_inventar.get_data());
-        this.tbl_inventar.setModel(this.ctrl_inventar.get_data());
+        this.tbl_inventar.setModel(this.ctrl_inventory.get_data());
         resize_table_column_width(this.tbl_inventar);
     }
 
     /**
-     * Retrieve all Prüfer data from the database and populate the table with it
+     * Retrieve all inspectors data from the database and populate the table with it
      */
     public void populate_table_pruefer() {
-        this.tbl_pruefer.setModel(this.ctrl_pruefer.get_data());
+        this.tbl_pruefer.setModel(this.ctrl_inspectors.get_data());
         resize_table_column_width(this.tbl_pruefer);
     }
 
     /**
-     * Retrieve all Prüfungen data from the database and populate the table with it
+     * Retrieve all inspections data from the database and populate the table with it
      */
     public void populate_table_pruefungen() {
-        this.tbl_pruefungen.setModel(this.ctrl_pruefungen.get_data());
+        this.tbl_pruefungen.setModel(this.ctrl_inspections.get_data());
         resize_table_column_width(this.tbl_pruefungen);
     }
 
     /**
-     * Retrieve all Vorschriften data from the database and populate the table with it
+     * Retrieve all specifications data from the database and populate the table with it
      */
     public void populate_table_vorschriften() {
-        this.tbl_vorschriften.setModel(this.ctrl_vorschriften.get_data());
+        this.tbl_vorschriften.setModel(this.ctrl_specifications.get_data());
         resize_table_column_width(this.tbl_vorschriften);
     }
 
@@ -637,9 +637,9 @@ public class WindowMain {
 
 
 
-    private final CtrlInventar ctrl_inventar;
-    private final CtrlPruefer ctrl_pruefer;
-    private final CtrlPruefungen ctrl_pruefungen;
-    private final CtrlVorschrift ctrl_vorschriften;
+    private final CtrlInventory ctrl_inventory;
+    private final CtrlInspectors ctrl_inspectors;
+    private final CtrlInspections ctrl_inspections;
+    private final CtrlSpecifications ctrl_specifications;
 }
 

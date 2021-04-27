@@ -15,7 +15,7 @@
  */
 package thw_matp.ctrl;
 
-import thw_matp.datatypes.Pruefer;
+import thw_matp.datatypes.Inspector;
 
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -26,58 +26,58 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Controller for actions related to Prüfer
+ * Controller for actions related to inspectors
  */
-public class CtrlPruefer {
+public class CtrlInspectors {
 
 
     /**
-     * @param db Database where the Prüfer are saved
+     * @param db Database where the inspectors are saved
      */
-    public CtrlPruefer(Database db) {
+    public CtrlInspectors(Database db) {
         this.db = db;
     }
 
     /**
-     * @return {@link javax.swing.table.DefaultTableModel} with all Prüfer in the database, ready for display
+     * @return {@link javax.swing.table.DefaultTableModel} with all inspectors in the database, ready for display
      */
     public DefaultTableModel get_data() {
         DefaultTableModel mdl = new DefaultTableModel();
         mdl.setColumnIdentifiers(new String[]{"Name", "Vorname", "ID"});
-        List<Pruefer> pruefer = null;
+        List<Inspector> inspector = null;
         try {
-            pruefer = this.db.pruefer_get_all();
+            inspector = this.db.inspector_get_all();
         } catch (SQLException | IOException throwables) {
             throwables.printStackTrace();
         }
-        if(pruefer != null) {
-            for (Pruefer p : pruefer) {
+        if(inspector != null) {
+            for (Inspector p : inspector) {
                 mdl.addRow(new Object[]{p.name, p.vorname, p.id});
             }
         }
         else {
-            System.err.println("No entry in table pruefer!");
+            System.err.println("No entry in table inspectors!");
         }
         return mdl;
     }
 
     /**
-     * @return              Get all Prüfer in the database
-     * @throws SQLException On SQL querry errors
+     * @return              Get all inspectors in the database
+     * @throws SQLException On SQL query errors
      * @throws IOException  On SQL database access errors
      */
-    public List<Pruefer> get_all() throws SQLException, IOException {
-        return this.db.pruefer_get_all();
+    public List<Inspector> get_all() throws SQLException, IOException {
+        return this.db.inspector_get_all();
     }
 
     /**
-     *              Find a specific Prüfer in the database
-     * @param id    Unique ID of the Prüfer to find
-     * @return      {@link thw_matp.datatypes.Pruefer} identified by `id` or null if none was found
+     *              Find a specific inspectors in the database
+     * @param id    Unique ID of the inspectors to find
+     * @return      {@link Inspector} identified by `id` or null if none was found
      */
-    public Pruefer find(UUID id) {
+    public Inspector find(UUID id) {
         try {
-            return this.db.pruefer_get(id);
+            return this.db.inspector_get(id);
         } catch (SQLException | IOException throwables) {
             System.err.println("Failed to find pruefer " + id.toString() + " in table pruefer!");
             throwables.printStackTrace();
@@ -86,8 +86,8 @@ public class CtrlPruefer {
     }
 
     /**
-     *                  Add the signature to a specific Prüfer
-     * @param id        Unique ID of the Prüfer
+     *                  Add the signature to a specific inspectors
+     * @param id        Unique ID of the inspectors
      * @param signature Signature to add
      * @return          True on success, false on failure
      */
@@ -104,16 +104,16 @@ public class CtrlPruefer {
     }
 
     /**
-     *                  Update a specific Prüfers data
-     * @param id        Unique ID of the Prüfer
-     * @param name      Name of the Prüfer
-     * @param vorname   First name of the Prüfer
-     * @param signature Signature of the Prüfer
+     *                  Update a specific inspectors data
+     * @param id        Unique ID of the inspectors
+     * @param name      Name of the inspectors
+     * @param vorname   First name of the inspectors
+     * @param signature Signature of the inspectors
      * @return          True on success, false on failure
      */
     public boolean update(UUID id, String name, String vorname, BufferedImage signature) {
         try {
-            this.db.pruefer_update(id, name, vorname, signature);
+            this.db.inspector_update(id, name, vorname, signature);
         } catch (SQLException | IOException throwables) {
             System.err.println("Failed to update data of pruefer " + id.toString() + " in table pruefer!");
             throwables.printStackTrace();
@@ -123,14 +123,14 @@ public class CtrlPruefer {
     }
 
     /**
-     *              Retrieve the signature of a specific Prüfer
-     * @param id    Unique ID of the Prüfer
+     *              Retrieve the signature of a specific inspectors
+     * @param id    Unique ID of the inspectors
      * @return      {@link java.awt.Image} if found, null if not found
      */
     public Image get_signature(UUID id) {
         Image signature = null;
         try {
-            signature = this.db.pruefer_get_signature(id);
+            signature = this.db.inspector_get_signature(id);
         } catch (SQLException | IOException throwables) {
             throwables.printStackTrace();
         }
@@ -138,16 +138,16 @@ public class CtrlPruefer {
     }
 
     /**
-     *                  Add a new Prüfer with a signature to the database. A unique ID will be picked at random
-     * @param name      Name of the Prüfer
-     * @param vorname   First name of the Prüfer
-     * @param signature Signature of the Prüfer
+     *                  Add a new inspectors with a signature to the database. A unique ID will be picked at random
+     * @param name      Name of the inspectors
+     * @param vorname   First name of the inspectors
+     * @param signature Signature of the inspectors
      * @return          True on success, false on failure
      */
-    public boolean add_pruefer(String name, String vorname, BufferedImage signature) {
+    public boolean add_inspector(String name, String vorname, BufferedImage signature) {
         try {
             UUID id = UUID.randomUUID();
-            this.db.pruefer_add(id, name, vorname);
+            this.db.inspector_add(id, name, vorname);
             this.db.pruefer_add_signature(signature, id);
         } catch (SQLException | IOException throwables) {
             System.err.println("Failed to update data of pruefer " + vorname + " " + name + " in table pruefer!");
@@ -158,15 +158,15 @@ public class CtrlPruefer {
     }
 
     /**
-     *                  Add a new Prüfer without a signature to the database. A unique ID will be picked at random
-     * @param name      Name of the Prüfer
-     * @param vorname   First name of the Prüfer
+     *                  Add a new inspectors without a signature to the database. A unique ID will be picked at random
+     * @param name      Name of the inspectors
+     * @param vorname   First name of the inspectors
      * @return          True on success, false on failure
      */
-    public boolean add_pruefer(String name, String vorname) {
+    public boolean add_inspector(String name, String vorname) {
         try {
             UUID id = UUID.randomUUID();
-            this.db.pruefer_add(id, name, vorname);
+            this.db.inspector_add(id, name, vorname);
         } catch (SQLException throwables) {
             System.err.println("Failed to update data of pruefer " + vorname + " " + name + " in table pruefer!");
             throwables.printStackTrace();
@@ -176,13 +176,13 @@ public class CtrlPruefer {
     }
 
     /**
-     *              Remove a specifig Prüfer
-     * @param id    Unique ID of the Prüfer to remove
+     *              Remove a specific inspectors
+     * @param id    Unique ID of the inspectors to remove
      * @return      True on success, false on failure
      */
-    public boolean remove_pruefer(UUID id) {
+    public boolean remove_inspector(UUID id) {
         try {
-            this.db.pruefer_remove(id);
+            this.db.inspector_remove(id);
         } catch (SQLException throwables) {
             System.err.println("Failed to remove entry " + id.toString() + " in table pruefer!");
             throwables.printStackTrace();

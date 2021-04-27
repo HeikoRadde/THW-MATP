@@ -33,12 +33,12 @@ import java.time.LocalDate;
 import java.util.GregorianCalendar;
 
 /**
- * Printer for creating a PDF version of the CSV file with overview-data of all Prüfungen of the day
+ * Printer for creating a PDF version of the CSV file with overview-data of all inspections of the day
  */
-public class PrinterProtocolTestingOverviewPDF extends PrinterProtocolPDF {
+public class PrinterProtocolInspectionsOverviewPDF extends PrinterProtocolPDF {
 
     public static void set_path(Path path) {
-        PrinterProtocolTestingOverviewPDF.path = path;
+        PrinterProtocolInspectionsOverviewPDF.path = path;
     }
 
     public static void create_pdf() throws IOException {
@@ -46,10 +46,10 @@ public class PrinterProtocolTestingOverviewPDF extends PrinterProtocolPDF {
         {
             return;
         }
-        if (!new File(PrinterProtocolTestingOverviewCSV.create_file_path_name(path)).isFile()) {
+        if (!new File(PrinterProtocolInspectionsOverviewCSV.create_file_path_name(path)).isFile()) {
             return;
         }
-        Reader in = new InputStreamReader(new FileInputStream(PrinterProtocolTestingOverviewCSV.create_file_path_name(path)), StandardCharsets.UTF_8);
+        Reader in = new InputStreamReader(new FileInputStream(PrinterProtocolInspectionsOverviewCSV.create_file_path_name(path)), StandardCharsets.UTF_8);
         Iterable<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(in);
 
         PDDocument document = new PDDocument();
@@ -92,7 +92,7 @@ public class PrinterProtocolTestingOverviewPDF extends PrinterProtocolPDF {
         final String title = "Protokollübersicht";
         float pos_y = PAGE_MAX_H-40;
         try {
-            InputStream is = PrinterProtocolTestingPDF.class.getClassLoader().getResourceAsStream("logo_thw_blau.png");
+            InputStream is = PrinterProtocolInspectionPDF.class.getClassLoader().getResourceAsStream("logo_thw_blau.png");
             assert is != null;
             File thw_logo_tmp = File.createTempFile("tmp", "thw_logo");
             IOUtils.copy(is, new FileOutputStream(thw_logo_tmp));

@@ -15,16 +15,16 @@
  */
 package thw_matp.ui;
 
-import thw_matp.ctrl.CtrlVorschrift;
-import thw_matp.datatypes.Vorschrift;
+import thw_matp.ctrl.CtrlSpecifications;
+import thw_matp.datatypes.Specification;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 /**
- * Window for adding new Vorschriften to the database
+ * Window for adding new specifications to the database
  */
-public class WindowAddVorschrift extends JFrame {
+public class WindowAddSpecification extends JFrame {
 
     private JPanel root_panel;
     private JTextField txt_sachnr;
@@ -34,7 +34,7 @@ public class WindowAddVorschrift extends JFrame {
     private JButton btn_cancel;
     private JButton btn_ok;
 
-    public WindowAddVorschrift(CtrlVorschrift ctrl_vorschrift) {
+    public WindowAddSpecification(CtrlSpecifications ctrl_vorschrift) {
         super("Vorschrift hinzufügen");
         this.setContentPane(root_panel);
         this.m_ctrl_vorschrift = ctrl_vorschrift;
@@ -43,7 +43,7 @@ public class WindowAddVorschrift extends JFrame {
         this.btn_cancel.addActionListener(this::btn_cancel_action_performed);
     }
 
-    public WindowAddVorschrift(CtrlVorschrift ctrl_vorschrift, String sachnummer) {
+    public WindowAddSpecification(CtrlSpecifications ctrl_vorschrift, String sachnummer) {
         super("Vorschrift hinzufügen");
         this.setContentPane(root_panel);
         this.m_ctrl_vorschrift = ctrl_vorschrift;
@@ -67,7 +67,7 @@ public class WindowAddVorschrift extends JFrame {
             }
             else {
                 String sachnummer = this.txt_sachnr.getText();
-                int ret = this.m_ctrl_vorschrift.add_vorschrift(sachnummer, this.txt_vorschrift.getText(), this.txt_abschnitt.getText(), this.txt_link.getText());
+                int ret = this.m_ctrl_vorschrift.add_specification(sachnummer, this.txt_vorschrift.getText(), this.txt_abschnitt.getText(), this.txt_link.getText());
                 switch (ret) {
                     case 1 -> {
                         Object[] options = {"Ja", "Nein"};
@@ -80,8 +80,8 @@ public class WindowAddVorschrift extends JFrame {
                                 options,
                                 options[0]);
                         if (reply == JOptionPane.YES_OPTION) {
-                            Vorschrift v = this.m_ctrl_vorschrift.get_vorschrift(sachnummer);
-                            WindowEditVorschrift win = new WindowEditVorschrift(this.m_ctrl_vorschrift, v);
+                            Specification v = this.m_ctrl_vorschrift.get_specification(sachnummer);
+                            WindowEditSpecification win = new WindowEditSpecification(this.m_ctrl_vorschrift, v);
                             win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                             win.pack();
                             win.setLocationRelativeTo(get_root_panel());
@@ -114,5 +114,5 @@ public class WindowAddVorschrift extends JFrame {
 
 
 
-    private final CtrlVorschrift m_ctrl_vorschrift;
+    private final CtrlSpecifications m_ctrl_vorschrift;
 }

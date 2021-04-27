@@ -23,9 +23,9 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.h2.util.IOUtils;
 import thw_matp.datatypes.Item;
-import thw_matp.datatypes.Pruefer;
-import thw_matp.datatypes.Pruefung;
-import thw_matp.datatypes.Vorschrift;
+import thw_matp.datatypes.Inspector;
+import thw_matp.datatypes.Inspection;
+import thw_matp.datatypes.Specification;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -39,51 +39,51 @@ import java.util.GregorianCalendar;
 
 
 /**
- * Printer for creating a PDF file detailling the results of a Prüfung
+ * Printer for creating a PDF file detailling the results of a inspection
  */
-public class PrinterProtocolTestingPDF extends PrinterProtocolPDF {
+public class PrinterProtocolInspectionPDF extends PrinterProtocolPDF {
 
-    public static void print_pruefung(Path path, Pruefung pruefung, Pruefer pruefer, Item item, Vorschrift vorschrift) throws IOException {
+    public static void print_pruefung(Path path, Inspection inspection, Inspector inspector, Item item, Specification specification) throws IOException {
         PDDocument document = new PDDocument();
         PDPage page = new PDPage(PDRectangle.A4);
         document.addPage(page);
         PDPageContentStream content = new PDPageContentStream(document, page);
 
         float pos_y = 0.0f;
-        doc_set_properties(document, pruefung, pruefer);
+        doc_set_properties(document, inspection, inspector);
         pos_y = doc_create_header(document, content);
         pos_y = doc_create_txt_item(content, item, pos_y);
-        pos_y = doc_create_txt_meta(content, item, vorschrift, pos_y);
-        pos_y = doc_create_txt_test(content, pruefung, pruefer, pos_y);
-        pos_y = doc_create_footer(document, content, pruefer, pos_y);
+        pos_y = doc_create_txt_meta(content, item, specification, pos_y);
+        pos_y = doc_create_txt_test(content, inspection, inspector, pos_y);
+        pos_y = doc_create_footer(document, content, inspector, pos_y);
 
         content.close();
-        document.save(create_file_path_name(path, pruefung));
+        document.save(create_file_path_name(path, inspection));
         document.close();
     }
 
-    public static String get_log_filename(Pruefung pruefung) {
-        return pruefung.datum.toString() + "_Kennzeichen_" + pruefung.kennzeichen + "_Prüf-ID_" + pruefung.id.toString() + ".pdf";
+    public static String get_log_filename(Inspection inspection) {
+        return inspection.datum.toString() + "_Kennzeichen_" + inspection.kennzeichen + "_Prüf-ID_" + inspection.id.toString() + ".pdf";
     }
 
-    private static void doc_set_properties(PDDocument document, Pruefung pruefung, Pruefer pruefer) {
+    private static void doc_set_properties(PDDocument document, Inspection inspection, Inspector inspector) {
         PDDocumentInformation pdd = document.getDocumentInformation();
 
-        pdd.setAuthor(pruefer.vorname + " " + pruefer.name);
-        String title = "Prüfprotokoll zu " + pruefung.kennzeichen + " vom " + pruefung.datum.toString();
+        pdd.setAuthor(inspector.vorname + " " + inspector.name);
+        String title = "Prüfprotokoll zu " + inspection.kennzeichen + " vom " + inspection.datum.toString();
         pdd.setTitle(title);
-        String subject = "Prüfung des Gerätes " + pruefung.kennzeichen + " am " + pruefung.datum.toString();
+        String subject = "Prüfung des Gerätes " + inspection.kennzeichen + " am " + inspection.datum.toString();
         pdd.setSubject(subject);
-        pdd.setCreationDate(new GregorianCalendar(pruefung.datum.getYear(), pruefung.datum.getMonthValue()-1, pruefung.datum.getDayOfMonth()));
+        pdd.setCreationDate(new GregorianCalendar(inspection.datum.getYear(), inspection.datum.getMonthValue()-1, inspection.datum.getDayOfMonth()));
         pdd.setModificationDate(new GregorianCalendar());
-        pdd.setKeywords("Materialprüfung, Prüfprotokoll, " + pruefung.kennzeichen);
+        pdd.setKeywords("Materialprüfung, Prüfprotokoll, " + inspection.kennzeichen);
     }
 
     private static float doc_create_header(PDDocument document, PDPageContentStream content) {
         final String title = "Prüfprotokoll";
         float pos_y = PAGE_MAX_H-40;
         try {
-            InputStream is = PrinterProtocolTestingPDF.class.getClassLoader().getResourceAsStream("logo_thw_blau.png");
+            InputStream is = PrinterProtocolInspectionPDF.class.getClassLoader().getResourceAsStream("logo_thw_blau.png");
             assert is != null;
             File thw_logo_tmp = File.createTempFile("tmp", "thw_logo");
             IOUtils.copy(is, new FileOutputStream(thw_logo_tmp));
@@ -108,7 +108,7 @@ public class PrinterProtocolTestingPDF extends PrinterProtocolPDF {
         return pos_y;
     }
 
-    private static float doc_create_txt_meta(PDPageContentStream content, Item item, Vorschrift vorschrift, float pos_y) {
+    private static float doc_create_txt_meta(PDPageContentStream content, Item item, Specification specification, float pos_y) {
         try {
             content.setFont(FONT_NORMAL, TXT_SIZE_SECTION);
             content.beginText();
@@ -140,12 +140,12 @@ public class PrinterProtocolTestingPDF extends PrinterProtocolPDF {
             content.newLineAtOffset(calc_x_right_align_txt("Prüfungsvorschrift: ", FONT_NORMAL, TXT_SIZE_TEXT, POS_COL_1), pos_y);
             content.showText("Prüfungsvorschrift:");
             content.endText();
-            float vorschrift_pos_y = print_txt_box(content, vorschrift.vorschrift, FONT_NORMAL, TXT_SIZE_TEXT, POS_COL_1, POS_COL_2, pos_y);
+            float vorschrift_pos_y = print_txt_box(content, specification.vorschrift, FONT_NORMAL, TXT_SIZE_TEXT, POS_COL_1, POS_COL_2, pos_y);
             content.beginText();
             content.newLineAtOffset(calc_x_right_align_txt("Abschnitt: ", FONT_NORMAL, TXT_SIZE_TEXT, POS_COL_3), pos_y);
             content.showText("Abschnitt:");
             content.endText();
-            float abschnitt_pos_y = print_txt_box(content, vorschrift.abschnitt, FONT_NORMAL, TXT_SIZE_TEXT, POS_COL_3, PAGE_MAX_W, pos_y);
+            float abschnitt_pos_y = print_txt_box(content, specification.abschnitt, FONT_NORMAL, TXT_SIZE_TEXT, POS_COL_3, PAGE_MAX_W, pos_y);
             pos_y = Math.min(vorschrift_pos_y, abschnitt_pos_y);
             pos_y -= calc_row_offset(FONT_NORMAL, TXT_SIZE_TEXT);
 
@@ -208,7 +208,7 @@ public class PrinterProtocolTestingPDF extends PrinterProtocolPDF {
         return pos_y;
     }
 
-    private static float doc_create_txt_test(PDPageContentStream content, Pruefung pruefung, Pruefer pruefer, float pos_y) {
+    private static float doc_create_txt_test(PDPageContentStream content, Inspection inspection, Inspector inspector, float pos_y) {
         try {
             pos_y -= calc_row_offset(FONT_NORMAL, TXT_SIZE_TEXT) * 0.5f;
 
@@ -219,7 +219,7 @@ public class PrinterProtocolTestingPDF extends PrinterProtocolPDF {
             content.endText();
             content.beginText();
             content.newLineAtOffset(POS_COL_2, pos_y);
-            if (pruefung.bestanden) content.showText("BESTANDEN");
+            if (inspection.bestanden) content.showText("BESTANDEN");
             else content.showText("NICHT BESTANDEN");
             content.endText();
             pos_y = doc_underline_text(content, "Prüfungsergebnis:", FONT_BOLD, TXT_SIZE_CHAPTER, 2, PAGE_MARGIN_W, pos_y, (float) -2.5);
@@ -233,7 +233,7 @@ public class PrinterProtocolTestingPDF extends PrinterProtocolPDF {
             content.setFont(FONT_BOLD, TXT_SIZE_TEXT);
             content.beginText();
             content.newLineAtOffset(POS_COL_1, pos_y);
-            content.showText(pruefung.datum.toString());
+            content.showText(inspection.datum.toString());
             content.endText();
             pos_y -= calc_row_offset(FONT_NORMAL, TXT_SIZE_TEXT);
 
@@ -245,7 +245,7 @@ public class PrinterProtocolTestingPDF extends PrinterProtocolPDF {
             content.setFont(FONT_BOLD, TXT_SIZE_TEXT);
             content.beginText();
             content.newLineAtOffset(POS_COL_1, pos_y);
-            content.showText(pruefer.vorname + " " + pruefer.name);
+            content.showText(inspector.vorname + " " + inspector.name);
             content.endText();
             pos_y -= calc_row_offset(FONT_NORMAL, TXT_SIZE_TEXT);
 
@@ -257,7 +257,7 @@ public class PrinterProtocolTestingPDF extends PrinterProtocolPDF {
             content.setFont(FONT_BOLD, TXT_SIZE_TEXT);
             content.beginText();
             content.newLineAtOffset(POS_COL_1, pos_y);
-            content.showText(pruefung.ov);
+            content.showText(inspection.ov);
             content.endText();
             pos_y -= calc_row_offset(FONT_NORMAL, TXT_SIZE_TEXT);
 
@@ -268,7 +268,7 @@ public class PrinterProtocolTestingPDF extends PrinterProtocolPDF {
             content.endText();
             content.beginText();
             content.newLineAtOffset(POS_COL_1, pos_y);
-            if (pruefung.ausgesondert) {
+            if (inspection.ausgesondert) {
                 content.setFont(FONT_BOLD, TXT_SIZE_TEXT);
                 content.showText("JA");
             }
@@ -283,7 +283,7 @@ public class PrinterProtocolTestingPDF extends PrinterProtocolPDF {
             content.newLineAtOffset(calc_x_right_align_txt("Bemerkungen: ", FONT_NORMAL, TXT_SIZE_TEXT, POS_COL_1), pos_y);
             content.showText("Bemerkungen:");
             content.endText();
-            if (pruefung.bemerkungen.isEmpty()) {
+            if (inspection.bemerkungen.isEmpty()) {
                 content.beginText();
                 content.newLineAtOffset(POS_COL_1, pos_y);
                 content.showText(" —");
@@ -291,7 +291,7 @@ public class PrinterProtocolTestingPDF extends PrinterProtocolPDF {
             }
             else {
                 pos_y -= calc_row_offset(FONT_NORMAL, TXT_SIZE_TEXT);
-                pos_y = print_txt_box(content, pruefung.bemerkungen, FONT_NORMAL, TXT_SIZE_TEXT, POS_COL_1, PAGE_MAX_W, pos_y);
+                pos_y = print_txt_box(content, inspection.bemerkungen, FONT_NORMAL, TXT_SIZE_TEXT, POS_COL_1, PAGE_MAX_W, pos_y);
             }
             pos_y -= calc_row_offset(FONT_NORMAL, TXT_SIZE_TEXT);
 
@@ -301,7 +301,7 @@ public class PrinterProtocolTestingPDF extends PrinterProtocolPDF {
         return pos_y;
     }
 
-    private static float doc_create_footer(PDDocument document, PDPageContentStream content, Pruefer pruefer, float pos_y) {
+    private static float doc_create_footer(PDDocument document, PDPageContentStream content, Inspector inspector, float pos_y) {
         final float signature_height = 40f;
         final float line_width = 1f;
         float x_start = PAGE_MAX_W-400;
@@ -309,14 +309,14 @@ public class PrinterProtocolTestingPDF extends PrinterProtocolPDF {
             pos_y = doc_add_divider_line(content, pos_y);
             pos_y -= calc_row_offset(FONT_NORMAL, TXT_SIZE_TITLE) * 2;
 
-            if (pruefer.unterschrift != null) {
-                float ratio = (pruefer.unterschrift.getWidth(null) * 1.0f) / (pruefer.unterschrift.getHeight(null) * 1.0f);
+            if (inspector.unterschrift != null) {
+                float ratio = (inspector.unterschrift.getWidth(null) * 1.0f) / (inspector.unterschrift.getHeight(null) * 1.0f);
                 File signature_tmp = File.createTempFile("tmp", "unterschrift");
-                BufferedImage buffered_image = new BufferedImage(pruefer.unterschrift.getWidth(null), pruefer.unterschrift.getHeight(null), BufferedImage.TYPE_INT_RGB);
+                BufferedImage buffered_image = new BufferedImage(inspector.unterschrift.getWidth(null), inspector.unterschrift.getHeight(null), BufferedImage.TYPE_INT_RGB);
                 Graphics2D g2d = buffered_image.createGraphics();
                 g2d.setColor(Color.WHITE);
                 g2d.fillRect(0, 0, buffered_image.getWidth(), buffered_image.getHeight());
-                buffered_image.getGraphics().drawImage(pruefer.unterschrift, 0, 0, null);
+                buffered_image.getGraphics().drawImage(inspector.unterschrift, 0, 0, null);
                 ImageIO.write(buffered_image, "png", signature_tmp);
 
                 PDImageXObject signature_pdf = PDImageXObject.createFromFileByContent(signature_tmp, document);

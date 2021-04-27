@@ -17,8 +17,8 @@ package thw_matp.util;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import thw_matp.datatypes.Pruefer;
-import thw_matp.datatypes.Pruefung;
+import thw_matp.datatypes.Inspector;
+import thw_matp.datatypes.Inspection;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -30,11 +30,11 @@ import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 
 /**
- * Printer for creating the CSV file with an overview of all Prüfungen of the day
+ * Printer for creating the CSV file with an overview of all inspections of the day
  */
-public class PrinterProtocolTestingOverviewCSV {
+public class PrinterProtocolInspectionsOverviewCSV {
 
-    public static void add_pruefung_event(Path path, Pruefung pruefung, Pruefer pruefer) throws IOException {
+    public static void add_pruefung_event(Path path, Inspection inspection, Inspector inspector) throws IOException {
         String file_path_name = create_file_path_name(path);
 
         boolean new_file = !Files.exists(Paths.get(file_path_name));
@@ -47,7 +47,7 @@ public class PrinterProtocolTestingOverviewCSV {
             table_add_header(csv_printer);
         }
 
-        csv_printer.printRecord(pruefung.kennzeichen, pruefer.toString(), pruefung.bestanden, pruefung.ausgesondert, PrinterProtocolTestingPDF.get_log_filename(pruefung));
+        csv_printer.printRecord(inspection.kennzeichen, inspector.toString(), inspection.bestanden, inspection.ausgesondert, PrinterProtocolInspectionPDF.get_log_filename(inspection));
 
         csv_printer.close();
         writer.close();

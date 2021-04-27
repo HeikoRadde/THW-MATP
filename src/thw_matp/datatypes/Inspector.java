@@ -19,21 +19,21 @@ import java.awt.image.BufferedImage;
 import java.util.UUID;
 
 /**
- * Class for transfering data of Prüfer
+ * Class for transfering data of inspectors
  */
-public class Pruefer {
+public class Inspector {
     public final UUID id;
     public final String name;
     public final String vorname;
     public BufferedImage unterschrift;
 
-    public Pruefer(UUID id, String name, String vorname) {
+    public Inspector(UUID id, String name, String vorname) {
         this.id = id;
         this.name = name;
         this.vorname = vorname;
     }
 
-    public Pruefer(UUID id, String name, String vorname, BufferedImage unterschrift) {
+    public Inspector(UUID id, String name, String vorname, BufferedImage unterschrift) {
         this.id = id;
         this.name = name;
         this.vorname = vorname;

@@ -15,8 +15,8 @@
  */
 package thw_matp.ctrl;
 
-import thw_matp.datatypes.Pruefer;
-import thw_matp.datatypes.Pruefung;
+import thw_matp.datatypes.Inspector;
+import thw_matp.datatypes.Inspection;
 
 import javax.swing.table.DefaultTableModel;
 import java.io.IOException;
@@ -26,39 +26,39 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Controller for actions related to Prüfungen
+ * Controller for actions related to inspections
  */
-public class CtrlPruefungen {
+public class CtrlInspections {
 
     /**
      * @param db Database to be used
      */
-    public CtrlPruefungen(Database db) {
+    public CtrlInspections(Database db) {
         this.db = db;
     }
 
     /**
-     * @return Get data related to all Prüfugen in a ready-to-use format for tables
+     * @return Get data related to all inspections in a ready-to-use format for tables
      */
     public DefaultTableModel get_data() {
         DefaultTableModel mdl = new DefaultTableModel();
         mdl.setColumnIdentifiers(new String[]{"Kennzeichen", "Datum", "Prüfer", "Ort", "Bestanden", "Ausgesondert", "Bemerkungen", "ID"});
-        List<Pruefung> pruefungen = null;
+        List<Inspection> pruefungen = null;
         try {
-            pruefungen = this.db.pruefungen_get_all();
+            pruefungen = this.db.inspections_get_all();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         if(pruefungen != null) {
-            for (Pruefung pruefung : pruefungen) {
+            for (Inspection inspection : pruefungen) {
                 String pruefer_name;
                 try {
-                    Pruefer pruefer = db.pruefer_get(pruefung.pruefer);
-                    pruefer_name = pruefer.vorname + " " + pruefer.name;
+                    Inspector inspector = db.inspector_get(inspection.pruefer);
+                    pruefer_name = inspector.vorname + " " + inspector.name;
                 } catch (SQLException | IOException throwables) {
                     pruefer_name = "";
                 }
-                mdl.addRow(new Object[]{pruefung.kennzeichen, pruefung.datum, pruefer_name, pruefung.ov, pruefung.bestanden, pruefung.ausgesondert, pruefung.bemerkungen, pruefung.id});
+                mdl.addRow(new Object[]{inspection.kennzeichen, inspection.datum, pruefer_name, inspection.ov, inspection.bestanden, inspection.ausgesondert, inspection.bemerkungen, inspection.id});
             }
         }
         else {
@@ -68,30 +68,30 @@ public class CtrlPruefungen {
     }
 
     /**
-     *                      Get data of all Prüfungen of a single item
+     *                      Get data of all inspections of a single item
      * @param kennzeichen   Unique Kennzeichen of item
-     * @return              Ready-to-use format for tables with all Prüfungen for a specific item
+     * @return              Ready-to-use format for tables with all inspections for a specific item
      */
     public DefaultTableModel get_data(String kennzeichen) {
         kennzeichen = kennzeichen.replace('/', '-');
         DefaultTableModel mdl = new DefaultTableModel();
         mdl.setColumnIdentifiers(new String[]{"Kennzeichen", "Datum", "Prüfer", "Bestanden", "ID", "Ausgesondert", "Bemerkungen"});
-        List<Pruefung> pruefungen = null;
+        List<Inspection> pruefungen = null;
         try {
-            pruefungen = this.db.pruefungen_get(kennzeichen);
+            pruefungen = this.db.inspections_get(kennzeichen);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         if(pruefungen != null) {
-            for (Pruefung pruefung : pruefungen) {
+            for (Inspection inspection : pruefungen) {
                 String pruefer_name;
                 try {
-                    Pruefer pruefer = db.pruefer_get(pruefung.pruefer);
-                    pruefer_name = pruefer.vorname + " " + pruefer.name;
+                    Inspector inspector = db.inspector_get(inspection.pruefer);
+                    pruefer_name = inspector.vorname + " " + inspector.name;
                 } catch (SQLException | IOException throwables) {
                     pruefer_name = "";
                 }
-                mdl.addRow(new Object[]{pruefung.kennzeichen, pruefung.datum, pruefer_name, pruefung.bestanden, pruefung.id, pruefung.ausgesondert, pruefung.bemerkungen});
+                mdl.addRow(new Object[]{inspection.kennzeichen, inspection.datum, pruefer_name, inspection.bestanden, inspection.id, inspection.ausgesondert, inspection.bemerkungen});
             }
         }
         else {
@@ -101,19 +101,19 @@ public class CtrlPruefungen {
     }
 
     /**
-     *                      Add a Prüfung to the database
+     *                      Add a inspection to the database
      * @param kennzeichen   Unique ID of the checked item
-     * @param pruefer       Unique ID of the Prüfer doing the test
+     * @param pruefer       Unique ID of the Inspector doing the test
      * @param bestanden     Item tested OK / not OK
      * @param bemerkungen   Comment for this test
      * @param ausgesondert  True if item was discarded from inventory after the test
      * @param ov            Ortsverband where the test was performed
-     * @return              {@link thw_matp.datatypes.Pruefung} object if adding was successfull, null if not
+     * @return              {@link Inspection} object if adding was successfull, null if not
      */
-    public Pruefung add_pruefung(String kennzeichen, UUID pruefer, boolean bestanden, String bemerkungen, boolean ausgesondert, String ov) {
+    public Inspection add_inspection(String kennzeichen, UUID pruefer, boolean bestanden, String bemerkungen, boolean ausgesondert, String ov) {
         kennzeichen = kennzeichen.replace('/', '-');
         try {
-            return this.db.puefung_add_event(kennzeichen, pruefer, bestanden, bemerkungen, ausgesondert, ov);
+            return this.db.inspection_add_event(kennzeichen, pruefer, bestanden, bemerkungen, ausgesondert, ov);
         } catch (SQLException throwables) {
             System.err.println("Failed to enter new entry in table pruefungen!");
             throwables.printStackTrace();
@@ -122,8 +122,8 @@ public class CtrlPruefungen {
     }
 
     /**
-     *                      Edit a past Prüfung
-     * @param id            Unique ID of the Prüfung to edit
+     *                      Edit a past inspection
+     * @param id            Unique ID of the inspection to edit
      * @param kennzeichen   Potentially modified unique ID of the tested item
      * @param datum         Potentially modified data of the test
      * @param pruefer       Potentially modified unique ID of the Prüfer who did the test
@@ -132,10 +132,10 @@ public class CtrlPruefungen {
      * @param ausgesondert  Potentially modified value if the item was discarded from inventory after this test
      * @return              True if modification was successfull, false if it failed
      */
-    public boolean edit_pruefung(UUID id, String kennzeichen, LocalDate datum, UUID pruefer, boolean bestanden, String bemerkungen, boolean ausgesondert) {
+    public boolean edit_inspection(UUID id, String kennzeichen, LocalDate datum, UUID pruefer, boolean bestanden, String bemerkungen, boolean ausgesondert) {
         kennzeichen = kennzeichen.replace('/', '-');
         try {
-            this.db.puefung_update_event(id, kennzeichen, datum, pruefer, bestanden, bemerkungen, ausgesondert);
+            this.db.inspection_update(id, kennzeichen, datum, pruefer, bestanden, bemerkungen, ausgesondert);
         } catch (SQLException throwables) {
             System.err.println("Failed to update entry " + id.toString() + " in table pruefungen!");
             throwables.printStackTrace();
@@ -145,13 +145,13 @@ public class CtrlPruefungen {
     }
 
     /**
-     *              Remove a Prüfung from the database
-     * @param id    Unique ID of the Prüfung to remove
+     *              Remove a inspection from the database
+     * @param id    Unique ID of the inspection to remove
      * @return      True if removal was successfull, false if it failed
      */
-    public boolean remove_pruefung(UUID id) {
+    public boolean remnove_inspection(UUID id) {
         try {
-            this.db.pruefungen_remove(id);
+            this.db.inspection_remove(id);
         } catch (SQLException throwables) {
             System.err.println("Failed to remove entry " + id.toString() + " in table pruefungen!");
             throwables.printStackTrace();
@@ -161,14 +161,14 @@ public class CtrlPruefungen {
     }
 
     /**
-     *                      Remove all Prüfungen related to an item of the inventory from the database
+     *                      Remove all inspections related to an item of the inventory from the database
      * @param kennzeichen   Unique ID of the item
      * @return              True if removal was successfull, false if it failed
      */
-    public boolean remove_pruefungen(String kennzeichen) {
+    public boolean remove_inspection(String kennzeichen) {
         kennzeichen = kennzeichen.replace('/', '-');
         try {
-            this.db.pruefungen_remove(kennzeichen);
+            this.db.inspection_remove(kennzeichen);
         } catch (SQLException throwables) {
             System.err.println("Failed to remove entry " + kennzeichen + " in table pruefungen!");
             throwables.printStackTrace();
@@ -178,13 +178,13 @@ public class CtrlPruefungen {
     }
 
     /**
-     *              Retrieve the data of a certain Prüfung
-     * @param id    Unique ID of the Prüfung
-     * @return      {@link thw_matp.datatypes.Pruefung} object if found, null if not found
+     *              Retrieve the data of a certain inspection
+     * @param id    Unique ID of the inspection
+     * @return      {@link Inspection} object if found, null if not found
      */
-    public Pruefung find(UUID id) {
+    public Inspection find(UUID id) {
         try {
-            return this.db.pruefungen_find(id);
+            return this.db.inspection_find(id);
         } catch (SQLException throwables) {
             System.err.println("Failed to find pruefung " + id.toString() + " in table pruefungen!");
             throwables.printStackTrace();

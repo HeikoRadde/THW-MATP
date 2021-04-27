@@ -16,9 +16,9 @@
 package thw_matp.ctrl;
 
 import thw_matp.datatypes.Item;
-import thw_matp.datatypes.Pruefer;
-import thw_matp.datatypes.Pruefung;
-import thw_matp.datatypes.Vorschrift;
+import thw_matp.datatypes.Inspector;
+import thw_matp.datatypes.Inspection;
+import thw_matp.datatypes.Specification;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -113,12 +113,12 @@ public class Database {
 
 
     /**
-     *                      Add a Prüfer without a signature
+     *                      Add a inspector without a signature
      * @param name          Last name
      * @param vorname       First name
      * @throws SQLException Failed to add
      */
-    public void pruefer_add(String name, String vorname) throws SQLException {
+    public void inspector_add(String name, String vorname) throws SQLException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("INSERT INTO pruefer (id, Name, Vorname) VALUES(?, ?, ?)");
         this.m_connection.setAutoCommit(false);
         pstmt.setString(1, UUID.randomUUID().toString());
@@ -130,13 +130,13 @@ public class Database {
     }
 
     /**
-     *                      Add a Prüfer without a signature
-     * @param id            Unique ID for the Prüfer
+     *                      Add a inspector without a signature
+     * @param id            Unique ID for the inspector
      * @param name          Last name
      * @param vorname       First name
      * @throws SQLException Failed to add
      */
-    public void pruefer_add(UUID id, String name, String vorname) throws SQLException {
+    public void inspector_add(UUID id, String name, String vorname) throws SQLException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("INSERT INTO pruefer (id, Name, Vorname) VALUES(?, ?, ?)");
         this.m_connection.setAutoCommit(false);
         pstmt.setString(1, id.toString());
@@ -148,45 +148,45 @@ public class Database {
     }
 
     /**
-     *                      Retrieve a Prüfer by its unique ID
+     *                      Retrieve a inspector by its unique ID
      * @param id            Unique ID
-     * @return              Initialised {@link thw_matp.datatypes.Pruefer} object
+     * @return              Initialised {@link Inspector} object
      * @throws SQLException Failure during database interaction
      * @throws IOException  Failure during read of the saved signature
      */
-    public Pruefer pruefer_get(UUID id) throws SQLException, IOException {
+    public Inspector inspector_get(UUID id) throws SQLException, IOException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("SELECT * FROM pruefer WHERE id = ?");
         pstmt.setString(1, id.toString());
         ResultSet rs = pstmt.executeQuery();
         rs.next();
-        if (rs.getObject(4) == null) return new Pruefer(UUID.fromString(rs.getString(1)), rs.getString(2), rs.getString(3));
+        if (rs.getObject(4) == null) return new Inspector(UUID.fromString(rs.getString(1)), rs.getString(2), rs.getString(3));
         else {
             InputStream is = rs.getBinaryStream(4);
             BufferedImage bsignature = ImageIO.read(is);
-            return new Pruefer(UUID.fromString(rs.getString(1)), rs.getString(2), rs.getString(3), bsignature);
+            return new Inspector(UUID.fromString(rs.getString(1)), rs.getString(2), rs.getString(3), bsignature);
         }
     }
 
     /**
-     * @return              A list with all Prüfer in the database as {@link thw_matp.datatypes.Pruefer} objects
+     * @return              A list with all inspector in the database as {@link Inspector} objects
      * @throws SQLException Failure during database interaction
      * @throws IOException  Failure during read of the saved signature
      */
-    public List<Pruefer> pruefer_get_all() throws SQLException, IOException {
+    public List<Inspector> inspector_get_all() throws SQLException, IOException {
         ResultSet rs = this.m_connection.createStatement().executeQuery("SELECT * FROM pruefer");
-        List<Pruefer> list = new ArrayList<>();
+        List<Inspector> list = new ArrayList<>();
         while(rs.next()) {
-            if (rs.getObject(4) == null) list.add(new Pruefer(UUID.fromString(rs.getString(1)), rs.getString(2), rs.getString(3)));
+            if (rs.getObject(4) == null) list.add(new Inspector(UUID.fromString(rs.getString(1)), rs.getString(2), rs.getString(3)));
             else {
                 InputStream is = rs.getBinaryStream(4);
                 BufferedImage bsignature = ImageIO.read(is);
-                list.add(new Pruefer(UUID.fromString(rs.getString(1)), rs.getString(2), rs.getString(3), bsignature));
+                list.add(new Inspector(UUID.fromString(rs.getString(1)), rs.getString(2), rs.getString(3), bsignature));
             }
         }
         return list;
     }
 
-    public void pruefer_print_all() throws SQLException {
+    public void inspector_print_all() throws SQLException {
         ResultSet rs = this.m_connection.createStatement().executeQuery("SELECT * FROM pruefer");
         System.out.println("UUID | Name | Vorname");
         while (rs.next()) {
@@ -194,7 +194,7 @@ public class Database {
         }
     }
 
-    public void pruefer_print(UUID id) throws SQLException {
+    public void inspector_print(UUID id) throws SQLException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("SELECT * FROM pruefer WHERE id = ?");
         pstmt.setString(1, id.toString());
         ResultSet rs = pstmt.executeQuery();
@@ -204,16 +204,16 @@ public class Database {
         }
     }
 
-    public UUID pruefer_find(String name) throws SQLException {
+    public UUID inspector_find(String name) throws SQLException {
         ResultSet rs = this.m_connection.createStatement().executeQuery("SELECT * FROM pruefer WHERE Name = '" + name + "'");
         rs.next();
         return UUID.fromString(rs.getString(1));
     }
 
     /**
-     *                      Add the signature to an existing Prüfer
+     *                      Add the signature to an existing inspector
      * @param signature     Image with the signature
-     * @param id            Unique ID of the corresponding Prüfer
+     * @param id            Unique ID of the corresponding inspector
      * @throws SQLException Failure during database interaction
      * @throws IOException  Failure during interaction with the signature
      */
@@ -230,13 +230,13 @@ public class Database {
     }
 
     /**
-     *                      Retrieve the signature of a Prüfer
-     * @param id            Unique ID of the Prüfer
+     *                      Retrieve the signature of a inspector
+     * @param id            Unique ID of the inspector
      * @return              Image with the signature
      * @throws SQLException Failure during database interaction
      * @throws IOException  Failure during interaction with the signature
      */
-    public Image pruefer_get_signature(UUID id) throws SQLException, IOException {
+    public Image inspector_get_signature(UUID id) throws SQLException, IOException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("SELECT Unterschrift from pruefer WHERE id = ?");
         pstmt.setString(1, id.toString());
         ResultSet rs = pstmt.executeQuery();
@@ -246,15 +246,15 @@ public class Database {
     }
 
     /**
-     *                      Update the saved data of an existing Prüfer
-     * @param id            Unique ID of the existing Prüfer whos data is to be updated
+     *                      Update the saved data of an existing inspector
+     * @param id            Unique ID of the existing inspector whos data is to be updated
      * @param name          (new) last name
      * @param vorname       (new) first name
      * @param signature     (new) signature
      * @throws SQLException Failure during database interaction
      * @throws IOException  Failure during interaction with the signature
      */
-    public void pruefer_update(UUID id, String name, String vorname, BufferedImage signature) throws SQLException, IOException {
+    public void inspector_update(UUID id, String name, String vorname, BufferedImage signature) throws SQLException, IOException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("UPDATE pruefer SET Name = ?, Vorname = ?, Unterschrift = ? WHERE id = ?");
         pstmt.setString(1, name);
         pstmt.setString(2, vorname);
@@ -269,11 +269,11 @@ public class Database {
     }
 
     /**
-     *                      Remove a Prüfer from the database
-     * @param id            Unique ID of the Prüfer to be removed
+     *                      Remove a inspector from the database
+     * @param id            Unique ID of the inspector to be removed
      * @throws SQLException Failure during database interaction
      */
-    public void pruefer_remove(UUID id) throws SQLException {
+    public void inspector_remove(UUID id) throws SQLException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("DELETE FROM pruefer WHERE id = ?");
         pstmt.setString(1, id.toString());
         pstmt.executeUpdate();
@@ -287,7 +287,7 @@ public class Database {
 
 
 
-    public void inventar_add(String kennzeichen, String ov, String einheit, int baujahr, String hersteller, String bezeichnung, String sachnr) throws SQLException {
+    public void inventory_add(String kennzeichen, String ov, String einheit, int baujahr, String hersteller, String bezeichnung, String sachnr) throws SQLException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("INSERT INTO inventar (Kennzeichen, OV, Einheit, Baujahr, Hersteller, Bezeichnung, Sachnr) VALUES (?, ?, ?, ?, ?, ?, ?)");
         pstmt.setString(1, kennzeichen);
         pstmt.setString(2, ov);
@@ -299,7 +299,7 @@ public class Database {
         pstmt.executeUpdate();
     }
 
-    public void inventar_update(String kennzeichen, String ov, String einheit, int baujahr, String hersteller, String bezeichnung, String sachnr) throws SQLException {
+    public void inventory_update(String kennzeichen, String ov, String einheit, int baujahr, String hersteller, String bezeichnung, String sachnr) throws SQLException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("UPDATE inventar SET OV = ?, Einheit = ?, Baujahr = ?, Hersteller = ?, Bezeichnung = ?, Sachnr = ? WHERE Kennzeichen = ?");
         pstmt.setString(1, ov);
         pstmt.setString(2, einheit);
@@ -311,7 +311,7 @@ public class Database {
         pstmt.executeUpdate();
     }
 
-    public void inventar_print_all() throws SQLException {
+    public void inventory_print_all() throws SQLException {
         ResultSet rs = this.m_connection.createStatement().executeQuery("SELECT * FROM inventar");
         System.out.println("Kennzeichen | OV | Einheit | Baujahr | Hersteller | Bezeichung | Sachnr");
         while (rs.next()) {
@@ -325,7 +325,7 @@ public class Database {
         }
     }
 
-    public Item inventar_get(String kennzeichen) throws SQLException {
+    public Item inventory_get(String kennzeichen) throws SQLException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("SELECT * FROM inventar WHERE kennzeichen = ?");
         pstmt.setString(1, kennzeichen);
         ResultSet rs = pstmt.executeQuery();
@@ -333,7 +333,7 @@ public class Database {
         return new Item(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5), rs.getString(6), rs.getString(7));
     }
 
-    public List<Item> inventar_get_by_sachnr(String sachnr) throws SQLException {
+    public List<Item> inventory_get_by_sachnr(String sachnr) throws SQLException {
         List<Item> list = new ArrayList<>();
         PreparedStatement pstmt = this.m_connection.prepareStatement("SELECT * FROM inventar WHERE Sachnr = ?");
         pstmt.setString(1, sachnr);
@@ -350,7 +350,7 @@ public class Database {
         return list;
     }
 
-    public List<Item> inventar_get_all() throws SQLException {
+    public List<Item> inventory_get_all() throws SQLException {
         ResultSet rs = this.m_connection.createStatement().executeQuery("SELECT * FROM inventar");
         List<Item> list = new ArrayList<>();
         while (rs.next()) {
@@ -365,7 +365,7 @@ public class Database {
         return list;
     }
 
-    public void inventar_remove(String kennzeichen) throws SQLException {
+    public void inventory_remove(String kennzeichen) throws SQLException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("DELETE FROM inventar WHERE Kennzeichen = ?");
         pstmt.setString(1, kennzeichen);
         pstmt.executeUpdate();
@@ -379,9 +379,9 @@ public class Database {
 
 
 
-    public Pruefung puefung_add_event(String kennzeichen, UUID pruefer, boolean bestanden, String bemerkungen, boolean ausgesondert, String ov) throws SQLException {
+    public Inspection inspection_add_event(String kennzeichen, UUID pruefer, boolean bestanden, String bemerkungen, boolean ausgesondert, String ov) throws SQLException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("INSERT INTO pruefungen (id, Kennzeichen, Datum, Bestanden, Pruefer, Bemerkungen, Ausgesondert, OV) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        Pruefung p = new Pruefung(UUID.randomUUID(), kennzeichen, LocalDate.now(), bestanden, pruefer, bemerkungen, ausgesondert, ov);
+        Inspection p = new Inspection(UUID.randomUUID(), kennzeichen, LocalDate.now(), bestanden, pruefer, bemerkungen, ausgesondert, ov);
         pstmt.setString(1, p.id.toString());
         pstmt.setString(2, p.kennzeichen);
         pstmt.setObject(3, p.datum);
@@ -394,7 +394,7 @@ public class Database {
         return p;
     }
 
-    public void puefung_add_event(String kennzeichen, boolean bestanden) throws SQLException {
+    public void inspection_add_event(String kennzeichen, boolean bestanden) throws SQLException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("INSERT INTO pruefungen (id, kennzeichen, datum, bestanden, ausgesondert) VALUES (?, ?, ?, ?, ?, ?)");
         pstmt.setString(1, UUID.randomUUID().toString());
         pstmt.setString(2, kennzeichen);
@@ -404,7 +404,7 @@ public class Database {
         pstmt.executeUpdate();
     }
 
-    public void puefung_add_event(String kennzeichen, LocalDate datum, boolean bestanden) throws SQLException {
+    public void inspection_add_event(String kennzeichen, LocalDate datum, boolean bestanden) throws SQLException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("INSERT INTO pruefungen (id, kennzeichen, datum, bestanden, ausgesondert) VALUES (?, ?, ?, ?, ?)");
         pstmt.setString(1, UUID.randomUUID().toString());
         pstmt.setString(2, kennzeichen);
@@ -414,11 +414,11 @@ public class Database {
         pstmt.executeUpdate();
     }
 
-    public List<Pruefung> pruefungen_get_all() throws SQLException {
+    public List<Inspection> inspections_get_all() throws SQLException {
         ResultSet rs = this.m_connection.createStatement().executeQuery("SELECT * FROM pruefungen");
-        List<Pruefung> list = new ArrayList<>();
+        List<Inspection> list = new ArrayList<>();
         while (rs.next()) {
-            Pruefung p;
+            Inspection p;
             String pruefer = rs.getString(5);
             String bemerkungen = rs.getString(6);
             boolean ausgesondert = rs.getBoolean(7);
@@ -426,7 +426,7 @@ public class Database {
             if(bemerkungen == null) bemerkungen = "";
             if(ov == null) ov = "";
             if(pruefer == null) { //Pruefer might be null
-                p = new Pruefung(UUID.fromString(rs.getString(1)),
+                p = new Inspection(UUID.fromString(rs.getString(1)),
                         rs.getString(2),
                         rs.getObject(3, LocalDate.class),
                         rs.getBoolean(4),
@@ -435,7 +435,7 @@ public class Database {
                         ov);
             }
             else {
-                p = new Pruefung(UUID.fromString(rs.getString(1)),
+                p = new Inspection(UUID.fromString(rs.getString(1)),
                         rs.getString(2),
                         rs.getObject(3, LocalDate.class),
                         rs.getBoolean(4),
@@ -449,13 +449,13 @@ public class Database {
         return list;
     }
 
-    public List<Pruefung> pruefungen_get(String kennzeichen) throws SQLException {
+    public List<Inspection> inspections_get(String kennzeichen) throws SQLException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("SELECT * FROM pruefungen WHERE Kennzeichen = ?");
         pstmt.setString(1, kennzeichen);
         ResultSet rs = pstmt.executeQuery();
-        List<Pruefung> list = new ArrayList<>();
+        List<Inspection> list = new ArrayList<>();
         while (rs.next()) {
-            Pruefung p;
+            Inspection p;
             String pruefer = rs.getString(5);
             String bemerkungen = rs.getString(6);
             boolean ausgesondert = rs.getBoolean(7);
@@ -463,7 +463,7 @@ public class Database {
             if(bemerkungen == null) bemerkungen = "";
             if(ov == null) ov = "";
             if(pruefer == null) { //Pruefer might be null
-                p = new Pruefung(UUID.fromString(rs.getString(1)),
+                p = new Inspection(UUID.fromString(rs.getString(1)),
                         rs.getString(2),
                         rs.getObject(3, LocalDate.class),
                         rs.getBoolean(4),
@@ -472,7 +472,7 @@ public class Database {
                         ov);
             }
             else {
-                p = new Pruefung(UUID.fromString(rs.getString(1)),
+                p = new Inspection(UUID.fromString(rs.getString(1)),
                         rs.getString(2),
                         rs.getObject(3, LocalDate.class),
                         rs.getBoolean(4),
@@ -486,7 +486,7 @@ public class Database {
         return list;
     }
 
-    public Pruefung pruefungen_get_last(String kennzeichen) throws SQLException {
+    public Inspection inspections_get_last(String kennzeichen) throws SQLException {
         PreparedStatement pstmt = this.m_connection.prepareStatement(
                 "SELECT * FROM pruefungen WHERE Kennzeichen = ? ORDER BY Datum DESC NULLS LAST");
         pstmt.setString(1, kennzeichen);
@@ -499,7 +499,7 @@ public class Database {
         if(bemerkungen == null) bemerkungen = "";
         if(ov == null) ov = "";
         if(pruefer == null) { //Pruefer might be null
-            return new Pruefung(UUID.fromString(rs.getString(1)),
+            return new Inspection(UUID.fromString(rs.getString(1)),
                     rs.getString(2),
                     rs.getObject(3, LocalDate.class),
                     rs.getBoolean(4),
@@ -508,7 +508,7 @@ public class Database {
                     ov);
         }
         else {
-            return new Pruefung(UUID.fromString(rs.getString(1)),
+            return new Inspection(UUID.fromString(rs.getString(1)),
                     rs.getString(2),
                     rs.getObject(3, LocalDate.class),
                     rs.getBoolean(4),
@@ -519,19 +519,19 @@ public class Database {
         }
     }
 
-    public void pruefungen_remove(UUID id) throws SQLException {
+    public void inspection_remove(UUID id) throws SQLException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("DELETE FROM pruefungen WHERE id = ?");
         pstmt.setString(1, id.toString());
         pstmt.executeUpdate();
     }
 
-    public void pruefungen_remove(String kennzeichen) throws SQLException {
+    public void inspection_remove(String kennzeichen) throws SQLException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("DELETE FROM pruefungen WHERE Kennzeichen = ?");
         pstmt.setString(1, kennzeichen);
         pstmt.executeUpdate();
     }
 
-    public Pruefung pruefungen_find(UUID id) throws SQLException {
+    public Inspection inspection_find(UUID id) throws SQLException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("SELECT * FROM pruefungen WHERE id = ?");
         pstmt.setString(1, id.toString());
         ResultSet rs = pstmt.executeQuery();
@@ -543,7 +543,7 @@ public class Database {
         if(bemerkungen == null) bemerkungen = "";
         if(ov == null) ov = "";
         if(pruefer == null) { //Pruefer might be null
-            return new Pruefung(UUID.fromString(rs.getString(1)),
+            return new Inspection(UUID.fromString(rs.getString(1)),
                     rs.getString(2),
                     rs.getObject(3, LocalDate.class),
                     rs.getBoolean(4),
@@ -552,7 +552,7 @@ public class Database {
                     ov);
         }
         else {
-            return new Pruefung(UUID.fromString(rs.getString(1)),
+            return new Inspection(UUID.fromString(rs.getString(1)),
                     rs.getString(2),
                     rs.getObject(3, LocalDate.class),
                     rs.getBoolean(4),
@@ -563,7 +563,7 @@ public class Database {
         }
     }
 
-    public void puefung_update_event(UUID id, String kennzeichen, LocalDate datum, UUID pruefer, boolean bestanden, String bemerkungen, boolean ausgesondert) throws SQLException {
+    public void inspection_update(UUID id, String kennzeichen, LocalDate datum, UUID pruefer, boolean bestanden, String bemerkungen, boolean ausgesondert) throws SQLException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("UPDATE pruefungen SET Kennzeichen = ?, Datum = ?, Bestanden = ?, Pruefer = ?, Bemerkungen = ?, Ausgesondert = ? WHERE id = ?");
         pstmt.setString(1, kennzeichen);
         pstmt.setObject(2, datum);
@@ -583,7 +583,7 @@ public class Database {
 
 
 
-    public void vorschriften_add(String sachnr, String link, String vorschrift, String abschnitt) throws SQLException {
+    public void specification_add(String sachnr, String link, String vorschrift, String abschnitt) throws SQLException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("INSERT INTO vorschriften (Sachnr, Vorschrift, Abschnitt, Link) VALUES (?, ?, ?, ?)");
         pstmt.setString(1, sachnr);
         pstmt.setString(2, vorschrift);
@@ -592,7 +592,7 @@ public class Database {
         pstmt.executeUpdate();
     }
 
-    public void vorschriften_add(String sachnr, String vorschrift, String abschnitt) throws SQLException {
+    public void specification_add(String sachnr, String vorschrift, String abschnitt) throws SQLException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("INSERT INTO vorschriften (Sachnr, Vorschrift, Abschnitt) VALUES (?, ?, ?)");
         pstmt.setString(1, sachnr);
         pstmt.setString(2, vorschrift);
@@ -600,7 +600,7 @@ public class Database {
         pstmt.executeUpdate();
     }
 
-    public void vorschriften_update(String sachnr, String link, String vorschrift, String abschnitt) throws SQLException {
+    public void specification_update(String sachnr, String link, String vorschrift, String abschnitt) throws SQLException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("UPDATE vorschriften SET  Vorschrift = ?, Abschnitt = ?, Link = ? WHERE Sachnr = ?");
         pstmt.setString(1, vorschrift);
         pstmt.setString(2, abschnitt);
@@ -609,18 +609,18 @@ public class Database {
         pstmt.executeUpdate();
     }
 
-    public List<Vorschrift> vorschriften_get_all() throws SQLException {
+    public List<Specification> specifications_get_all() throws SQLException {
         ResultSet rs = this.m_connection.createStatement().executeQuery("SELECT * FROM vorschriften");
-        List<Vorschrift> list = new ArrayList<>();
+        List<Specification> list = new ArrayList<>();
         while (rs.next()) {
-            Vorschrift p;
+            Specification p;
             if(rs.getString(4) == null) { //Link might be null
-                p = new Vorschrift(rs.getString(1),
+                p = new Specification(rs.getString(1),
                         rs.getString(2),
                         rs.getString(3));
             }
             else {
-                p = new Vorschrift(rs.getString(1),
+                p = new Specification(rs.getString(1),
                         rs.getString(2),
                         rs.getString(3),
                         rs.getString(4));
@@ -630,25 +630,25 @@ public class Database {
         return list;
     }
 
-    public Vorschrift vorschriften_get(String sachnr) throws SQLException {
+    public Specification specification_get(String sachnr) throws SQLException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("SELECT * FROM vorschriften WHERE Sachnr = ?");
         pstmt.setString(1, sachnr);
         ResultSet rs = pstmt.executeQuery();
         rs.next();
         if(rs.getString(4) == null) { //Link might be null
-            return new Vorschrift(rs.getString(1),
+            return new Specification(rs.getString(1),
                     rs.getString(2),
                     rs.getString(3));
         }
         else {
-            return new Vorschrift(rs.getString(1),
+            return new Specification(rs.getString(1),
                     rs.getString(2),
                     rs.getString(3),
                     rs.getString(4));
         }
     }
 
-    public void vorschriften_remove(String sachnr) throws SQLException {
+    public void specification_remove(String sachnr) throws SQLException {
         PreparedStatement pstmt = this.m_connection.prepareStatement("DELETE FROM vorschriften WHERE Sachnr = ?");
         pstmt.setString(1, sachnr);
         pstmt.executeUpdate();

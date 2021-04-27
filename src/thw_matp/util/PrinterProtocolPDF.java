@@ -18,7 +18,7 @@ package thw_matp.util;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import thw_matp.datatypes.Pruefung;
+import thw_matp.datatypes.Inspection;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -55,8 +55,8 @@ public class PrinterProtocolPDF {
         return y - line_size;
     }
 
-    protected static String create_file_path_name(Path path, Pruefung pruefung) {
-        return Paths.get(path.toString(), PrinterProtocolTestingPDF.get_log_filename(pruefung)).toString();
+    protected static String create_file_path_name(Path path, Inspection inspection) {
+        return Paths.get(path.toString(), PrinterProtocolInspectionPDF.get_log_filename(inspection)).toString();
     }
 
     protected static float calc_font_height(PDType1Font font, float font_size) {
