@@ -65,6 +65,31 @@ ACHTUNG: beim Löschen eines Gerätes werden auch alle zu diesem Gerät gespeich
 
 ![Hauptfenster Reiter Inventar](doc/screen_inventory.png)
 
+#### Format der CSV Datei zum Importieren
+
+Die vorderen 11 Spalten der CSV-Datei sollten wie folgt aussehen:
+
+| OE                 | AN/Einheit  | Ausstattung                   | Sachnummer | Inventarnr.        | Gerätenr.  | Kennzeichen | Prüfung | Letzte | letztes Ergebnis | letzte Nr  |
+| ------------------ | ----------- | ----------------------------- | ---------- | ------------------ | ---------- | ----------- | ------- | ------ | ---------------- | ---------- |
+| OV Berlin Neukölln | 1. TZ, 1. B | Zurrgurt mit Ratsche (800 kg) | 2012       | SPANSET - LC800daN | 3940T00037 | 0058-003997 |         |        | BL-Zurrgurt      | 19.10.2019 |
+ 
+ Dies ist das Format, welches durch den Export aus dem THWin entstehen sollte.
+ Es können weitere Spalten folgen, wichtig ist, dass die vorderen Spalten wie oben angegeben sind.
+ Die Daten in den Spalten entsprechen nicht immer dem Titel der Spalte.
+ Die Daten sind pro Spalte wie folgt:
+ 
+ 1.  Ortsverband
+ 2.  Einheit
+ 3.  Name des Gerätes
+ 4.  Baujahr
+ 5.  Hersteller
+ 6.  Sachnummer (ID der Prüfvorschrift)
+ 7.  Kennzeichen des Gerätes
+ 8.  (Spalte nicht genutzt)
+ 9.  (Spalte nicht genutzt)
+ 10. (Spalte nicht genutzt)
+ 11. Datum der letzten Prüfung
+
 ### Reiter Prüfer
 
 Prüfer können der Datenbank hinzugefügt werden.
