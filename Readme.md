@@ -26,6 +26,8 @@ Bei einer Installation werden keine anderen Programme benötigt.
 Bei der Nutzung ohne Installation (`.jar` Datei) wird `Java` in der Version `14.0.2` oder höher benötigt.
 Die Nutzung auf Systemen von Apple ist momentan nur ohne Installation möglich, Java wird also zwingend benötigt.
 
+Das Programm wird unter https://github.com/HeikoRadde/THW-MATP/releases veröffentlicht.
+
 ## Programmstart
 
 Bei Programmstart öffnet sich folgendes Felster:
