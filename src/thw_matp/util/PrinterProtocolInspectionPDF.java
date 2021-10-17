@@ -21,15 +21,20 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.pdfbox.printing.PDFPageable;
 import org.h2.util.IOUtils;
-import thw_matp.datatypes.Item;
-import thw_matp.datatypes.Inspector;
+import thw_matp.ctrl.Settings;
 import thw_matp.datatypes.Inspection;
+import thw_matp.datatypes.Inspector;
+import thw_matp.datatypes.Item;
 import thw_matp.datatypes.Specification;
 
 import javax.imageio.ImageIO;
+import javax.print.PrintService;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -43,7 +48,7 @@ import java.util.GregorianCalendar;
  */
 public class PrinterProtocolInspectionPDF extends PrinterProtocolPDF {
 
-    public static void print_pruefung(Path path, Inspection inspection, Inspector inspector, Item item, Specification specification) throws IOException {
+    public static void print_pruefung(Path path, Inspection inspection, Inspector inspector, Item item, Specification specification, boolean print_paper) throws IOException {
         PDDocument document = new PDDocument();
         PDPage page = new PDPage(PDRectangle.A4);
         document.addPage(page);
@@ -59,6 +64,26 @@ public class PrinterProtocolInspectionPDF extends PrinterProtocolPDF {
 
         content.close();
         document.save(create_file_path_name(path, inspection));
+        if (print_paper) {
+            PrintService printer = Settings.getInstance().get_printer();
+            if (printer == null) {
+                PrinterJob printJob = PrinterJob.getPrinterJob();
+                if(printJob.printDialog()) {
+                    printer = printJob.getPrintService();
+                    Settings.getInstance().set_printer(printer);
+                }
+            }
+            if (printer != null) {
+                PrinterJob job = PrinterJob.getPrinterJob();
+                job.setPageable(new PDFPageable(document));
+                try {
+                    job.setPrintService(printer);
+                    job.print();
+                } catch (PrinterException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         document.close();
     }
 

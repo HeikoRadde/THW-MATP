@@ -70,6 +70,7 @@ public class WindowMain {
     private JPanel pnl_remote;
     private JPanel pnl_inet_info;
     private JPanel pnl_mode;
+    private JLabel txt_version_author;
 
     public WindowMain(CtrlInventory ctrl_inventory, CtrlInspectors ctrl_inspectors, CtrlInspections ctrl_inspections, CtrlSpecifications ctrl_specifications) {
         this.ctrl_inventory = ctrl_inventory;
@@ -110,6 +111,8 @@ public class WindowMain {
             this.pnl_inet_info.remove(this.pnl_local);
             this.pnl_inet_info.remove(this.btn_inet_addr_infos);
         }
+
+        this.txt_version_author.setText("THW-MATP V" + Settings.getInstance().get_version() + " von Heiko Radde");
     }
 
     public JPanel get_root_panel() {
@@ -526,7 +529,7 @@ public class WindowMain {
                     Item item = this.ctrl_inventory.get_item(inspection.kennzeichen);
                     Specification specification = this.ctrl_specifications.get_specification(item.sachnr);
                     try {
-                        PrinterProtocolInspectionPDF.print_pruefung(path.toAbsolutePath(), inspection, inspector, item, specification);
+                        PrinterProtocolInspectionPDF.print_pruefung(path.toAbsolutePath(), inspection, inspector, item, specification, true);
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
                     }

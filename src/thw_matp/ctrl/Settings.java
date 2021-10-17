@@ -15,6 +15,7 @@
  */
 package thw_matp.ctrl;
 
+import javax.print.PrintService;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -103,6 +104,18 @@ public class Settings {
         return this.port;
     }
 
+    public void set_printer(PrintService printer) {
+        this.printer = printer;
+    }
+
+    public PrintService get_printer() {
+        return this.printer;
+    }
+
+    public String get_version() {
+        return this.version;
+    }
+
     // SINGLETON mechanic
 
     private static final class InstanceHolder {
@@ -116,6 +129,8 @@ public class Settings {
         this.path_db = Paths.get(System.getProperty("user.home")).toAbsolutePath();
         this.path_protocols = Paths.get(System.getProperty("user.home")).toAbsolutePath();
         this.startup_done = false;
+        this.printer = null;
+        this.version = "1.1.0";
     }
 
     /**
@@ -132,4 +147,6 @@ public class Settings {
     private boolean local_database;
     private String ip;
     private String port;
+    private PrintService printer;
+    private String version;
 }

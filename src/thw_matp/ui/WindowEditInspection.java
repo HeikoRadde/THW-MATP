@@ -28,6 +28,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.print.PrinterJob;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.DateTimeException;
@@ -64,6 +65,8 @@ public class WindowEditInspection extends JFrame {
     private JTextField txt_monat;
     private JTextField txt_jahr;
     private JButton btn_select_save_path;
+    private JCheckBox check_print_protocol;
+    private JButton btn_printer_settings;
 
     public WindowEditInspection(Inspection inspection, CtrlInventory ctrl_inventar, CtrlInspectors ctrl_pruefer, CtrlSpecifications ctrl_vorschrift, CtrlInspections ctrl_pruefungen) {
         super("Prüfung editieren");
@@ -110,6 +113,7 @@ public class WindowEditInspection extends JFrame {
             }
         });
         this.txt_save_path.setText(Settings.getInstance().get_path_protocols().toString());
+        this.btn_printer_settings.addActionListener(this::btn_printer_settings_action_performed);
     }
 
 
@@ -152,6 +156,19 @@ public class WindowEditInspection extends JFrame {
             if (f.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
                 Settings.getInstance().set_path_protocols(java.nio.file.Paths.get(f.getSelectedFile().getAbsolutePath()));
                 this.txt_save_path.setText(Settings.getInstance().get_path_protocols().toString());
+            }
+        }
+        else {
+            System.err.println("Handle function called from wrong GUI object!");
+            new Throwable().printStackTrace();
+        }
+    }
+
+    public void btn_printer_settings_action_performed(ActionEvent e) {
+        if (e.getSource() == btn_printer_settings) {
+            PrinterJob printJob = PrinterJob.getPrinterJob();
+            if(printJob.printDialog()) {
+                Settings.getInstance().set_printer(printJob.getPrintService());
             }
         }
         else {
@@ -240,7 +257,7 @@ public class WindowEditInspection extends JFrame {
         if (this.check_create_protocol.isSelected() && p != null) {
             try {
                 PrinterProtocolInspectionsOverviewPDF.set_path(Settings.getInstance().get_path_protocols());
-                PrinterProtocolInspectionPDF.print_pruefung(Settings.getInstance().get_path_protocols(), p, this.m_inspector_list.get(this.sel_pruefer.getSelectedIndex()), this.m_current_item, this.m_current_specification);
+                PrinterProtocolInspectionPDF.print_pruefung(Settings.getInstance().get_path_protocols(), p, this.m_inspector_list.get(this.sel_pruefer.getSelectedIndex()), this.m_current_item, this.m_current_specification, this.check_print_protocol.isSelected());
                 PrinterProtocolInspectionsOverviewCSV.add_pruefung_event(Settings.getInstance().get_path_protocols(), p, this.m_inspector_list.get(this.sel_pruefer.getSelectedIndex()));
             } catch (IOException e) {
                 e.printStackTrace();

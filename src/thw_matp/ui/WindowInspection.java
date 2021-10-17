@@ -16,19 +16,20 @@
 package thw_matp.ui;
 
 import thw_matp.ctrl.*;
-import thw_matp.datatypes.Item;
-import thw_matp.datatypes.Inspector;
 import thw_matp.datatypes.Inspection;
+import thw_matp.datatypes.Inspector;
+import thw_matp.datatypes.Item;
 import thw_matp.datatypes.Specification;
+import thw_matp.util.PrinterProtocolInspectionPDF;
 import thw_matp.util.PrinterProtocolInspectionsOverviewCSV;
 import thw_matp.util.PrinterProtocolInspectionsOverviewPDF;
-import thw_matp.util.PrinterProtocolInspectionPDF;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.print.PrinterJob;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -60,6 +61,8 @@ public class WindowInspection extends JFrame {
     private JTextField txt_save_path;
     private JTextField txt_ort;
     private JButton btn_select_save_path;
+    private JCheckBox check_print_protocol;
+    private JButton btn_printer_settings;
 
     public WindowInspection(String title, CtrlInventory ctrl_inventar, CtrlInspectors ctrl_pruefer, CtrlSpecifications ctrl_vorschrift, CtrlInspections ctrl_pruefungen) {
         super(title);
@@ -87,6 +90,7 @@ public class WindowInspection extends JFrame {
             }
         });
         this.txt_save_path.setText(Settings.getInstance().get_path_protocols().toString());
+        this.btn_printer_settings.addActionListener(this::btn_printer_settings_action_performed);
 
         this.m_ctrl_inventar = ctrl_inventar;
         this.m_ctrl_vorschrift = ctrl_vorschrift;
@@ -159,6 +163,20 @@ public class WindowInspection extends JFrame {
             new Throwable().printStackTrace();
         }
     }
+
+    public void btn_printer_settings_action_performed(ActionEvent e) {
+        if (e.getSource() == btn_printer_settings) {
+            PrinterJob printJob = PrinterJob.getPrinterJob();
+            if(printJob.printDialog()) {
+                Settings.getInstance().set_printer(printJob.getPrintService());
+            }
+        }
+        else {
+            System.err.println("Handle function called from wrong GUI object!");
+            new Throwable().printStackTrace();
+        }
+    }
+
 
     public void sel_pruefer_action_performed(ActionEvent e) {
         if (e.getSource() == sel_pruefer) {
@@ -247,7 +265,7 @@ public class WindowInspection extends JFrame {
             if (this.check_create_protocol.isSelected()) {
                 try {
                     PrinterProtocolInspectionsOverviewPDF.set_path(Settings.getInstance().get_path_protocols());
-                    PrinterProtocolInspectionPDF.print_pruefung(Settings.getInstance().get_path_protocols(), p, this.m_inspector_list.get(this.sel_pruefer.getSelectedIndex()), this.m_current_item, this.m_current_specification);
+                    PrinterProtocolInspectionPDF.print_pruefung(Settings.getInstance().get_path_protocols(), p, this.m_inspector_list.get(this.sel_pruefer.getSelectedIndex()), this.m_current_item, this.m_current_specification, this.check_print_protocol.isSelected());
                     PrinterProtocolInspectionsOverviewCSV.add_pruefung_event(Settings.getInstance().get_path_protocols(), p, this.m_inspector_list.get(this.sel_pruefer.getSelectedIndex()));
                 } catch (IOException e) {
                     e.printStackTrace();
